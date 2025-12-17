@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FIRE-verktyg – Mitt ekonomilabb</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Favicon med $ -->
+  <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>$</text></svg>"
+  />
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
+  <div class="min-h-screen max-w-7xl mx-auto flex flex-col gap-6 pt-4 md:pt-8">
+
+    <!-- TOPPNAV GEMENSAM -->
+    <header class="bg-slate-950/80 backdrop-blur shadow-sm rounded-2xl border border-slate-800 px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-sm font-semibold">
+          FI
+        </div>
+        <div>
+          <div class="text-sm font-medium text-emerald-100 tracking-wide">
+            FIRE &amp; Pension – Mitt ekonomilabb
+          </div>
+          <div class="text-xs text-slate-400">Fristående FIRE-verktyg &amp; miniräknare</div>
+        </div>
+      </div>
+      <nav class="flex flex-wrap gap-3 text-sm">
+        <a href="./fire_pension_kalkylator.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-100 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+          Kalkylator
+        </a>
+        <a href="./fire_pension_guide.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-100 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+          Guide &amp; förklaringar
+        </a>
+        <a href="./fire_verktyg.html" class="px-3 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-medium">
+          FIRE-verktyg
+        </a>
+        <a href="./index.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-300 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+          Till startsidan
+        </a>
+      </nav>
+    </header>
+
+    <!-- INTRO -->
+    <section class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 px-6 py-5 space-y-3">
+      <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">
+        Fristående FIRE-verktyg
+      </h1>
+      <p class="text-sm md:text-base text-slate-300 max-w-3xl">
+        Små fristående kalkylatorer för ränta-på-ränta, FIRE-datum, kapitalbehov, månadssparande,
+        Barista FIRE, Coast FIRE och 4%-regeln. Tanken är att de kompletterar den stora pensions-
+        och FIRE-kalkylatorn.
+      </p>
+      <p class="text-xs text-slate-400 max-w-3xl">
+        Alla beräkningar är förenklade modeller i dagens penningvärde. Ingen finansiell rådgivning –
+        syftet är att ge känsla för storleksordningar och samband.
+      </p>
+    </section>
+
+    <!-- GRID MED VERKTYG -->
+    <section class="grid gap-6 lg:grid-cols-2 items-start">
+
+      <!-- 1. Ränta-på-ränta med månadssparande -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">Ränta-på-ränta med månadssparande</h2>
+          <p class="text-xs text-slate-400">
+            Klassisk ränta-på-ränta med både startkapital och månadssparande. Resultat i reala (inflationsjusterade) termer.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Startkapital (kr)</span>
+            <input id="cmpStartCapital" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="100000">
+          </label>
+          <label class="space-y-1">
+            <span>Månadssparande (kr)</span>
+            <input id="cmpMonthly" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="3000">
+          </label>
+          <label class="space-y-1">
+            <span>Real avkastning per år (%)</span>
+            <input id="cmpReturnPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Antal år</span>
+            <input id="cmpYears" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="25">
+          </label>
+        </div>
+
+        <button id="cmpRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="cmpResult" class="text-sm text-slate-200 space-y-1"></div>
+
+        <div class="h-56">
+          <canvas id="cmpChart"></canvas>
+        </div>
+      </div>
+
+      <!-- 2. När blir du ekonomiskt fri? -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">När blir du ekonomiskt fri?</h2>
+          <p class="text-xs text-slate-400">
+            Ungefär när räcker ditt kapital (med månadssparande) till att bära din månadskostnad med en given uttagsprocent?
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Startkapital (kr)</span>
+            <input id="fiStartCapital" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="500000">
+          </label>
+          <label class="space-y-1">
+            <span>Månadssparande (kr)</span>
+            <input id="fiMonthly" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="7000">
+          </label>
+          <label class="space-y-1">
+            <span>Real avkastning per år (%)</span>
+            <input id="fiReturnPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Önskad månadsnivå (kr)</span>
+            <input id="fiMonthlyNeed" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="25000">
+          </label>
+          <label class="space-y-1">
+            <span>Uttagsprocent per år (%)</span>
+            <input id="fiWithdrawPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Max antal år att simulera</span>
+            <input id="fiMaxYears" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="60">
+          </label>
+        </div>
+
+        <button id="fiRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="fiResult" class="text-sm text-slate-200 space-y-1"></div>
+      </div>
+
+      <!-- 3. Hur stort kapital behövs för FIRE? -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">Hur stort kapital behövs för FIRE?</h2>
+          <p class="text-xs text-slate-400">
+            Enkel tumregel baserat på önskad månadsnivå, alternativt justerat för förväntade pensionsinkomster.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Önskad månadsnivå (kr)</span>
+            <input id="needMonthly" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="25000">
+          </label>
+          <label class="space-y-1">
+            <span>Uttagsprocent per år (%)</span>
+            <input id="needWithdrawPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Förväntad pension / annan månadsinkomst (kr)</span>
+            <input id="needOtherIncome" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="0">
+          </label>
+        </div>
+
+        <button id="needRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="needResult" class="text-sm text-slate-200 space-y-1"></div>
+      </div>
+
+      <!-- 4. Vilket månadssparande krävs? -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">Vilket månadssparande krävs?</h2>
+          <p class="text-xs text-slate-400">
+            Från nuvarande kapital till målkapital på ett visst antal år, givet en antagen real avkastning.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Nuvarande kapital (kr)</span>
+            <input id="msCurrent" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="300000">
+          </label>
+          <label class="space-y-1">
+            <span>Målkapital (kr)</span>
+            <input id="msTarget" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="3000000">
+          </label>
+          <label class="space-y-1">
+            <span>Antal år till mål</span>
+            <input id="msYears" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="20">
+          </label>
+          <label class="space-y-1">
+            <span>Real avkastning per år (%)</span>
+            <input id="msReturnPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+        </div>
+
+        <button id="msRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="msResult" class="text-sm text-slate-200 space-y-1"></div>
+      </div>
+
+      <!-- 5. Barista FIRE -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">Barista FIRE – kapital för deltidsliv</h2>
+          <p class="text-xs text-slate-400">
+            Ungefär hur stort kapital behövs om du tänker jobba deltid och låta kapitalet täcka resten?
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Önskad månadsnivå totalt (kr)</span>
+            <input id="baristaTotalNeed" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="25000">
+          </label>
+          <label class="space-y-1">
+            <span>Planerad deltidsinkomst per månad (kr)</span>
+            <input id="baristaWorkIncome" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="10000">
+          </label>
+          <label class="space-y-1">
+            <span>Övriga månadsinkomster (pension etc.) (kr)</span>
+            <input id="baristaOtherIncome" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="0">
+          </label>
+          <label class="space-y-1">
+            <span>Uttagsprocent per år (%)</span>
+            <input id="baristaWithdrawPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+        </div>
+
+        <button id="baristaRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="baristaResult" class="text-sm text-slate-200 space-y-1"></div>
+      </div>
+
+      <!-- 6. Coast FIRE -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div>
+          <h2 class="text-lg font-semibold">Coast FIRE – hur nära är du?</h2>
+          <p class="text-xs text-slate-400">
+            Om du slutade spara idag och bara lät kapitalet växa – skulle det räcka till FIRE vid en viss ålder?
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Nuvarande ålder</span>
+            <input id="coastCurrentAge" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="35">
+          </label>
+          <label class="space-y-1">
+            <span>Målad FIRE-ålder</span>
+            <input id="coastFireAge" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="65">
+          </label>
+          <label class="space-y-1">
+            <span>Nuvarande kapital (kr)</span>
+            <input id="coastCapital" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="400000">
+          </label>
+          <label class="space-y-1">
+            <span>Real avkastning per år (%)</span>
+            <input id="coastReturnPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Önskad månadsnivå vid FIRE (kr)</span>
+            <input id="coastMonthlyNeed" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="25000">
+          </label>
+          <label class="space-y-1">
+            <span>Uttagsprocent per år (%)</span>
+            <input id="coastWithdrawPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+        </div>
+
+        <button id="coastRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna
+        </button>
+
+        <div id="coastResult" class="text-sm text-slate-200 space-y-1"></div>
+      </div>
+
+      <!-- 7. 4%-regeln – enkel uttagskalkyl -->
+      <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-5 space-y-4 lg:col-span-2">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold">4%-regeln – enkel uttagskalkyl</h2>
+            <p class="text-xs text-slate-400 max-w-xl">
+              Simulerar ett kapital som växer med real avkastning men där du samtidigt tar ut en viss procent per år.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
+          <label class="space-y-1">
+            <span>Startkapital (kr)</span>
+            <input id="fourStartCapital" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="3000000">
+          </label>
+          <label class="space-y-1">
+            <span>Real avkastning per år (%)</span>
+            <input id="fourReturnPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Uttag per år (%)</span>
+            <input id="fourWithdrawPct" type="number" step="0.1" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="4">
+          </label>
+          <label class="space-y-1">
+            <span>Antal år</span>
+            <input id="fourYears" type="number" class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full" value="40">
+          </label>
+        </div>
+
+        <button id="fourRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+          Räkna &amp; rita graf
+        </button>
+
+        <div id="fourResult" class="text-sm text-slate-200 space-y-1"></div>
+
+        <div class="h-64">
+          <canvas id="fourChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script>
+    // Hjälpfunktioner
+    const kr = (n) =>
+      new Intl.NumberFormat('sv-SE', {
+        style: 'currency',
+        currency: 'SEK',
+        maximumFractionDigits: 0
+      }).format(n || 0);
+
+    const percent = (p) =>
+      `${(p * 100).toLocaleString('sv-SE', { maximumFractionDigits: 1 })} %`;
+
+    const byId = (id) => document.getElementById(id);
+
+    // -------------------------
+    // 1. Ränta-på-ränta med månadssparande
+    // -------------------------
+    let cmpChart;
+
+    function runCmp() {
+      const start = +byId('cmpStartCapital').value || 0;
+      const monthly = +byId('cmpMonthly').value || 0;
+      const rYear = (+byId('cmpReturnPct').value || 0) / 100;
+      const years = Math.max(1, +byId('cmpYears').value || 1);
+
+      const rMonth = Math.pow(1 + rYear, 1/12) - 1;
+
+      const labels = [];
+      const balanceArr = [];
+      const contribArr = [];
+
+      let balance = start;
+      let contrib = start;
+
+      // Sampla årsvis (heltal på x-axeln), men räkna fortfarande månatligt
+      for (let y = 0; y <= years; y++) {
+        labels.push(String(y));
+        balanceArr.push(balance);
+        contribArr.push(contrib);
+
+        // simulera 12 månader framåt (inte efter sista årspunkten)
+        if (y < years) {
+          for (let m = 0; m < 12; m++) {
+            balance = balance * (1 + rMonth) + monthly;
+            contrib += monthly;
+          }
+        }
+      }
+
+      const totalValue = balanceArr[balanceArr.length - 1];
+      const totalContrib = contribArr[contribArr.length - 1];
+      const growth = totalValue - totalContrib;
+
+      byId('cmpResult').innerHTML = `
+        <div>Slutvärde: <span class="font-semibold">${kr(totalValue)}</span></div>
+        <div>Totalt insatt: <span class="font-semibold">${kr(totalContrib)}</span></div>
+        <div>Ränta-på-ränta-effekt: <span class="font-semibold">${kr(growth)}</span></div>
+      `;
+
+      const ctx = byId('cmpChart').getContext('2d');
+      if (cmpChart) cmpChart.destroy();
+      cmpChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Kapitalutveckling',
+              data: balanceArr,
+              borderWidth: 2,
+              tension: 0.15,
+              pointRadius: 0,
+              borderColor: '#22c55e'
+            },
+            {
+              label: 'Eget insatt',
+              data: contribArr,
+              borderWidth: 2,
+              tension: 0.15,
+              pointRadius: 0,
+              borderDash: [5, 5],
+              borderColor: '#64748b'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${kr(ctx.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'År', color: '#e5e7eb' },
+              ticks: { color: '#e5e7eb' },
+              grid: { color: 'rgba(30,64,175,0.25)' }
+            },
+            y: {
+              ticks: {
+                color: '#e5e7eb',
+                callback: (v) => v.toLocaleString('sv-SE')
+              },
+              grid: { color: 'rgba(148,163,184,0.3)' }
+            }
+          }
+        }
+      });
+    }
+
+    // -------------------------
+    // 2. När blir du ekonomiskt fri?
+    // -------------------------
+    function runFi() {
+      const start = +byId('fiStartCapital').value || 0;
+      const monthly = +byId('fiMonthly').value || 0;
+      const rYear = (+byId('fiReturnPct').value || 0) / 100;
+      const needMonthly = +byId('fiMonthlyNeed').value || 0;
+      const withdrawPct = (+byId('fiWithdrawPct').value || 0) / 100;
+      const maxYears = Math.max(1, +byId('fiMaxYears').value || 60);
+
+      const rMonth = Math.pow(1 + rYear, 1/12) - 1;
+      const reqCapital = (needMonthly * 12) / withdrawPct;
+
+      let balance = start;
+      let achievedYear = null;
+
+      const totalMonths = maxYears * 12;
+      for (let m = 0; m <= totalMonths; m++) {
+        if (balance >= reqCapital) {
+          achievedYear = m / 12;
+          break;
+        }
+        balance = balance * (1 + rMonth) + monthly;
+      }
+
+      if (!reqCapital || reqCapital <= 0) {
+        byId('fiResult').innerHTML = `<div>Ange rimliga värden (uttagsprocent &amp; månadsnivå).</div>`;
+        return;
+      }
+
+      if (achievedYear === null) {
+        byId('fiResult').innerHTML = `
+          <div>Kapital som krävs för FIRE: <span class="font-semibold">${kr(reqCapital)}</span></div>
+          <div>Med dessa antaganden nås inte nivån inom ${maxYears} år.</div>
+        `;
+      } else {
+        const yearText = achievedYear.toFixed(1).replace('.', ',');
+        byId('fiResult').innerHTML = `
+          <div>Kapital som krävs för FIRE: <span class="font-semibold">${kr(reqCapital)}</span></div>
+          <div>Med dina antaganden når du nivån efter ca <span class="font-semibold">${yearText} år</span>.</div>
+        `;
+      }
+    }
+
+    // -------------------------
+    // 3. Kapitalbehov för FIRE
+    // -------------------------
+    function runNeed() {
+      const needMonthly = +byId('needMonthly').value || 0;
+      const withdrawPct = (+byId('needWithdrawPct').value || 0) / 100;
+      const other = +byId('needOtherIncome').value || 0;
+
+      const netNeed = Math.max(0, needMonthly - other);
+      if (!withdrawPct || withdrawPct <= 0) {
+        byId('needResult').innerHTML = `<div>Ange en positiv uttagsprocent.</div>`;
+        return;
+      }
+
+      const reqCapital = (netNeed * 12) / withdrawPct;
+
+      byId('needResult').innerHTML = `
+        <div>Kapital som behövs för FIRE (justerat för andra inkomster): <span class="font-semibold">${kr(reqCapital)}</span></div>
+        <div>Det bygger på att uttagsprocenten är <span class="font-semibold">${(withdrawPct*100).toFixed(1)} %</span> per år.</div>
+      `;
+    }
+
+    // -------------------------
+    // 4. Vilket månadssparande krävs?
+    // -------------------------
+    function runMs() {
+      const current = +byId('msCurrent').value || 0;
+      const target = +byId('msTarget').value || 0;
+      const years = Math.max(1, +byId('msYears').value || 1);
+      const rYear = (+byId('msReturnPct').value || 0) / 100;
+
+      if (target <= current) {
+        byId('msResult').innerHTML = `<div>Du är redan vid eller över målkapitalet.</div>`;
+        return;
+      }
+
+      const n = years * 12;
+      const rMonth = Math.pow(1 + rYear, 1/12) - 1;
+
+      let monthly;
+      if (rMonth === 0) {
+        monthly = (target - current) / n;
+      } else {
+        const k = Math.pow(1 + rMonth, n);
+        monthly = (target - current * k) * rMonth / ( (1 + rMonth) * (k - 1) );
+      }
+
+      byId('msResult').innerHTML = `
+        <div>Ungefärligt månadssparande som krävs: <span class="font-semibold">${kr(monthly)}</span></div>
+        <div>Antaganden: ${years} år, ${(rYear*100).toFixed(1)} % real avkastning per år.</div>
+      `;
+    }
+
+    // -------------------------
+    // 5. Barista FIRE
+    // -------------------------
+    function runBarista() {
+      const totalNeed = +byId('baristaTotalNeed').value || 0;
+      const workIncome = +byId('baristaWorkIncome').value || 0;
+      const otherIncome = +byId('baristaOtherIncome').value || 0;
+      const withdrawPct = (+byId('baristaWithdrawPct').value || 0) / 100;
+
+      const gap = Math.max(0, totalNeed - workIncome - otherIncome);
+      if (!withdrawPct || withdrawPct <= 0) {
+        byId('baristaResult').innerHTML = `<div>Ange en positiv uttagsprocent.</div>`;
+        return;
+      }
+
+      const reqCapital = (gap * 12) / withdrawPct;
+
+      byId('baristaResult').innerHTML = `
+        <div>Kapital som behöver täcka gapet: <span class="font-semibold">${kr(reqCapital)}</span></div>
+        <div>Gapet mellan deltidslön + övrigt och din totala månadsnivå är <span class="font-semibold">${kr(gap)}</span>.</div>
+      `;
+    }
+
+    // -------------------------
+    // 6. Coast FIRE
+    // -------------------------
+    function runCoast() {
+      const currentAge = +byId('coastCurrentAge').value || 0;
+      const fireAge = +byId('coastFireAge').value || 0;
+      const capital = +byId('coastCapital').value || 0;
+      const rYear = (+byId('coastReturnPct').value || 0) / 100;
+      const needMonthly = +byId('coastMonthlyNeed').value || 0;
+      const withdrawPct = (+byId('coastWithdrawPct').value || 0) / 100;
+
+      if (fireAge <= currentAge) {
+        byId('coastResult').innerHTML = `<div>Målad FIRE-ålder måste vara högre än nuvarande ålder.</div>`;
+        return;
+      }
+      if (!withdrawPct || withdrawPct <= 0) {
+        byId('coastResult').innerHTML = `<div>Ange en positiv uttagsprocent.</div>`;
+        return;
+      }
+
+      const years = fireAge - currentAge;
+      const futureCapital = capital * Math.pow(1 + rYear, years);
+      const reqCapital = (needMonthly * 12) / withdrawPct;
+
+      const diff = futureCapital - reqCapital;
+      let msg;
+      if (diff >= 0) {
+        msg = `
+          <div>Om du <span class="font-semibold">slutar spara nu</span> och bara låter kapitalet växa:</div>
+          <div class="mt-1">Vid ${fireAge} år väntas kapitalet bli ca <span class="font-semibold">${kr(futureCapital)}</span>.</div>
+          <div>Kapital som skulle krävas för din FIRE-nivå: <span class="font-semibold">${kr(reqCapital)}</span>.</div>
+          <div class="mt-1 text-emerald-300">Du ligger ungefär <span class="font-semibold">${kr(diff)}</span> över det som krävs – Coast FIRE uppnådd enligt dessa antaganden.</div>
+        `;
+      } else {
+        msg = `
+          <div>Vid ${fireAge} år väntas kapitalet bli ca <span class="font-semibold">${kr(futureCapital)}</span> om du inte sparar mer.</div>
+          <div>Kapital som skulle krävas för din FIRE-nivå: <span class="font-semibold">${kr(reqCapital)}</span>.</div>
+          <div class="mt-1 text-amber-300">Du saknar ungefär <span class="font-semibold">${kr(-diff)}</span> i dagens upplägg för att Coast FIRE ska räcka.</div>
+        `;
+      }
+
+      byId('coastResult').innerHTML = msg;
+    }
+
+    // -------------------------
+    // 7. 4%-regeln – enkel uttagskalkyl
+    // -------------------------
+    let fourChart;
+
+    function runFour() {
+      const start = +byId('fourStartCapital').value || 0;
+      const rYear = (+byId('fourReturnPct').value || 0) / 100;
+      const wYear = (+byId('fourWithdrawPct').value || 0) / 100;
+      const years = Math.max(1, +byId('fourYears').value || 1);
+
+      const labels = [];
+      const noDrawArr = [];
+      const drawArr = [];
+
+      let capNoDraw = start;
+      let capDraw = start;
+
+      for (let y = 0; y <= years; y++) {
+        labels.push(String(y));
+        noDrawArr.push(capNoDraw);
+        drawArr.push(capDraw);
+
+        capNoDraw = capNoDraw * (1 + rYear);
+        capDraw = capDraw * (1 + rYear - wYear);
+      }
+
+      const finalNoDraw = noDrawArr[noDrawArr.length - 1];
+      const finalDraw = drawArr[drawArr.length - 1];
+
+      byId('fourResult').innerHTML = `
+        <div>Kapital utan uttag efter ${years} år: <span class="font-semibold">${kr(finalNoDraw)}</span></div>
+        <div>Kapital med ${(wYear*100).toFixed(1)} % uttag per år: <span class="font-semibold">${kr(finalDraw)}</span></div>
+      `;
+
+      const ctx = byId('fourChart').getContext('2d');
+      if (fourChart) fourChart.destroy();
+      fourChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Kapital utan uttag',
+              data: noDrawArr,
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.15,
+              borderColor: '#94a3b8'
+            },
+            {
+              label: 'Kapital med uttag',
+              data: drawArr,
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.15,
+              borderColor: '#22c55e'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${kr(ctx.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'År från start', color: '#e5e7eb' },
+              ticks: { color: '#e5e7eb' },
+              grid: { color: 'rgba(30,64,175,0.25)' }
+            },
+            y: {
+              ticks: {
+                color: '#e5e7eb',
+                callback: (v) => v.toLocaleString('sv-SE')
+              },
+              grid: { color: 'rgba(148,163,184,0.3)' }
+            }
+          }
+        }
+      });
+    }
+
+    // Event-bindningar
+    byId('cmpRun').addEventListener('click', runCmp);
+    byId('fiRun').addEventListener('click', runFi);
+    byId('needRun').addEventListener('click', runNeed);
+    byId('msRun').addEventListener('click', runMs);
+    byId('baristaRun').addEventListener('click', runBarista);
+    byId('coastRun').addEventListener('click', runCoast);
+    byId('fourRun').addEventListener('click', runFour);
+
+    // Kör något default så sidan inte är helt tom
+    runCmp();
+    runFour();
+  </script>
+</body>
+</html>

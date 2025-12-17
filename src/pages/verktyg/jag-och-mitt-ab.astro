@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TopNav from "../../components/TopNav.astro";
+---
+
+<BaseLayout title="Jag & mitt AB – Verktyg">
+  <TopNav />
+
+  <main class="w-full py-8 space-y-4">
+
+<header class="px-4 md:px-6">
+  <div class="max-w-4xl mx-auto space-y-2">
+    <h1 class="text-2xl font-semibold">Jag och mitt AB</h1>
+    <p class="text-slate-300">
+        Jämför lön och utdelning och se nettoutfall. På mobil kan “öppna i ny flik” kännas smidigare.
+      </p>
+
+      <div class="flex gap-3 pt-2 justify-center">
+        <a href="/tools/jag_och_mitt_ab.html" target="_blank"
+           class="text-sm px-4 py-2 rounded-full border border-slate-700 bg-slate-900/60 hover:border-sky-400/60">
+          Öppna i ny flik
+        </a>
+        <a href="/kunskap/tagg/ab/" class="text-sm px-4 py-2 rounded-full border border-slate-700 bg-slate-900/60 hover:border-sky-400/60">
+          Läs relaterat (AB)
+        </a>
+      </div>
+    </header>
+
+    <div class="w-screen rounded-none md:rounded-2xl border-y md:border border-slate-800 bg-slate-900/60 overflow-hidden">
+
+      <iframe
+        src="/tools/jag_och_mitt_ab.html"
+        class="block"
+        style="width:100vw; height: calc(100vh - 220px); border:0;"
+      ></iframe>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="sv" class="bg-slate-950">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pensions- & FIRE-kalkylator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>$</text></svg>"
+  />
+</head>
+
+<body class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
+<div class="min-h-screen max-w-7xl mx-auto flex flex-col gap-6 pt-4 md:pt-8">
+
+  <!-- TOPPNAV GEMENSAM -->
+  <header class="bg-slate-950/80 backdrop-blur shadow-sm rounded-2xl border border-slate-800 px-4 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 text-sm font-semibold">
+        FI
+      </div>
+      <div>
+        <div class="text-sm font-medium text-emerald-100 tracking-wide">
+          FIRE &amp; Pension – Mitt ekonomilabb
+        </div>
+        <div class="text-xs text-slate-400">Stor pensions- &amp; FIRE-kalkylator</div>
+      </div>
+    </div>
+    <nav class="flex flex-wrap gap-3 text-sm">
+      <a href="./fire_pension_kalkylator.html" class="px-3 py-1.5 rounded-full bg-emerald-500 text-slate-950 font-medium">
+        Kalkylator
+      </a>
+      <a href="./fire_pension_guide.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-100 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+        Guide &amp; förklaringar
+      </a>
+      <a href="./fire_verktyg.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-100 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+        FIRE-verktyg
+      </a>
+      <a href="./index.html" class="px-3 py-1.5 rounded-full bg-slate-900 text-slate-300 border border-slate-700 hover:border-emerald-400/60 hover:text-emerald-100">
+        Till startsidan
+      </a>
+    </nav>
+  </header>
+
+  <!-- INTRO OVANFÖR KALKYLATORN -->
+  <section class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 px-6 py-5 space-y-3">
+    <h1 class="text-2xl md:text-3xl font-semibold tracking-tight text-slate-50">
+      Pensions- & FIRE-kalkylator
+    </h1>
+    <p class="text-sm md:text-base text-slate-200 max-w-3xl">
+      Den här kalkylatorn hjälper dig att se hur lön, tjänstepension, allmän pension och ISK-sparande kan samspela
+      över livet. Du kan simulera när du vill sluta jobba, när pensionen startar, och hur du vill använda 4%-regeln
+      och senare förbruka ISK-kapitalet ner till ett restvärde.
+    </p>
+    <p class="text-xs text-slate-400 max-w-3xl">
+      Det är en förenklad modell i dagens penningvärde. Vill du först förstå mekaniken mellan lön, skatt,
+      allmän pension, tjänstepension, sparkvot, ISK, 4%-regel och förbrukningsfas – börja i guiden.
+    </p>
+    <div class="flex flex-wrap gap-3 mt-2 text-sm">
+      <a href="#kalkylatorn" class="px-4 py-2 rounded-full bg-emerald-600 text-white shadow shadow-emerald-500/40 hover:bg-emerald-500 transition-colors">
+        Hoppa till kalkylatorn
+      </a>
+      <a href="./fire_pension_guide.html" class="px-4 py-2 rounded-full border border-slate-700 bg-slate-900 text-slate-100 hover:border-emerald-400/60 hover:text-emerald-100 transition-colors">
+        Öppna guiden först
+      </a>
+    </div>
+  </section>
+
+  <!-- HUVUDINNEHÅLL: GRID MED TVÅ KOLUMNER -->
+  <section id="kalkylatorn" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- VÄNSTERKOLUMN: INPUT -->
+    <div class="lg:col-span-5 bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-6 space-y-6 overflow-y-auto max-h-[900px]">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold text-slate-50">1. Grunddata & antaganden</h2>
+        <button id="shareUrlBtn" class="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-400/60 text-xs hover:bg-emerald-500/20">
+          Skapa länk med mina värden
+        </button>
+      </div>
+
+      <div class="space-y-6 text-sm text-slate-100">
+
+        <!-- Skatt -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">Skatt</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="block text-sm">
+              <span class="text-slate-200">Kommun/regionskatt (%)</span>
+              <input id="taxRate" type="number" step="0.1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="32" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Statlig skatt över brytpunkt (%)</span>
+              <input id="stateTaxExtra" type="number" step="0.1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="20" />
+            </label>
+          </div>
+          <p class="text-xs text-slate-400">
+            Förenklad modell: statlig skatt läggs ovanpå den vanliga skatten över en schablonbrytpunkt.
+          </p>
+        </div>
+
+        <!-- Ålder & lön -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">Ålder & lön</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder idag</span>
+              <input id="age" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="40" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Bruttolön per månad (kr)</span>
+              <input id="grossSalary" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="40 000" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Löneökning per år (%)</span>
+              <input id="salaryGrowthPct" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="2" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder du vill sluta jobba (FIRE)</span>
+              <input id="workEndAge" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="60" />
+            </label>
+          </div>
+          <p class="text-xs text-slate-400">
+            ”Sluta jobba” styr bara när lön och pensionspremier upphör. Uttag av AP, TJP och ISK kan starta före eller efter detta, enligt dina övriga val.
+          </p>
+        </div>
+
+        <!-- ISK & sparande -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">ISK & sparande</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="block text-sm">
+              <span class="text-slate-200">ISK-startkapital (kr)</span>
+              <input id="iskStart" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="500 000" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Sparkvot av nettolön (%)</span>
+              <input id="saveRatePct" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="5" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Förväntad real avkastning ISK/TP (%)</span>
+              <input id="realReturnPct" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="4" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Önskat restvärde på ISK vid hög ålder (kr)</span>
+              <input id="targetRemainder" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="100 000" />
+            </label>
+          </div>
+        </div>
+
+        <!-- 4%-regeln / förbrukningsfas -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">4%-regel & förbrukningsfas</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder då 4%-regeln börjar användas</span>
+              <input id="fourPctStartAge" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="60" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder då du vill börja förbruka ISK-kapital (sen fas)</span>
+              <input id="spendStartAge" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="70" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Antal år för förbrukningsfas</span>
+              <input id="spendYears" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="20" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Tjänstepension -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">Tjänstepension (TP)</h3>
+          <p class="text-xs text-slate-400">
+            Antingen låter du modellen uppskatta en tjänstepensionspremie som andel av lönen, eller matar in
+            en egen schablon per månad.
+          </p>
+          <div class="space-y-2">
+            <label class="inline-flex items-center gap-2 text-xs text-slate-200">
+              <input id="tpAuto" type="checkbox" class="accent-emerald-500" checked>
+              <span>Använd automatisk uppskattning av premie (ca 4,5 % upp till 7,5 IBB, 30 % över)</span>
+            </label>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+            <label class="block text-sm">
+              <span class="text-slate-200">TP-startkapital, om du har (kr)</span>
+              <input id="tpStartCapital" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="2 000 000" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Egen schablonpremie/mån (kr) – om automatiken är av</span>
+              <input id="tpManual" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="3 000" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder när TP börjar betalas ut</span>
+              <input id="tpStartAge" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="67" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Uttagstid tjänstepension (år)</span>
+              <input id="tpYears" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="20" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Allmän pension -->
+        <div class="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3">
+          <h3 class="font-medium text-slate-50">Allmän pension (AP)</h3>
+          <p class="text-xs text-slate-400">
+            AP-startkapital tolkas som pensionskapital idag. Det räknas upp med egen AP-avkastning samt nya premier
+            (schablon 18,5&nbsp;% av bruttolön) fram till uttagsålder. Vid uttag: Årlig AP ≈ kapital vid uttag / delningstal.
+            Delningstalen bygger på Pensionsmyndighetens delningstal för inkomstpension för en typisk årskull, och används här som
+            ett gemensamt delningstal för hela den allmänna pensionen (inkomstpension + premiepension). I verkligheten varierar
+            delningstalen mellan olika delar och födelseår, men felet är litet i en sådan här översiktlig planering.
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+            <label class="block text-sm">
+              <span class="text-slate-200">AP-startkapital idag (kr)</span>
+              <input id="apStartCapital" type="text" data-money="1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="1 000 000" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">AP real årlig avkastning (%)</span>
+              <input id="apReturnPct" type="number" step="0.1"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="1.9" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Delningstal</span>
+              <input id="apDivisor" type="number" step="0.01"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="16.08" />
+            </label>
+            <label class="block text-sm">
+              <span class="text-slate-200">Ålder när allmän pension startar</span>
+              <input id="apStartAge" type="number"
+                     class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
+                     value="67" />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HÖGERKOLUMN: GRAF -->
+    <div class="lg:col-span-7 bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-4 md:p-6 h-[960px] flex flex-col">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+        <div>
+          <h2 class="text-lg font-medium text-slate-50">Månadsinkomst & kapitalnivåer</h2>
+          <p class="text-xs text-slate-400">
+            Staplar (stackade) = bruttobelopp per månad (lön, allmän pension, tjänstepension, ISK-uttag). Vit streckad linje = total netto/mån efter skatt. Linjer (höger axel) = kapital.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <button id="exportCsvBtn" class="px-3 py-1 rounded-full border border-slate-500 text-slate-200 hover:bg-slate-950">
+            Exportera årsdata (CSV)
+          </button>
+          <button id="exportPngBtn" class="px-3 py-1 rounded-full border border-slate-500 text-slate-200 hover:bg-slate-950">
+            Spara diagram (PNG)
+          </button>
+        </div>
+      </div>
+
+      <div class="flex-1 min-h-0">
+        <canvas id="mainChart"></canvas>
+      </div>
+
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="space-y-1">
+          <div class="font-semibold text-slate-50">Nyckeltal vid viktiga åldrar</div>
+          <div id="keyAges" class="space-y-1 text-slate-200"></div>
+        </div>
+        <div class="space-y-1">
+          <div class="font-semibold text-slate-50">Genomsnittlig nettoinkomst</div>
+          <div id="averageNet" class="space-y-1 text-slate-200"></div>
+        </div>
+        <div class="space-y-1">
+          <div class="font-semibold text-slate-50">Kommentarer & förenklingar</div>
+          <ul class="list-disc list-inside space-y-1 text-slate-400">
+            <li>Allmän pension och TP är grova schabloner.</li>
+            <li>Skatten är förenklad (grundavdrag, jobbskatteavdrag m.m.).</li>
+            <li>Alla belopp visas i dagens penningvärde (realt).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-3 border-t border-slate-800 space-y-2 text-xs text-slate-200">
+        <div class="font-semibold">Färgkodning i diagrammet</div>
+        <div class="space-y-1">
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#eab308]"></span>
+            <span><strong>Bruttolön / mån</strong> – lön före skatt.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#ef4444]"></span>
+            <span><strong>Brutto allmän pension / mån</strong> – allmän pension före skatt.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#3b82f6]"></span>
+            <span><strong>Brutto tjänstepension / mån</strong> – tjänstepension före skatt.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#4ade80]"></span>
+            <span><strong>ISK-uttag (4%-regeln) / mån</strong> – under perioden där du lever på 4%-regeln.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#15803d]"></span>
+            <span><strong>ISK-uttag (förbrukningsfas) / mån</strong> – när kapitalet aktivt trappas ned mot restvärdet.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-4 border-b-2 border-dashed border-white"></span>
+            <span><strong>Total netto per månad</strong> – (arbete + pension + ISK-uttag) efter skatt.</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#4ade80]"></span>
+            <span><strong>ISK-kapital</strong> – saldo över tid (höger axel).</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#3b82f6]"></span>
+            <span><strong>TP-kapital</strong> – saldo över tid (höger axel).</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="inline-block w-3 h-3 rounded bg-[#ef4444]"></span>
+            <span><strong>AP-kapital</strong> – visas fram till uttagsstart (höger axel).</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<script>
+(function(){
+  const kr = n => new Intl.NumberFormat('sv-SE',{style:'currency',currency:'SEK',maximumFractionDigits:0}).format(n||0);
+  const parseMoney = (value) => {
+    if (value === null || value === undefined) return 0;
+    if (typeof value === 'number') return value;
+    const cleaned = String(value).replace(/\s+/g,'').replace(/\./g,'').replace(/,/g,'.');
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? 0 : num;
+  };
+  const formatMoneyInput = (num) =>
+    Math.round(num||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+
+  const STATE_TAX_BREAKPOINT_YEAR = 613900; // grov schablon
+  const AP_CONTRIB_RATE = 0.185;           // 18,5 % av bruttolön till allmän pension, schablon
+  const csvEscape = (v) => `"${String(v).replace(/"/g,'""')}"`;
+
+  const byId = id => document.getElementById(id);
+
+  const refs = {
+    taxRate: byId('taxRate'),
+    stateTaxExtra: byId('stateTaxExtra'),
+    age: byId('age'),
+    grossSalary: byId('grossSalary'),
+    salaryGrowthPct: byId('salaryGrowthPct'),
+    realReturnPct: byId('realReturnPct'),
+    iskStart: byId('iskStart'),
+    saveRatePct: byId('saveRatePct'),
+    fourPctStartAge: byId('fourPctStartAge'),
+    spendStartAge: byId('spendStartAge'),
+    spendYears: byId('spendYears'),
+    targetRemainder: byId('targetRemainder'),
+    workEndAge: byId('workEndAge'),
+    tpAuto: byId('tpAuto'),
+    tpStartCapital: byId('tpStartCapital'),
+    tpManual: byId('tpManual'),
+    tpStartAge: byId('tpStartAge'),
+    tpYears: byId('tpYears'),
+    apStartCapital: byId('apStartCapital'),
+    apReturnPct: byId('apReturnPct'),
+    apStartAge: byId('apStartAge'),
+    apDivisor: byId('apDivisor'),
+    mainChart: byId('mainChart'),
+    keyAges: byId('keyAges'),
+    averageNet: byId('averageNet'),
+    exportCsvBtn: byId('exportCsvBtn'),
+    exportPngBtn: byId('exportPngBtn'),
+    shareUrlBtn: byId('shareUrlBtn')
+  };
+
+  // Delningstal enligt tabellen du skickade (Pensionsålder -> delningstal)
+  const AP_DIVISOR_TABLE = {
+    62: 19.04,
+    63: 18.45,
+    64: 17.86,
+    65: 17.26,
+    66: 16.67,
+    67: 16.08,
+    68: 15.48,
+    69: 14.89,
+    70: 14.3,
+    71: 13.71,
+    72: 13.12,
+    73: 12.54,
+    74: 11.95,
+    75: 11.38,
+    76: 10.81,
+    77: 10.24,
+    78: 9.68,
+    79: 9.14,
+    80: 8.6,
+    81: 8.07,
+    82: 7.56,
+    83: 7.07,
+    84: 6.59,
+    85: 6.14,
+    86: 5.7,
+    87: 5.29,
+    88: 4.89,
+    89: 4.53,
+    90: 4.18,
+    91: 3.87,
+    92: 3.57,
+    93: 3.3,
+    94: 3.07,
+    95: 2.85,
+    96: 2.64,
+    97: 2.44,
+    98: 2.25,
+    99: 2.08,
+    100: 1.93
+  };
+
+  function getDefaultApDivisor(age){
+    const ages = Object.keys(AP_DIVISOR_TABLE).map(a => parseInt(a,10)).sort((a,b)=>a-b);
+    if(ages.length === 0) return 18;
+    if(age <= ages[0]) return AP_DIVISOR_TABLE[ages[0]];
+    if(age >= ages[ages.length-1]) return AP_DIVISOR_TABLE[ages[ages.length-1]];
+
+    let bestAge = ages[0];
+    let bestDiff = Math.abs(age - bestAge);
+    for(const a of ages){
+      const diff = Math.abs(age - a);
+      if(diff < bestDiff){
+        bestDiff = diff;
+        bestAge = a;
+      }
+    }
+    return AP_DIVISOR_TABLE[bestAge];
+  }
+
+  function calcIncomeTax(yearlyGross, taxRatePct, stateExtraPct){
+    if(yearlyGross <= 0){
+      return { yearlyNet: 0, totalTax: 0, avgPct: 0 };
+    }
+    const kommunal = yearlyGross * (taxRatePct/100);
+    let totalTax = kommunal;
+    if(yearlyGross > STATE_TAX_BREAKPOINT_YEAR){
+      const over = yearlyGross - STATE_TAX_BREAKPOINT_YEAR;
+      totalTax += over * (stateExtraPct/100);
+    }
+    const avgPct = (totalTax/yearlyGross);
+    return { yearlyNet: yearlyGross - totalTax, totalTax, avgPct };
+  }
+
+  function estimateTpPremium(monthlySalary){
+    const yearly = monthlySalary*12;
+    const IBB = 74400; // grov, bara för modell
+    const threshold = 7.5*IBB;
+    const low = Math.min(yearly, threshold);
+    const high = Math.max(0, yearly - threshold);
+    const yearlyPrem = low*0.045 + high*0.30;
+    return yearlyPrem/12;
+  }
+
+  let chartInstance = null;
+
+  function simulate(){
+    const taxRatePct = parseFloat(refs.taxRate.value)||0;
+    const stateExtraPct = parseFloat(refs.stateTaxExtra.value)||0;
+    const currentAge = parseFloat(refs.age.value)||40;
+    const grossSalaryMonthStart = parseMoney(refs.grossSalary.value)||0;
+    const salaryGrowthPct = parseFloat(refs.salaryGrowthPct.value)||0;
+    const realReturnPct = parseFloat(refs.realReturnPct.value)||0;
+    const r = realReturnPct/100;
+    const iskStart = parseMoney(refs.iskStart.value)||0;
+    const saveRatePct = parseFloat(refs.saveRatePct.value)||0;
+    const fourPctStartAge = parseFloat(refs.fourPctStartAge.value)||60;
+    const spendStartAge = parseFloat(refs.spendStartAge.value)||70;
+    const spendYears = parseFloat(refs.spendYears.value)||20;
+    const targetRemainder = parseMoney(refs.targetRemainder.value)||0;
+    const workEndAge = parseFloat(refs.workEndAge.value)||60;
+    const tpAuto = refs.tpAuto.checked;
+    const tpStartCapital = parseMoney(refs.tpStartCapital.value)||0;
+    const tpManualPrem = parseMoney(refs.tpManual.value)||0;
+    const tpStartAge = parseFloat(refs.tpStartAge.value)||67;
+    const tpYears = parseFloat(refs.tpYears.value)||20;
+    const apStartCapital = parseMoney(refs.apStartCapital.value)||0;
+    const apReturnPct = parseFloat(refs.apReturnPct.value)||1.9;
+    const apR = apReturnPct/100;
+    const apStartAge = parseFloat(refs.apStartAge.value)||67;
+    const apDivisorInput = parseFloat(refs.apDivisor.value);
+    const apDivisor = !isNaN(apDivisorInput) && apDivisorInput>0 ? apDivisorInput : getDefaultApDivisor(apStartAge);
+
+    let rawMaxAge = Math.max(
+      spendStartAge+spendYears,
+      tpStartAge+tpYears,
+      apStartAge+30,
+      workEndAge+30,
+      90
+    );
+    const maxAge = Math.min(rawMaxAge, 95);
+
+    const ages = [];
+    for(let a=currentAge; a<=maxAge; a++){
+      ages.push(a);
+    }
+
+    // Lönebana
+    let salary = grossSalaryMonthStart;
+    const salaryByAge = {};
+    for(let age of ages){
+      salaryByAge[age] = salary;
+      salary = salary * (1+salaryGrowthPct/100);
+    }
+
+    let tpCapital = tpStartCapital;
+    let iskCapital = iskStart;
+    let apCapital = apStartCapital;
+
+    let apYearlyPension = null;
+    let tpAnnualPayout = null;
+    let spendAnnualPayout = null;
+
+    const yearlyData = [];
+
+    for(let age of ages){
+      const working = age < workEndAge;
+      const grossMonth = working ? (salaryByAge[age] || 0) : 0;
+      const grossWorkYear = grossMonth * 12;
+
+      const isPensionAge    = age >= apStartAge;
+      const isTpAge         = age >= tpStartAge && age < tpStartAge + tpYears;
+      const isFourPctPhase  = age >= fourPctStartAge && age < spendStartAge;
+      const isSpendingPhase = age >= spendStartAge && age < spendStartAge + spendYears;
+
+      // --- TP-premie & löneskatt ---
+      let tpPremiumYear = 0;
+      if(working){
+        if(tpAuto){
+          const premMonth = estimateTpPremium(grossMonth);
+          tpPremiumYear = premMonth * 12;
+        } else {
+          tpPremiumYear = tpManualPrem * 12;
+        }
+      }
+
+      const salaryTaxBase = Math.max(0, grossWorkYear - tpPremiumYear);
+      const taxWork = calcIncomeTax(salaryTaxBase, taxRatePct, stateExtraPct);
+      const netWorkYear = taxWork.yearlyNet;
+
+      // Sparande till ISK från nettolön
+      const yearlySaving = working ? netWorkYear * (saveRatePct/100) : 0;
+      let apContributionYear = 0;
+      if(working && age < apStartAge){
+        apContributionYear = grossWorkYear * AP_CONTRIB_RATE;
+      }
+
+      // Lägg in sparande på ISK (innan avkastning/uttag)
+      iskCapital += yearlySaving;
+
+      // AP-kapital: växer bara fram till uttagsstart
+      if(age < apStartAge){
+        apCapital = (apCapital + apContributionYear) * (1 + apR);
+      }
+
+      // TP-kapital – växer eller betalas ut beroende på fas
+      let tpYear = 0;
+      if(age < tpStartAge){
+        tpCapital = (tpCapital + tpPremiumYear) * (1 + r);
+      } else if(isTpAge && tpYears > 0){
+        // Beräkna ett årligt uttag som amorterar TP-kapitalet till 0 vid periodens slut
+        if(tpAnnualPayout === null){
+          const PV = tpCapital;
+          const n = tpYears;
+          if(PV <= 0){
+            tpAnnualPayout = 0;
+          } else if(r === 0){
+            tpAnnualPayout = PV / n;
+          } else {
+            // Annuity: W = PV * r / (1 - (1+r)^(-n))
+            tpAnnualPayout = PV * r / (1 - Math.pow(1 + r, -n));
+          }
+        }
+        tpYear = tpAnnualPayout;
+        tpCapital = Math.max(0, tpCapital * (1 + r) - tpYear);
+      } else {
+        // Efter uttagsperioden: kapitalet ska vara förbrukat (0)
+        if(age >= tpStartAge + tpYears){
+          tpCapital = 0;
+        } else {
+          tpCapital = tpCapital * (1 + r);
+        }
+      }
+
+      // AP-utbetalning
+      let apYear = 0;
+      if(isPensionAge){
+        if(apYearlyPension === null){
+          apYearlyPension = apCapital / apDivisor;
+        }
+        apYear = apYearlyPension;
+      }
+
+      // ISK – 4%-fas eller förbrukningsfas eller bara avkastning
+      let iskWithdrawYear = 0;
+      let iskWithdrawFourYear = 0;
+      let iskWithdrawSpendYear = 0;
+
+      if(isFourPctPhase){
+        const base = iskCapital;
+        const withdrawRate = 0.04;
+        iskWithdrawYear = base * withdrawRate;
+        iskWithdrawFourYear = iskWithdrawYear;
+        if(r !== 0){
+          iskCapital = (base - iskWithdrawYear) * (1 + r);
+        } else {
+          iskCapital = base - iskWithdrawYear;
+        }
+      } else if(isSpendingPhase){
+        const n = spendYears;
+        if(spendAnnualPayout === null){
+          const PV = iskCapital;
+          if(PV <= targetRemainder){
+            spendAnnualPayout = 0;
+          } else if(r === 0){
+            spendAnnualPayout = (PV - targetRemainder) / n;
+          } else {
+            const q = 1 + r;
+            const qn = Math.pow(q, n);
+            const numerator   = PV * qn - targetRemainder;
+            const denominator = (Math.pow(q, n+1) - q);
+            const W = numerator * r / denominator;
+            spendAnnualPayout = Math.max(0, W);
+          }
+        }
+        iskWithdrawYear = spendAnnualPayout;
+        iskWithdrawSpendYear = spendAnnualPayout;
+        if(r !== 0){
+          iskCapital = (iskCapital - iskWithdrawYear) * (1 + r);
+        } else {
+          iskCapital = iskCapital - iskWithdrawYear;
+        }
+      } else {
+        // bara avkastning
+        iskCapital = iskCapital * (1 + r);
+      }
+
+      // Skatt på pension (AP+TP)
+      const pensionTaxBase = apYear + tpYear;
+      const taxPension = calcIncomeTax(pensionTaxBase, taxRatePct, stateExtraPct);
+      const netPensionYear = taxPension.yearlyNet;
+
+      const netTotalYear = netWorkYear + netPensionYear + iskWithdrawYear;
+
+      const apCapForAge = age < apStartAge ? apCapital : null;
+
+      yearlyData.push({
+        age,
+        grossWorkYear,
+        apYear,
+        tpYear,
+        iskWithdrawYear,
+        iskWithdrawFourYear,
+        iskWithdrawSpendYear,
+        netWorkYear,
+        netPensionYear,
+        netTotalYear,
+        taxOnWork: taxWork.totalTax,
+        taxOnPension: taxPension.totalTax,
+        iskCapitalEnd: iskCapital,
+        tpCapitalEnd: tpCapital,
+        apCapitalEnd: apCapForAge
+      });
+    }
+
+    return yearlyData;
+  }
+
+  function render(){
+    const data = simulate();
+    const ctx = refs.mainChart.getContext('2d');
+
+    const labels = data.map(d=>d.age);
+
+    const grossWorkMonth    = data.map(d => d.grossWorkYear / 12);
+    const grossAPMonth      = data.map(d => d.apYear / 12);
+    const grossTPMonth      = data.map(d => d.tpYear / 12);
+    const iskFourMonth      = data.map(d => d.iskWithdrawFourYear / 12);
+    const iskSpendMonth     = data.map(d => d.iskWithdrawSpendYear / 12);
+
+    const totalNet = data.map(d => d.netTotalYear/12);
+
+    const iskCap = data.map(d=>d.iskCapitalEnd);
+    const tpCap  = data.map(d=>d.tpCapitalEnd);
+    const apCap  = data.map(d=>d.apCapitalEnd);
+
+    const avgNetWorking = (() => {
+      const arr = data.filter(d=>d.grossWorkYear>0);
+      if(!arr.length) return 0;
+      const sum = arr.reduce((a,b)=>a + (b.netTotalYear/12),0);
+      return sum/arr.length;
+    })();
+
+    const avgNetRetired = (() => {
+      const arr = data.filter(d=>d.grossWorkYear===0);
+      if(!arr.length) return 0;
+      const sum = arr.reduce((a,b)=>a + (b.netTotalYear/12),0);
+      return sum/arr.length;
+    })();
+
+    refs.averageNet.innerHTML = `
+      <div>Genomsnittlig netto/mån under arbete: <strong>${kr(avgNetWorking)}</strong></div>
+      <div>Genomsnittlig netto/mån efter arbete: <strong>${kr(avgNetRetired)}</strong></div>
+    `;
+
+    const keyAgesList = [
+      data[0]?.age,
+      data.find(d=>d.grossWorkYear===0)?.age,
+      data.find(d=>d.apYear>0)?.age,
+      data[data.length-1]?.age
+    ];
+    const uniqueKeyAges = Array.from(new Set(keyAgesList.filter(Boolean)));
+    refs.keyAges.innerHTML = uniqueKeyAges.map(a=>{
+      const d = data.find(x=>x.age===a);
+      if(!d) return '';
+      const net = d.netTotalYear/12;
+      const isk = d.iskCapitalEnd;
+      return `
+        <div>
+          Vid <strong>${a} år</strong> – netto/mån ≈ <strong>${kr(net)}</strong>, ISK-saldo ≈ <strong>${kr(isk)}</strong>
+        </div>
+      `;
+    }).join('');
+
+    if(chartInstance) chartInstance.destroy();
+
+    chartInstance = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels,
+        datasets:[
+          {
+            type:'bar',
+            label:'Bruttolön / mån',
+            data:grossWorkMonth,
+            backgroundColor:'rgba(234,179,8,0.45)',
+            borderWidth:0,
+            stack:'income',
+            order: 1
+          },
+          {
+            type:'bar',
+            label:'Brutto allmän pension / mån',
+            data:grossAPMonth,
+            backgroundColor:'rgba(239,68,68,0.45)',
+            borderWidth:0,
+            stack:'income',
+            order: 1
+          },
+          {
+            type:'bar',
+            label:'Brutto tjänstepension / mån',
+            data:grossTPMonth,
+            backgroundColor:'rgba(59,130,246,0.45)',
+            borderWidth:0,
+            stack:'income',
+            order: 1
+          },
+          {
+            type:'bar',
+            label:'ISK-uttag (4%-regeln) / mån',
+            data:iskFourMonth,
+            backgroundColor:'rgba(74,222,128,0.45)',
+            borderWidth:0,
+            stack:'income',
+            order: 1
+          },
+          {
+            type:'bar',
+            label:'ISK-uttag (förbrukningsfas) / mån',
+            data:iskSpendMonth,
+            backgroundColor:'rgba(21,128,61,0.45)',
+            borderWidth:0,
+            stack:'income',
+            order: 1
+          },
+          {
+            type:'line',
+            label:'Total netto/mån (arbete + pension + ISK)',
+            data:totalNet,
+            borderColor:'#ffffff',
+            borderWidth:3,
+            borderDash:[6,4],
+            pointRadius:0,
+            yAxisID:'y',
+            order: 3,
+            z: 10
+          },
+          {
+            type:'line',
+            label:'ISK-kapital',
+            data:iskCap,
+            borderColor:'#4ade80',
+            borderWidth:3,
+            pointRadius:0,
+            yAxisID:'y1',
+            order: 3,
+            z: 10
+          },
+          {
+            type:'line',
+            label:'TP-kapital',
+            data:tpCap,
+            borderColor:'#3b82f6',
+            borderWidth:3,
+            pointRadius:0,
+            yAxisID:'y1',
+            order: 3,
+            z: 10
+          },
+          {
+            type:'line',
+            label:'AP-kapital',
+            data:apCap,
+            borderColor:'#ef4444',
+            borderWidth:3,
+            pointRadius:0,
+            spanGaps:true,
+            yAxisID:'y1',
+            order: 3,
+            z: 10
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        interaction:{ mode:'index', intersect:false },
+        plugins:{
+          legend:{ labels:{ color:'#e5e7eb' } },
+          tooltip:{
+            callbacks:{
+              label:(ctx)=>{
+                const label = ctx.dataset.label || '';
+                const v = ctx.parsed.y;
+                if(['ISK-kapital','TP-kapital','AP-kapital'].includes(label)){
+                  return `${label}: ${kr(v)}`;
+                }
+                return `${label}: ${kr(v)}/mån`;
+              }
+            }
+          }
+        },
+        scales:{
+          x:{
+            stacked:true,
+            title:{ display:true, text:'Ålder', color:'#e5e7eb' },
+            ticks:{ color:'#e5e7eb' },
+            grid:{ color:'rgba(30,64,175,0.25)' }
+          },
+          y:{
+            stacked:true,
+            position:'left',
+            title:{ display:true, text:'Brutto & netto per månad (kr)', color:'#e5e7eb' },
+            ticks:{
+              color:'#e5e7eb',
+              callback:(v)=>v.toLocaleString('sv-SE')
+            },
+            grid:{ color:'rgba(148,163,184,0.3)' }
+          },
+          y1:{
+            position:'right',
+            title:{ display:true, text:'Kapital (kr)', color:'#e5e7eb' },
+            ticks:{
+              color:'#e5e7eb',
+              callback:(v)=>v.toLocaleString('sv-SE')
+            },
+            grid:{ drawOnChartArea:false }
+          }
+        }
+      }
+    });
+
+    return data;
+  }
+
+  function exportToCsv(){
+    const data = simulate();
+    if(!data.length) return;
+    const header = [
+      'Ålder','Bruttolön/år','AP/år','TP/år',
+      'ISK-uttag 4%-regel/år','ISK-uttag förbrukningsfas/år','ISK-uttag totalt/år',
+      'Netto arbete/år','Netto pension/år','Total netto/år',
+      'ISK-kapital','TP-kapital','AP-kapital',
+      'Skatt på arbete/år','Skatt på pension/år'
+    ];
+    const rows = data.map(d=>[
+      d.age,
+      Math.round(d.grossWorkYear),
+      Math.round(d.apYear),
+      Math.round(d.tpYear),
+      Math.round(d.iskWithdrawFourYear),
+      Math.round(d.iskWithdrawSpendYear),
+      Math.round(d.iskWithdrawYear),
+      Math.round(d.netWorkYear),
+      Math.round(d.netPensionYear),
+      Math.round(d.netTotalYear || (d.netWorkYear+d.netPensionYear+d.iskWithdrawYear)),
+      Math.round(d.iskCapitalEnd),
+      Math.round(d.tpCapitalEnd),
+      Math.round(d.apCapitalEnd || 0),
+      Math.round(d.taxOnWork),
+      Math.round(d.taxOnPension)
+    ]);
+    let csv = header.map(csvEscape).join(';')+'\n';
+    csv += rows.map(r=>r.map(csvEscape).join(';')).join('\n');
+    const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pensions_fire_kalkyl.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function exportChartPng(){
+    if(!chartInstance) return;
+    const url = chartInstance.toBase64Image('image/png',1.0);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pensions_fire_kalkyl.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function updateUrlFromState(){
+    const params = new URLSearchParams();
+    params.set('taxRate', refs.taxRate.value);
+    params.set('stateTaxExtra', refs.stateTaxExtra.value);
+    params.set('age', refs.age.value);
+    params.set('grossSalary', refs.grossSalary.value);
+    params.set('salaryGrowthPct', refs.salaryGrowthPct.value);
+    params.set('realReturnPct', refs.realReturnPct.value);
+    params.set('iskStart', refs.iskStart.value);
+    params.set('saveRatePct', refs.saveRatePct.value);
+    params.set('fourPctStartAge', refs.fourPctStartAge.value);
+    params.set('spendStartAge', refs.spendStartAge.value);
+    params.set('spendYears', refs.spendYears.value);
+    params.set('targetRemainder', refs.targetRemainder.value);
+    params.set('workEndAge', refs.workEndAge.value);
+    params.set('tpAuto', refs.tpAuto.checked ? '1':'0');
+    params.set('tpStartCapital', refs.tpStartCapital.value);
+    params.set('tpManual', refs.tpManual.value);
+    params.set('tpStartAge', refs.tpStartAge.value);
+    params.set('tpYears', refs.tpYears.value);
+    params.set('apStartCapital', refs.apStartCapital.value);
+    params.set('apReturnPct', refs.apReturnPct.value);
+    params.set('apStartAge', refs.apStartAge.value);
+    params.set('apDivisor', refs.apDivisor.value);
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const fullUrl = baseUrl + '?' + params.toString();
+    navigator.clipboard.writeText(fullUrl).then(()=>{
+      alert('Länk med dina nuvarande värden har kopierats till urklipp.');
+    }).catch(()=>{
+      alert('Här är din länk:\n\n' + fullUrl);
+    });
+  }
+
+  function loadFromUrl(){
+    const params = new URLSearchParams(window.location.search);
+    if(!params.keys().next().value) return;
+    const setIfPresent = (key,ref) => {
+      if(params.has(key) && ref){
+        ref.value = params.get(key);
+      }
+    };
+    setIfPresent('taxRate', refs.taxRate);
+    setIfPresent('stateTaxExtra', refs.stateTaxExtra);
+    setIfPresent('age', refs.age);
+    setIfPresent('grossSalary', refs.grossSalary);
+    setIfPresent('salaryGrowthPct', refs.salaryGrowthPct);
+    setIfPresent('realReturnPct', refs.realReturnPct);
+    setIfPresent('iskStart', refs.iskStart);
+    setIfPresent('saveRatePct', refs.saveRatePct);
+    setIfPresent('fourPctStartAge', refs.fourPctStartAge);
+    setIfPresent('spendStartAge', refs.spendStartAge);
+    setIfPresent('spendYears', refs.spendYears);
+    setIfPresent('targetRemainder', refs.targetRemainder);
+    setIfPresent('workEndAge', refs.workEndAge);
+    if(params.has('tpAuto')){
+      refs.tpAuto.checked = params.get('tpAuto')==='1';
+    }
+    setIfPresent('tpStartCapital', refs.tpStartCapital);
+    setIfPresent('tpManual', refs.tpManual);
+    setIfPresent('tpStartAge', refs.tpStartAge);
+    setIfPresent('tpYears', refs.tpYears);
+    setIfPresent('apStartCapital', refs.apStartCapital);
+    setIfPresent('apReturnPct', refs.apReturnPct);
+    setIfPresent('apStartAge', refs.apStartAge);
+    setIfPresent('apDivisor', refs.apDivisor);
+  }
+
+  function bind(){
+    loadFromUrl();
+
+    [refs.grossSalary, refs.iskStart, refs.targetRemainder, refs.tpStartCapital, refs.tpManual, refs.apStartCapital]
+      .forEach(input=>{
+        if(!input) return;
+        const raw = parseMoney(input.value);
+        input.value = formatMoneyInput(raw);
+        input.addEventListener('blur', ()=>{
+          const parsed = parseMoney(input.value);
+          input.value = formatMoneyInput(parsed);
+          render();
+        });
+      });
+
+    if(refs.tpAuto){
+      refs.tpAuto.addEventListener('change', render);
+    }
+
+    if(refs.apStartAge && refs.apDivisor){
+      const updateDivisorFromAge = () => {
+        const age = parseFloat(refs.apStartAge.value)||0;
+        const defDiv = getDefaultApDivisor(age);
+        if(defDiv){
+          refs.apDivisor.value = defDiv.toFixed(2);
+        }
+        render();
+      };
+      refs.apStartAge.addEventListener('input', updateDivisorFromAge);
+      refs.apStartAge.addEventListener('change', updateDivisorFromAge);
+    }
+
+    document.querySelectorAll('input').forEach(i=>{
+      if(i.type !== 'checkbox'){
+        i.addEventListener('input', render);
+        i.addEventListener('change', render);
+      } else {
+        i.addEventListener('change', render);
+      }
+    });
+
+    if(refs.exportCsvBtn){
+      refs.exportCsvBtn.addEventListener('click', exportToCsv);
+    }
+    if(refs.exportPngBtn){
+      refs.exportPngBtn.addEventListener('click', exportChartPng);
+    }
+    if(refs.shareUrlBtn){
+      refs.shareUrlBtn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        updateUrlFromState();
+      });
+    }
+  }
+
+  bind();
+  render();
+})();
+</script>
+</body>
+</html>

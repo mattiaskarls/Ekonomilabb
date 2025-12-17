@@ -1,0 +1,39 @@
+---
+const links = [
+  { href: "/", label: "Hem" },
+  { href: "/kunskap/", label: "Kunskap" },
+  { href: "/verktyg/", label: "Verktyg" },
+  { href: "/resurser/", label: "Resurser" },
+];
+---
+
+<nav class="w-full border-b border-[var(--border)] bg-[var(--bg)]">
+  <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+    <!-- Brand -->
+    <a
+      href="/"
+      class="text-lg font-semibold tracking-wide text-[var(--text)] hover:text-[var(--gold)] transition"
+    >
+      Ekonomismedjan
+    </a>
+
+    <!-- Desktop nav -->
+    <ul class="hidden md:flex items-center gap-6">
+      {links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Mobile placeholder (framtid) -->
+    <div class="md:hidden text-[var(--text-muted)] text-sm">
+      Meny
+    </div>
+  </div>
+</nav>

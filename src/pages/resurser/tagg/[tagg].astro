@@ -1,0 +1,143 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { slugifyTag } from "../../../utils/slugify";
+
+export async function getStaticPaths() {
+  const resources = await getCollection("resurser");
+  const slugToOriginal = new Map<string, string>();
+
+  for (const r of resources) {
+    const tags = (r.data.tags ?? [])
+      .map((t) => (typeof t === "string" ? t.trim() : ""))
+      .filter((t) => t.length > 0);
+
+    for (const tag of tags) {
+      const slug = slugifyTag(tag);
+      if (!slugToOriginal.has(slug)) slugToOriginal.set(slug, tag);
+    }
+  }
+
+  return Array.from(slugToOriginal.entries()).map(([tagg, tag]) => ({
+    params: { tagg },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const { tagg } = Astro.params;
+
+const resources = (await getCollection("resurser"))
+  .filter((r) => {
+    const tags = (r.data.tags ?? [])
+      .map((t) => (typeof t === "string" ? t.trim() : ""))
+      .filter((t) => t.length > 0);
+
+    return tags.some((t) => slugifyTag(t) === tagg);
+  })
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const card =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]/60";
+
+function typeBadge() {
+  return "border border-[var(--border)] text-[var(--text-muted)] bg-[var(--surface-soft)]/60";
+}
+---
+
+<BaseLayout title={`Resurser: #${tag} – Ekonomismedjan`}>
+  <!-- HEADER -->
+  <header class="space-y-3 pb-8">
+    <a
+      href="/resurser/"
+      class="text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+    >
+      ← Tillbaka till Resurser
+    </a>
+
+    <h1 class="text-2xl font-semibold">
+      Resurser taggade med <span class="text-[var(--gold)]">#{tag}</span>
+    </h1>
+
+    <p class="text-[var(--text-muted)]">
+      {resources.length} {resources.length === 1 ? "resurs" : "resurser"} hittade.
+    </p>
+
+    <p class="text-xs text-[var(--text-muted)] max-w-3xl">
+      Transparens: vissa länkar kan vara affiliatelänkar. Det kostar inte mer för dig men kan ge stöd till sidan.
+    </p>
+  </header>
+
+  <!-- RESOURCES -->
+  <section class="grid gap-5 md:grid-cols-2">
+    {resources.map((r) => (
+      <article class={card}>
+        <div class="flex gap-4">
+          <img
+            src={r.data.coverImage}
+            alt={`Omslag/logotyp: ${r.data.title}`}
+            class="h-16 w-16 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)]/40 object-cover"
+            loading="lazy"
+          />
+
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span
+                class={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] ${typeBadge()}`}
+              >
+                {r.data.type}
+              </span>
+
+              {r.data.featured ? (
+                <span class="inline-flex items-center justify-center rounded-full border border-[var(--gold)]/60 px-2 py-0.5 text-[11px] text-[var(--gold)]">
+                  Utvald
+                </span>
+              ) : null}
+
+              <span class="text-[11px] text-[var(--text-muted)]">
+                {r.data.date.toLocaleDateString("sv-SE")}
+              </span>
+            </div>
+
+            <a
+              href={`/resurser/${r.slug}/`}
+              class="block mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+              aria-label={`Öppna resurs: ${r.data.title}`}
+            >
+              <h2 class="text-lg font-semibold hover:text-[var(--gold)] transition truncate">
+                {r.data.title}
+              </h2>
+
+              <p class="text-sm text-[var(--text)]/90 mt-1 line-clamp-3">
+                {r.data.excerpt}
+              </p>
+            </a>
+
+            {r.data.tags?.length ? (
+              <div class="mt-3 flex gap-2 flex-wrap">
+                {r.data.tags
+                  .map((t) => (typeof t === "string" ? t.trim() : ""))
+                  .filter((t) => t.length > 0)
+                  .map((t) => {
+                    const isActive = slugifyTag(t) === tagg;
+                    return (
+                      <a
+                        href={`/resurser/tagg/${slugifyTag(t)}/`}
+                        class={`text-xs px-2 py-1 rounded-full border transition ${
+                          isActive
+                            ? "border-[var(--gold)] text-[var(--gold)]"
+                            : "border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)]"
+                        }`}
+                      >
+                        #{t}
+                      </a>
+                    );
+                  })}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

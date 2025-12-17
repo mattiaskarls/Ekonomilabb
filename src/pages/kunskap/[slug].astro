@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TopNav from "../../components/TopNav.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("kunskap");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={post.data.title}>
+  <TopNav />
+
+<main class="max-w-3xl mx-auto px-4 py-12">
+    <article class="prose prose-invert prose-slate max-w-none">
+        <p class="text-slate-400 text-sm">
+        {post.data.date.toLocaleDateString("sv-SE")}
+        </p>
+
+        <Content />
+    </article>
+    </main>
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TopNav from "../../components/TopNav.astro";
+---
+
+<BaseLayout title="Verktyg – Ekonomilabb">
+  <TopNav />
+
+  <main class="max-w-6xl mx-auto px-4 py-12 space-y-8">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Verktyg</h1>
+      <p class="text-slate-300 max-w-3xl">
+        Kalkylatorer och miniverktyg som hjälper dig modellera helheten: FIRE, pension och uttag – och för dig med AB även lön vs utdelning.
+      </p>
+    </header>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <a
+        href="/verktyg/fire-pension/"
+        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-emerald-400/60 transition"
+      >
+        <div class="text-[11px] uppercase tracking-wide text-emerald-300">FIRE & pension</div>
+        <h2 class="text-lg font-semibold text-slate-50 mt-1">FIRE- & pensionskalkylator</h2>
+        <p class="text-sm text-slate-300 mt-2">
+          Simulera lön, sparande, ISK-uttag, allmän pension och tjänstepension över livet.
+        </p>
+        <div class="mt-4 text-sm text-emerald-200">Öppna →</div>
+      </a>
+
+      <a
+        href="/verktyg/jag-och-mitt-ab/"
+        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-sky-400/60 transition"
+      >
+        <div class="text-[11px] uppercase tracking-wide text-sky-300">AB + privat</div>
+        <h2 class="text-lg font-semibold text-slate-50 mt-1">Jag & mitt AB – lön vs utdelning</h2>
+        <p class="text-sm text-slate-300 mt-2">
+          Jämför scenarier och se hur bolagets resultat blir nettokrona i din ficka.
+        </p>
+        <div class="mt-4 text-sm text-sky-200">Öppna →</div>
+      </a>
+
+      <a
+        href="/verktyg/fire-verktyg/"
+        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-violet-400/60 transition md:col-span-2"
+      >
+        <div class="text-[11px] uppercase tracking-wide text-violet-300">Snabbverktyg</div>
+        <h2 class="text-lg font-semibold text-slate-50 mt-1">FIRE-verktyg</h2>
+        <p class="text-sm text-slate-300 mt-2">
+          Ränta-på-ränta, 4%-regeln och andra snabbkalkyler.
+        </p>
+        <div class="mt-4 text-sm text-violet-200">Öppna →</div>
+      </a>
+    </section>
+  </main>
+</BaseLayout>

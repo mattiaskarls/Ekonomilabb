@@ -1,0 +1,129 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { slugifyTag } from "../../utils/slugify";
+
+const posts = (await getCollection("kunskap")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Bygg taggstatistik
+const tagCounts = new Map<string, number>();
+
+for (const post of posts) {
+  const tags = (post.data.tags ?? [])
+    .map((t) => (typeof t === "string" ? t.trim() : ""))
+    .filter((t) => t.length > 0);
+
+  for (const tag of tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+
+const allTags = Array.from(tagCounts.entries())
+  .map(([tag, count]) => ({ tag, count }))
+  .sort((a, b) => a.tag.localeCompare(b.tag, "sv"));
+
+// Tag cloud-storlekar
+const counts = allTags.map((t) => t.count);
+const maxCount = counts.length ? Math.max(...counts) : 1;
+const minCount = counts.length ? Math.min(...counts) : 1;
+
+function sizeClass(count: number) {
+  const t =
+    maxCount === minCount ? 0.5 : (count - minCount) / (maxCount - minCount);
+
+  if (t >= 0.85) return "text-base md:text-lg";
+  if (t >= 0.6) return "text-sm md:text-base";
+  if (t >= 0.35) return "text-sm";
+  return "text-xs md:text-sm";
+}
+
+const card =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]/60";
+
+const tagChip =
+  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+---
+
+<BaseLayout title="Kunskap – Ekonomismedjan">
+  <!-- HEADER -->
+  <header class="space-y-3 pb-8">
+    <h1 class="text-2xl font-semibold">Kunskap</h1>
+    <p class="text-[var(--text-muted)] max-w-3xl">
+      Artiklar och guider om FIRE, pension, ISK och hur företag och privat ekonomi hänger ihop över tid.
+    </p>
+  </header>
+
+  <!-- TAG CLOUD -->
+  {allTags.length ? (
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 p-5 space-y-4 mb-10">
+      <div class="flex items-center justify-between gap-4">
+        <h2 class="text-sm font-semibold">Utforska via taggar</h2>
+        <span class="text-xs text-[var(--text-muted)]">
+          {allTags.length} taggar
+        </span>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        {allTags.map(({ tag, count }) => (
+          <a
+            href={`/kunskap/tagg/${slugifyTag(tag)}/`}
+            class={`${tagChip} ${sizeClass(count)}`}
+            title={`${count} inlägg`}
+          >
+            #{tag}
+            <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
+              {count}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)]">
+        Större tagg = vanligare tema.
+      </p>
+    </section>
+  ) : null}
+
+  <!-- POSTS -->
+  <section class="space-y-5">
+    {posts.map((post) => (
+      <article class={card}>
+        <p class="text-xs text-[var(--text-muted)] mb-2">
+          {post.data.date.toLocaleDateString("sv-SE")}
+        </p>
+
+        <a
+          href={`/kunskap/${post.slug}/`}
+          class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+          aria-label={`Öppna: ${post.data.title}`}
+        >
+          <h2 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+            {post.data.title}
+          </h2>
+
+          <p class="text-sm text-[var(--text)]/90 mt-1 leading-relaxed">
+            {post.data.excerpt}
+          </p>
+        </a>
+
+        {post.data.tags?.length ? (
+          <div class="mt-3 flex gap-2 flex-wrap">
+            {post.data.tags
+              .map((t) => (typeof t === "string" ? t.trim() : ""))
+              .filter((t) => t.length > 0)
+              .map((tag) => (
+                <a
+                  href={`/kunskap/tagg/${slugifyTag(tag)}/`}
+                  class="text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition"
+                >
+                  #{tag}
+                </a>
+              ))}
+          </div>
+        ) : null}
+      </article>
+    ))}
+  </section>
+</BaseLayout>

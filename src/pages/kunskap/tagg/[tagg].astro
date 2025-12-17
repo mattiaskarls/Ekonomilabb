@@ -1,0 +1,110 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import { slugifyTag } from "../../../utils/slugify";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("kunskap");
+  const slugToOriginal = new Map<string, string>();
+
+  for (const p of posts) {
+    const tags = (p.data.tags ?? [])
+      .map((t) => (typeof t === "string" ? t.trim() : ""))
+      .filter((t) => t.length > 0);
+
+    for (const tag of tags) {
+      const slug = slugifyTag(tag);
+      if (!slugToOriginal.has(slug)) slugToOriginal.set(slug, tag);
+    }
+  }
+
+  return Array.from(slugToOriginal.entries()).map(([tagg, tag]) => ({
+    params: { tagg },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+const { tagg } = Astro.params;
+
+const posts = (await getCollection("kunskap"))
+  .filter((p) => {
+    const tags = (p.data.tags ?? [])
+      .map((t) => (typeof t === "string" ? t.trim() : ""))
+      .filter((t) => t.length > 0);
+
+    return tags.some((t) => slugifyTag(t) === tagg);
+  })
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const card =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]/60";
+---
+
+<BaseLayout title={`Kunskap: #${tag} – Ekonomismedjan`}>
+  <!-- HEADER -->
+  <header class="space-y-3 pb-8">
+    <a
+      href="/kunskap/"
+      class="text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+    >
+      ← Tillbaka till Kunskap
+    </a>
+
+    <h1 class="text-2xl font-semibold">
+      Artiklar taggade med <span class="text-[var(--gold)]">#{tag}</span>
+    </h1>
+
+    <p class="text-[var(--text-muted)]">
+      {posts.length} {posts.length === 1 ? "artikel" : "artiklar"} hittade.
+    </p>
+  </header>
+
+  <!-- POSTS -->
+  <section class="space-y-5">
+    {posts.map((post) => (
+      <article class={card}>
+        <p class="text-xs text-[var(--text-muted)] mb-2">
+          {post.data.date.toLocaleDateString("sv-SE")}
+        </p>
+
+        <a
+          href={`/kunskap/${post.slug}/`}
+          class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+          aria-label={`Öppna: ${post.data.title}`}
+        >
+          <h2 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+            {post.data.title}
+          </h2>
+
+          <p class="text-sm text-[var(--text)]/90 mt-1 leading-relaxed">
+            {post.data.excerpt}
+          </p>
+        </a>
+
+        {post.data.tags?.length ? (
+          <div class="mt-3 flex gap-2 flex-wrap">
+            {post.data.tags
+              .map((t) => (typeof t === "string" ? t.trim() : ""))
+              .filter((t) => t.length > 0)
+              .map((t) => {
+                const isActive = slugifyTag(t) === tagg;
+                return (
+                  <a
+                    href={`/kunskap/tagg/${slugifyTag(t)}/`}
+                    class={`text-xs px-2 py-1 rounded-full border transition ${
+                      isActive
+                        ? "border-[var(--gold)] text-[var(--gold)]"
+                        : "border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)]"
+                    }`}
+                  >
+                    #{t}
+                  </a>
+                );
+              })}
+          </div>
+        ) : null}
+      </article>
+    ))}
+  </section>
+</BaseLayout>

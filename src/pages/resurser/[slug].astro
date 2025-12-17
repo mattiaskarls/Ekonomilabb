@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TopNav from "../../components/TopNav.astro";
+import { getCollection } from "astro:content";
+import { slugifyTag } from "../../utils/slugify";
+
+export async function getStaticPaths() {
+  const resources = await getCollection("resurser");
+  return resources.map((r) => ({
+    params: { slug: r.slug },
+    props: { resource: r },
+  }));
+}
+
+const { resource } = Astro.props;
+const { Content } = await resource.render();
+
+function typeBadge(type: "bok" | "tjänst" | "verktyg") {
+  if (type === "bok") return "border-violet-400/40 text-violet-200 bg-violet-500/10";
+  if (type === "tjänst") return "border-sky-400/40 text-sky-200 bg-sky-500/10";
+  return "border-emerald-400/40 text-emerald-200 bg-emerald-500/10";
+}
+
+const tags =
+  (resource.data.tags ?? [])
+    .map((t) => (typeof t === "string" ? t.trim() : ""))
+    .filter((t) => t.length > 0);
+
+const links = resource.data.links ?? [];
+
+---
+
+<BaseLayout title={`${resource.data.title} – Resurser – Ekonomilabb`}>
+  <TopNav />
+
+  <main class="max-w-4xl mx-auto px-4 py-10 space-y-8">
+    <div class="flex items-center justify-between">
+      <a
+        href="/resurser/"
+        class="text-sm text-slate-300 hover:text-slate-100 transition"
+      >
+        ← Tillbaka till Resurser
+      </a>
+
+      <span class="text-xs text-slate-500">
+        {resource.data.date.toLocaleDateString("sv-SE")}
+      </span>
+    </div>
+
+    <header class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+      <div class="flex flex-col md:flex-row gap-6">
+        <img
+          src={resource.data.coverImage}
+          alt={`Omslag/logotyp: ${resource.data.title}`}
+          class="h-28 w-28 rounded-2xl border border-slate-800 bg-slate-950/40 object-cover"
+          loading="lazy"
+        />
+
+        <div class="min-w-0 flex-1 space-y-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span
+              class={`inline-flex items-center justify-center rounded-full border px-3 py-1 text-xs ${typeBadge(
+                resource.data.type
+              )}`}
+            >
+              {resource.data.type}
+            </span>
+
+            {resource.data.featured ? (
+              <span class="inline-flex items-center justify-center rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-xs text-amber-200">
+                Utvald
+              </span>
+            ) : null}
+
+            {tags.length ? (
+              <div class="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <a
+                    href={`/resurser/tagg/${slugifyTag(tag)}/`}
+                    class="text-xs px-2 py-1 rounded-full bg-slate-800 text-slate-300 hover:bg-emerald-500/20 hover:text-emerald-200 transition"
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <h1 class="text-2xl md:text-3xl font-semibold text-slate-50 leading-tight">
+            {resource.data.title}
+          </h1>
+
+          <p class="text-slate-300">
+            {resource.data.excerpt}
+          </p>
+
+          <p class="text-xs text-slate-500 pt-1">
+            Transparens: vissa länkar kan vara affiliatelänkar. Det kostar inte mer för dig men kan ge stöd till sidan.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    {links.length ? (
+      <section class="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 space-y-3">
+        <h2 class="text-sm font-semibold text-slate-100">Köp / läs mer</h2>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          {links.map((l) => (
+            <a
+              href={l.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center rounded-xl bg-emerald-500/90 hover:bg-emerald-500 text-slate-950 font-medium px-4 py-2 transition"
+            >
+              {l.label} →
+            </a>
+          ))}
+        </div>
+
+        <p class="text-xs text-slate-500">
+          Tips: ha gärna flera alternativ (t.ex. Amazon + Bokus) så besökaren kan välja.
+        </p>
+      </section>
+    ) : null}
+
+    <article class="prose prose-invert prose-slate max-w-none">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>

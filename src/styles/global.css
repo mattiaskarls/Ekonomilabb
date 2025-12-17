@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* =========================================
+   Ekonomismedjan – Theme (v1)
+   All styling drivs via CSS-variabler.
+   Byt färger här → hela siten följer med.
+========================================= */
+:root {
+  /* Base */
+  --bg: #0b0e11;            /* kolsvart */
+  --surface: #11151a;       /* grafit */
+  --surface-soft: #151a21;  /* mjuk grafit */
+  --border: #1f2937;        /* diskret kant */
+
+  /* Text */
+  --text: #e5e7eb;          /* varm ljus text */
+  --text-muted: #a1a1aa;    /* sekundär text */
+
+  /* Accents */
+  --gold: #d4af37;          /* smedjeguld */
+  --gold-hover: #b8962e;    /* hover */
+  --steel: #9aa3ad;         /* stål */
+  --copper: #b87333;        /* koppar (sparsam) */
+
+  /* Focus ring */
+  --focus: rgba(212, 175, 55, 0.55);
+}
+
+/* Global defaults */
+html, body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Selection (markering av text) */
+::selection {
+  background: rgba(212, 175, 55, 0.25);
+}
+
+/* Länkar – guld på hover */
+a {
+  color: inherit;
+}
+a:hover {
+  color: var(--gold);
+}
+
+/* Prose (blogg/markdown) – matcha mörk smedja */
+.prose {
+  --tw-prose-body: var(--text);
+  --tw-prose-headings: var(--text);
+  --tw-prose-lead: var(--text);
+  --tw-prose-links: var(--gold);
+  --tw-prose-bold: var(--text);
+  --tw-prose-counters: var(--text-muted);
+  --tw-prose-bullets: var(--text-muted);
+  --tw-prose-hr: rgba(255, 255, 255, 0.12);
+  --tw-prose-quotes: var(--text);
+  --tw-prose-quote-borders: rgba(212, 175, 55, 0.35);
+  --tw-prose-captions: var(--text-muted);
+  --tw-prose-code: var(--text);
+  --tw-prose-pre-code: var(--text);
+  --tw-prose-pre-bg: rgba(255, 255, 255, 0.04);
+  --tw-prose-th-borders: rgba(255, 255, 255, 0.12);
+  --tw-prose-td-borders: rgba(255, 255, 255, 0.08);
+}
+
+/* Focus ring (för inputs/länkar som använder focus:ring) */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+html {
+  scrollbar-gutter: stable;
+}

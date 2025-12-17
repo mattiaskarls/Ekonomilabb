@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jag och mitt AB – Lön vs utdelning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold text-lg">
+            AB
+          </div>
+          <div>
+            <h1 class="text-lg md:text-xl font-semibold tracking-tight">
+              Jag och mitt AB
+            </h1>
+            <p class="text-xs text-slate-400">
+              Optimering mellan lön, utdelning &amp; tjänstepension
+            </p>
+          </div>
+        </div>
+        <div class="text-[10px] text-slate-500 text-right max-w-xs">
+          Förenklad modell. Ger känsla för effekter – inte skatterådgivning.
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+        <!-- Steg-indikator -->
+        <div class="grid gap-3 md:grid-cols-3 text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-400/60 flex items-center justify-center text-emerald-200 font-semibold">1</div>
+            <span class="text-slate-300">Företagets siffror</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-sky-500/10 border border-sky-400/50 flex items-center justify-center text-sky-200 font-semibold">2</div>
+            <span class="text-slate-300">Din privata ekonomi</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-violet-500/10 border border-violet-400/50 flex items-center justify-center text-violet-200 font-semibold">3</div>
+            <span class="text-slate-300">Scenario: extra lön, utdelning &amp; tjänstepension</span>
+          </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,2.1fr)_minmax(0,1.6fr)]">
+          <!-- Vänster: Inputs -->
+          <div class="space-y-6">
+            <!-- Företaget -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg shadow-slate-950/40">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-semibold text-slate-50">
+                    1. Företagets siffror (AB)
+                  </h2>
+                  <p class="text-xs text-slate-400 mt-1">
+                    Förenklad resultaträkning före dina nya beslut.
+                  </p>
+                </div>
+                <span class="text-[10px] text-slate-500">
+                  AGA &amp; särskild löneskatt på pension räknas som bolagskostnader.
+                </span>
+              </div>
+
+              <div class="grid gap-4 md:grid-cols-2">
+                <!-- Omsättning -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Omsättning år (kr)
+                  </label>
+                  <input
+                    id="omsattning"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="2000000"
+                  />
+                </div>
+
+                <!-- Övriga kostnader -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Övriga kostnader exkl din lön &amp; tjänstepension (kr)
+                  </label>
+                  <input
+                    id="ovriga_kostnader"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="600000"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    T.ex. lokaler, bokföring, resor, underkonsulter.
+                  </p>
+                </div>
+
+                <!-- Din lön hittills -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Din lön hittills i år (brutto, kr)
+                  </label>
+                  <input
+                    id="din_lon_hittills"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="600000"
+                  />
+                </div>
+
+                <!-- Arbetsgivaravgift -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Arbetsgivaravgift (%)
+                  </label>
+                  <input
+                    id="arbetsgivaravgift"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="31.42"
+                  />
+                </div>
+
+                <!-- Bolagsskatt -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Bolagsskatt (%)
+                  </label>
+                  <input
+                    id="bolagsskatt"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="20.6"
+                  />
+                </div>
+
+                <!-- Särskild löneskatt på pension -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Särskild löneskatt på pension (%)
+                  </label>
+                  <input
+                    id="slp_proc"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="24.26"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    På pensionspremier. Förenklad schablon – ändra vid behov.
+                  </p>
+                </div>
+
+                <!-- Sparat utrymme -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Upparbetat utdelningsutrymme (kr)
+                  </label>
+                  <input
+                    id="sparat_utrymme"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="0"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Sparat gränsbelopp från tidigare år.
+                  </p>
+                </div>
+
+                <!-- Årets gränsbelopp -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Årets gränsbelopp (kr)
+                  </label>
+                  <input
+                    id="arets_gransbelopp"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60"
+                    value="209000"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Schablon eller löneunderlag – fyll i ditt faktiska belopp.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Företags-summering -->
+              <div class="mt-4 grid gap-3 md:grid-cols-3 text-xs">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Resultat före skatt (bas)
+                  </div>
+                  <div id="resultat_fore_skatt_bas" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div classtext="[10px] text-slate-400 uppercase tracking-wide">
+                    Totalt utdelningsutrymme
+                  </div>
+                  <div id="totalt_utrymme" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Max utdelning (vinst &amp; utrymme)
+                  </div>
+                  <div id="max_mojlig_utdelning" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Privat -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg shadow-slate-950/40">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-semibold text-slate-50">
+                    2. Din privata ekonomi
+                  </h2>
+                  <p class="text-xs text-slate-400 mt-1">
+                    Skatt &amp; tjänstepension. Grundavdrag &amp; jobbskatteavdrag sätts schablonmässigt utifrån ålder men kan justeras.
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid gap-4 md:grid-cols-3">
+                <!-- Ålder -->
+                <div class="space-y-1 md:col-span-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Ålder (år)
+                  </label>
+                  <input
+                    id="alder"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="45"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Används för att föreslå grundavdrag &amp; jobbskatteavdrag.
+                  </p>
+                </div>
+
+                <!-- Kommunalskatt -->
+                <div class="space-y-1 md:col-span-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Kommunalskatt (%)
+                  </label>
+                  <input
+                    id="kommunalskatt"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="32"
+                  />
+                </div>
+
+                <!-- Statlig skatt -->
+                <div class="space-y-1 md:col-span-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Statlig skatt på lön över brytpunkt (%)
+                  </label>
+                  <input
+                    id="statlig_skatt"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="20"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Ungefärlig nivå, ovanpå kommunalskatten.
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid gap-4 md:grid-cols-2 mt-4">
+                <!-- Brytpunkt statlig -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Brytpunkt statlig skatt (årslön, kr)
+                  </label>
+                  <input
+                    id="brytpunkt_statlig"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="624000"
+                  />
+                </div>
+
+                <!-- Grundavdrag -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Grundavdrag (kr)
+                  </label>
+                  <input
+                    id="grundavdrag"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="100000"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Schablon – justera så total skatt stämmer hyfsat mot din verklighet.
+                  </p>
+                </div>
+
+                <!-- Jobbskatteavdrag -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Jobbskatteavdrag (kr)
+                  </label>
+                  <input
+                    id="jobbskatteavdrag"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="30000"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Max årligt avdrag – dras från skatten, inte från inkomsten.
+                  </p>
+                </div>
+
+                <!-- Tjänstepension -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Tjänstepension från bolaget (kr/mån)
+                  </label>
+                  <input
+                    id="tjanstepension_manad"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60"
+                    value="5000"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Ordinarie månadspremie.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-3 md:grid-cols-3 text-xs">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Tjänstepension per år (scenario)
+                  </div>
+                  <div id="tjanstepension_ar" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Din lön inkl scenario
+                  </div>
+                  <div id="din_lon_total" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Skatt på lön (efter avdrag)
+                  </div>
+                  <div id="skatt_lon_efter" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-2 grid gap-3 md:grid-cols-2 text-[11px]">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Skatt på lön före jobbskatteavdrag
+                  </div>
+                  <div id="skatt_lon_fore" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Jobbskatteavdrag utnyttjat
+                  </div>
+                  <div id="jobbskatteavdrag_anvand" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Scenario -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg shadow-slate-950/40">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-semibold text-slate-50">
+                    3. Scenario för året
+                  </h2>
+                  <p class="text-xs text-slate-400 mt-1">
+                    Testa extra lön, utdelning och extra tjänstepension.
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid gap-4 md:grid-cols-2">
+                <!-- Extra lön -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Extra lön i år (engångsbelopp, kr)
+                  </label>
+                  <input
+                    id="extra_lon"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/60"
+                    value="0"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    T.ex. extra decemberlön eller bonus.
+                  </p>
+                </div>
+
+                <!-- Utdelning -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Planerad utdelning i år (kr)
+                  </label>
+                  <input
+                    id="planerad_utdelning"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/60"
+                    value="0"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Begränsas av vinst efter skatt &amp; utdelningsutrymme. Skattas med 20&nbsp;% här.
+                  </p>
+                </div>
+
+                <!-- Extra tjänstepension -->
+                <div class="space-y-1 md:col-span-2">
+                  <label class="block text-xs font-medium text-slate-300">
+                    Extra tjänstepension i år (engångsbelopp, kr)
+                  </label>
+                  <input
+                    id="extra_tjanstepension"
+                    type="number"
+                    inputmode="decimal"
+                    class="w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400/60"
+                    value="0"
+                  />
+                  <p class="text-[10px] text-slate-500">
+                    Typiskt avdragsgill upp till ca 30–35&nbsp;% av årslönen (förenklat). Kostar bolaget premie + särskild löneskatt, men ingen skatt för dig nu.
+                  </p>
+                </div>
+              </div>
+
+              <p class="mt-4 text-[10px] text-slate-500">
+                Förenklad logik: detaljer som exakta avdragsgränser, SGI och framtida beskattning av pension är inte fullt modellerade här.
+              </p>
+            </section>
+          </div>
+
+          <!-- Höger: Resultat & graf -->
+          <div class="space-y-4">
+            <!-- Privat resultat -->
+            <section class="bg-slate-900 border border-emerald-500/30 rounded-2xl p-5 shadow-lg shadow-emerald-900/40">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-semibold text-emerald-100">
+                  Resultat: Du privat (scenario)
+                </h2>
+                <span class="rounded-full bg-emerald-500/15 border border-emerald-400/40 text-[10px] px-2 py-0.5 text-emerald-200">
+                  Lön + utdelning + pension
+                </span>
+              </div>
+
+              <div class="mt-4 grid gap-3 text-xs">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Nettolön efter skatt
+                      </div>
+                      <div id="nettolon" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      inkl. extra lön
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Netto-utdelning
+                      </div>
+                      <div id="netto_utdelning" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      efter 20&nbsp;% skatt
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-emerald-500/10 border border-emerald-400/60 px-3 py-3">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-emerald-200 uppercase tracking-wide">
+                        Totalt netto till dig i år
+                      </div>
+                      <div id="totalt_netto_privat" class="text-lg font-semibold text-emerald-100 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-emerald-200">
+                      lön + utdelning (exkl. framtida pension)
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Årets tjänstepension (scenario)
+                      </div>
+                      <div id="tjanstepension_ar_result" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      skattas först när du tar ut den
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Bolag & skatter -->
+            <section class="bg-slate-900 border border-sky-500/30 rounded-2xl p-5 shadow-lg shadow-sky-900/40">
+              <div class="flex items-center justify-between">
+                <h2 class="text-base font-semibold text-sky-100">
+                  Resultat: Bolaget &amp; skatter
+                </h2>
+                <span class="rounded-full bg-sky-500/15 border border-sky-400/40 text-[10px] px-2 py-0.5 text-sky-200">
+                  Scenario vs bas
+                </span>
+              </div>
+
+              <div class="mt-4 grid gap-3 text-xs">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Resultat före skatt (scenario)
+                      </div>
+                      <div id="resultat_fore_skatt_scenario" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      efter lön &amp; tjänstepension
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Bolagsskatt (scenario)
+                      </div>
+                      <div id="bolagsskatt_belopp" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      0 kr om resultat ≤ 0
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Vinst efter skatt (scenario)
+                      </div>
+                      <div id="vinst_efter_skatt" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      före utdelning
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                        Arbetsgivaravgifter (år, scenario)
+                      </div>
+                      <div id="arbetsgivaravgifter_scenario" class="text-sm font-semibold text-slate-50 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-slate-500">
+                      på din lön hittills + extra lön
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-sky-500/10 border border-sky-400/60 px-3 py-3">
+                  <div class="flex justify-between items-baseline gap-2">
+                    <div>
+                      <div class="text-[10px] text-sky-200 uppercase tracking-wide">
+                        Kvar i bolaget efter utdelning (scenario)
+                      </div>
+                      <div id="kvar_i_bolaget" class="text-lg font-semibold text-sky-100 mt-0.5">
+                        –
+                      </div>
+                    </div>
+                    <div class="text-[10px] text-sky-200">
+                      kan sparas till framtida år
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-3 md:grid-cols-3 text-[11px]">
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Total skatt – basläge
+                  </div>
+                  <div id="total_skatt_bas" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">
+                    löneskatt + AGA + SLP + bolagsskatt
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Total skatt – scenario
+                  </div>
+                  <div id="total_skatt_scenario" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">
+                    inkl. skatt på utdelning
+                  </div>
+                </div>
+                <div class="rounded-xl bg-slate-900/80 border border-slate-800 px-3 py-2.5">
+                  <div class="text-[10px] text-slate-400 uppercase tracking-wide">
+                    Skillnad i total skatt
+                  </div>
+                  <div id="skillnad_skatt" class="text-sm font-semibold text-slate-50 mt-0.5">
+                    –
+                  </div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">
+                    positivt = mer skatt i scenariot
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Graf -->
+            <section class="bg-slate-900 border border-violet-500/30 rounded-2xl p-5 shadow-lg shadow-violet-900/40">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-semibold text-violet-100">
+                  Graf: Basläge vs Scenario
+                </h2>
+                <span class="text-[10px] text-slate-400">
+                  Fördelning av pengar från ditt AB
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-400 mb-3">
+                Varje stapel visar hur årsresultatet fördelas mellan <span class="font-semibold">nettobelopp till dig nu</span>, <span class="font-semibold">total skatt</span> och <span class="font-semibold">kvar i bolaget</span>.
+              </p>
+              <div class="h-52">
+                <canvas id="resultChart"></canvas>
+              </div>
+            </section>
+
+            <!-- Snabb tolkning -->
+            <section class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-[11px] text-slate-300 space-y-2">
+              <div class="font-semibold text-slate-100 text-xs">
+                Snabb tolkning
+              </div>
+              <p id="kort_tolkning" class="text-slate-300">
+                Fyll i dina siffror till vänster för att jämföra basläget mot scenariot.
+              </p>
+              <p class="text-[10px] text-slate-500">
+                Nästa steg kan vara fler scenarier sida vid sida, mer exakt skatt per intervall och tydligare koppling till pension/SGI.
+              </p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let resultChart = null;
+
+    function toNumber(value) {
+      const n = parseFloat((value || "").toString().replace(",", "."));
+      return isNaN(n) ? 0 : n;
+    }
+
+    function formatCurrency(value) {
+      const sign = value < 0 ? "-" : "";
+      const abs = Math.abs(value);
+      return sign + abs.toLocaleString("sv-SE", {
+        maximumFractionDigits: 0
+      }) + " kr";
+    }
+
+    function initChart() {
+      const ctx = document.getElementById("resultChart");
+      if (!ctx) return;
+
+      resultChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Basläge", "Scenario"],
+          datasets: [
+            {
+              label: "Netto till dig nu",
+              data: [0, 0],
+              backgroundColor: "rgba(45,212,191,0.85)",
+              borderColor: "rgba(45,212,191,1)",
+              borderWidth: 0,
+              stack: "stack1"
+            },
+            {
+              label: "Total skatt",
+              data: [0, 0],
+              backgroundColor: "rgba(248,113,113,0.72)",
+              borderColor: "rgba(248,113,113,1)",
+              borderWidth: 0,
+              stack: "stack1"
+            },
+            {
+              label: "Kvar i bolaget",
+              data: [0, 0],
+              backgroundColor: "rgba(148,163,184,0.45)",
+              borderColor: "rgba(148,163,184,0.8)",
+              borderWidth: 0,
+              stack: "stack1"
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: "#e5e7eb",
+                font: { size: 10 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.dataset.label || "";
+                  const value = context.parsed.y || 0;
+                  return label + ": " + formatCurrency(value);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: {
+                color: "#9ca3af",
+                font: { size: 11 }
+              },
+              grid: { display: false }
+            },
+            y: {
+              stacked: true,
+              ticks: {
+                color: "#9ca3af",
+                font: { size: 10 },
+                callback: function(value) {
+                  return value.toLocaleString("sv-SE", { maximumFractionDigits: 0 }) + " kr";
+                }
+              },
+              grid: {
+                color: "rgba(148, 163, 184, 0.2)"
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart(nettoBas, skattBas, kvarBolagBas, nettoScen, skattScen, kvarBolagScen) {
+      if (!resultChart) return;
+      resultChart.data.datasets[0].data = [nettoBas, nettoScen];
+      resultChart.data.datasets[1].data = [skattBas, skattScen];
+      resultChart.data.datasets[2].data = [kvarBolagBas, kvarBolagScen];
+      resultChart.update();
+    }
+
+    function applyAgeDefaults() {
+      const ageEl = document.getElementById("alder");
+      if (!ageEl) return;
+      const alder = toNumber(ageEl.value);
+      let grund = 100000;
+      let jobb = 30000;
+
+      if (alder >= 66 && alder < 120) {
+        grund = 120000;
+        jobb = 38000;
+      }
+
+      const gaEl = document.getElementById("grundavdrag");
+      const jsaEl = document.getElementById("jobbskatteavdrag");
+      if (gaEl) gaEl.value = grund;
+      if (jsaEl) jsaEl.value = jobb;
+
+      recalc();
+    }
+
+    function recalc() {
+      // --- Företag / basdata ---
+      const omsattning = toNumber(document.getElementById("omsattning").value);
+      const ovrigaKostnader = toNumber(document.getElementById("ovriga_kostnader").value);
+      const dinLonHittills = toNumber(document.getElementById("din_lon_hittills").value);
+      const agaProc = toNumber(document.getElementById("arbetsgivaravgift").value) / 100;
+      const bolagsskattProc = toNumber(document.getElementById("bolagsskatt").value) / 100;
+      const slpProc = toNumber(document.getElementById("slp_proc").value) / 100;
+      const sparatUtrymme = toNumber(document.getElementById("sparat_utrymme").value);
+      const aretsGransbelopp = toNumber(document.getElementById("arets_gransbelopp").value);
+
+      const extraLon = toNumber(document.getElementById("extra_lon").value);
+      const planeradUtdelningInput = toNumber(document.getElementById("planerad_utdelning").value);
+      const extraTjanstepension = toNumber(document.getElementById("extra_tjanstepension").value);
+
+      // --- Skatt / privat ---
+      const kommunalskattProc = toNumber(document.getElementById("kommunalskatt").value) / 100;
+      const statligSkattProc = toNumber(document.getElementById("statlig_skatt").value) / 100;
+      const brytpunktStatlig = toNumber(document.getElementById("brytpunkt_statlig").value);
+      const grundavdrag = toNumber(document.getElementById("grundavdrag").value);
+      const jobbskatteavdragMax = toNumber(document.getElementById("jobbskatteavdrag").value);
+      const tjanstepensionManad = toNumber(document.getElementById("tjanstepension_manad").value);
+
+      // Tjänstepension per år
+      const tjanstepensionArBas = tjanstepensionManad * 12;
+      const tjanstepensionArScen = tjanstepensionArBas + extraTjanstepension;
+
+      // --- Företag: basläge ---
+      const salaryBas = dinLonHittills;
+      const agaBas = salaryBas * agaProc;
+      const personalkostnadBas = salaryBas + agaBas;
+
+      const slpBas = tjanstepensionArBas * slpProc;
+      const pensionskostnadBas = tjanstepensionArBas + slpBas;
+
+      const resultatForeSkattBas = omsattning - ovrigaKostnader - personalkostnadBas - pensionskostnadBas;
+      const bolagsskattBas = resultatForeSkattBas > 0 ? resultatForeSkattBas * bolagsskattProc : 0;
+      const vinstEfterSkattBas = resultatForeSkattBas - bolagsskattBas;
+      const kvarBolagetBas = vinstEfterSkattBas; // ingen utdelning i bas
+
+      // --- Företag: scenario ---
+      const salaryScen = dinLonHittills + extraLon;
+      const agaScen = salaryScen * agaProc;
+      const personalkostnadScen = salaryScen + agaScen;
+
+      const slpScen = tjanstepensionArScen * slpProc;
+      const pensionskostnadScen = tjanstepensionArScen + slpScen;
+
+      const resultatForeSkattScenario = omsattning - ovrigaKostnader - personalkostnadScen - pensionskostnadScen;
+      const bolagsskattScen = resultatForeSkattScenario > 0 ? resultatForeSkattScenario * bolagsskattProc : 0;
+      const vinstEfterSkattScen = resultatForeSkattScenario - bolagsskattScen;
+
+      const totaltUtrymme = sparatUtrymme + aretsGransbelopp;
+      const maxMojligUtdelning = Math.max(0, Math.min(vinstEfterSkattScen, totaltUtrymme));
+      const faktiskUtdelning = Math.max(0, Math.min(planeradUtdelningInput, maxMojligUtdelning));
+      const kvarIBolaget = vinstEfterSkattScen - faktiskUtdelning;
+
+      // --- Privat: funktion för löneskatt ---
+      function beraknaLonSkattOchNetto(bruttolon) {
+        const beskattningsbarKommunal = Math.max(0, bruttolon - grundavdrag);
+        const kommunalSkattBelopp = beskattningsbarKommunal * kommunalskattProc;
+
+        const statligSkattebas = Math.max(0, bruttolon - brytpunktStatlig);
+        const statligSkattBelopp = statligSkattebas * statligSkattProc;
+
+        const skattForeJobbavdrag = kommunalSkattBelopp + statligSkattBelopp;
+        const jobbAvdragAnvand = Math.min(jobbskatteavdragMax, skattForeJobbavdrag);
+        const skattEfterAvdrag = Math.max(0, skattForeJobbavdrag - jobbAvdragAnvand);
+
+        const nettolon = bruttolon - skattEfterAvdrag;
+
+        return {
+          skattForeJobbavdrag,
+          jobbAvdragAnvand,
+          skattEfterAvdrag,
+          nettolon
+        };
+      }
+
+      // Bas-lön
+      const basResultat = beraknaLonSkattOchNetto(salaryBas);
+      const nettolonBas = basResultat.nettolon;
+      const skattLonBasEfter = basResultat.skattEfterAvdrag;
+
+      // Scenario-lön
+      const scenResultat = beraknaLonSkattOchNetto(salaryScen);
+      const nettolonScenario = scenResultat.nettolon;
+      const skattLonScenarioFore = scenResultat.skattForeJobbavdrag;
+      const jobbAvdragScenario = scenResultat.jobbAvdragAnvand;
+      const skattLonScenarioEfter = scenResultat.skattEfterAvdrag;
+
+      // Utdelning privat – 20 % skatt
+      const skattUtdelning = faktiskUtdelning * 0.20;
+      const nettoUtdelning = faktiskUtdelning - skattUtdelning;
+
+      const totaltNettoPrivatBas = nettolonBas; // ingen utdelning i bas
+      const totaltNettoPrivatScenario = nettolonScenario + nettoUtdelning;
+
+      // Total skatt bas/scenario (AGA + SLP + bolagsskatt + löneskatt + ev. utdelningsskatt)
+      const totalSkattBas = bolagsskattBas + agaBas + slpBas + skattLonBasEfter;
+      const totalSkattScenario = bolagsskattScen + agaScen + slpScen + skattLonScenarioEfter + skattUtdelning;
+
+      // --- Uppdatera UI ---
+
+      // Företag
+      document.getElementById("resultat_fore_skatt_bas").textContent = formatCurrency(resultatForeSkattBas);
+      document.getElementById("totalt_utrymme").textContent = formatCurrency(totaltUtrymme);
+      document.getElementById("max_mojlig_utdelning").textContent = formatCurrency(maxMojligUtdelning);
+
+      document.getElementById("resultat_fore_skatt_scenario").textContent = formatCurrency(resultatForeSkattScenario);
+      document.getElementById("bolagsskatt_belopp").textContent = formatCurrency(bolagsskattScen);
+      document.getElementById("vinst_efter_skatt").textContent = formatCurrency(vinstEfterSkattScen);
+      document.getElementById("arbetsgivaravgifter_scenario").textContent = formatCurrency(agaScen);
+      document.getElementById("kvar_i_bolaget").textContent = formatCurrency(kvarIBolaget);
+
+      // Privat
+      document.getElementById("tjanstepension_ar").textContent = formatCurrency(tjanstepensionArScen);
+      document.getElementById("din_lon_total").textContent = formatCurrency(salaryScen);
+      document.getElementById("skatt_lon_fore").textContent = formatCurrency(skattLonScenarioFore);
+      document.getElementById("jobbskatteavdrag_anvand").textContent = formatCurrency(jobbAvdragScenario);
+      document.getElementById("skatt_lon_efter").textContent = formatCurrency(skattLonScenarioEfter);
+
+      document.getElementById("nettolon").textContent = formatCurrency(nettolonScenario);
+      document.getElementById("netto_utdelning").textContent = formatCurrency(nettoUtdelning);
+      document.getElementById("totalt_netto_privat").textContent = formatCurrency(totaltNettoPrivatScenario);
+      document.getElementById("tjanstepension_ar_result").textContent = formatCurrency(tjanstepensionArScen);
+
+      // Total skatt-bas/scenario
+      document.getElementById("total_skatt_bas").textContent = formatCurrency(totalSkattBas);
+      document.getElementById("total_skatt_scenario").textContent = formatCurrency(totalSkattScenario);
+      const skillnadSkatt = totalSkattScenario - totalSkattBas;
+      document.getElementById("skillnad_skatt").textContent = formatCurrency(skillnadSkatt);
+
+      // Snabb tolkning
+      const kortTolkningEl = document.getElementById("kort_tolkning");
+      if (extraLon > 0 || faktiskUtdelning > 0 || extraTjanstepension > 0) {
+        let text = "";
+        if (extraLon > 0) {
+          text += "Du lägger till extra lön på " + formatCurrency(extraLon) +
+            ". Det ökar arbetsgivaravgifterna med ca " + formatCurrency(extraLon * agaProc) +
+            " och din totala löneskatt blir " + formatCurrency(skattLonScenarioEfter) + " i scenariot.\n";
+        }
+        if (faktiskUtdelning > 0) {
+          text += "Du tar utdelning på " + formatCurrency(faktiskUtdelning) +
+            " (av max " + formatCurrency(maxMojligUtdelning) +
+            "), vilket ger dig " + formatCurrency(nettoUtdelning) +
+            " efter 20 % skatt.\n";
+        }
+        if (extraTjanstepension > 0) {
+          text += "Du betalar extra tjänstepension på " + formatCurrency(extraTjanstepension) +
+            ". Det kostar bolaget totalt ca " + formatCurrency(extraTjanstepension * (1 + slpProc)) +
+            " inklusive särskild löneskatt, men du betalar ingen skatt på detta i år.\n";
+        }
+        text += "Totalt betalar du och bolaget ca " + formatCurrency(totalSkattScenario) +
+          " i skatt i scenariot, jämfört med " + formatCurrency(totalSkattBas) +
+          " i basläget. Kvar i bolaget efter utdelning blir " + formatCurrency(kvarIBolaget) + ".";
+        kortTolkningEl.textContent = text;
+      } else {
+        kortTolkningEl.textContent = "Just nu är scenariot samma som basläget (ingen extra lön, utdelning eller extra tjänstepension). Lägg till belopp för att se hur netto, skatt och kvar i bolaget förändras.";
+      }
+
+      // Uppdatera graf – bas vs scenario
+      updateChart(
+        totaltNettoPrivatBas,
+        totalSkattBas,
+        kvarBolagetBas,
+        totaltNettoPrivatScenario,
+        totalSkattScenario,
+        kvarIBolaget
+      );
+    }
+
+    function bindInputs() {
+      const ids = [
+        "omsattning",
+        "ovriga_kostnader",
+        "din_lon_hittills",
+        "arbetsgivaravgift",
+        "bolagsskatt",
+        "slp_proc",
+        "sparat_utrymme",
+        "arets_gransbelopp",
+        "kommunalskatt",
+        "statlig_skatt",
+        "brytpunkt_statlig",
+        "grundavdrag",
+        "jobbskatteavdrag",
+        "tjanstepension_manad",
+        "extra_lon",
+        "planerad_utdelning",
+        "extra_tjanstepension"
+      ];
+
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener("input", recalc);
+          el.addEventListener("change", recalc);
+        }
+      });
+
+      const ageEl = document.getElementById("alder");
+      if (ageEl) {
+        ageEl.addEventListener("input", applyAgeDefaults);
+        ageEl.addEventListener("change", applyAgeDefaults);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initChart();
+      bindInputs();
+      recalc();
+    });
+  </script>
+</body>
+</html>
