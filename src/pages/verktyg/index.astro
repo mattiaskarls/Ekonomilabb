@@ -1,55 +1,127 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import TopNav from "../../components/TopNav.astro";
+
+const card =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-6 transition hover:border-[var(--gold)]";
+
+const subtleBtn =
+  "inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)] text-[var(--text)] px-4 py-2 transition";
+
+const textLink =
+  "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition";
+
+const tools = [
+  {
+    title: "FIRE & pension",
+    desc:
+      "Modellera arbetsliv, ISK, tjänstepension och allmän pension – och se helheten över tiden.",
+    href: "/verktyg/fire-pension/",
+    guideHref: "/kunskap/",
+    guideLabel: "Läs guider om FIRE & pension →",
+    bullets: [
+      "Se när du kan sluta jobba",
+      "Följ månadsinkomst före och efter pension",
+      "Förstå ISK:s uppbyggnad och uttagsfaser",
+    ],
+    imgAlt: "FIRE och pension",
+    imgSrc: "/images/testbild.png",
+  },
+  {
+    title: "Jag & mitt AB",
+    desc:
+      "För dig som driver aktiebolag och vill optimera mellan lön, utdelning och tjänstepension.",
+    href: "/verktyg/jag-och-mitt-ab/",
+    guideHref: "/kunskap/",
+    guideLabel: "Läs guiden →",
+    bullets: [
+      "Jämför lön, utdelning och TJP",
+      "Se effekt på bolag och privatekonomi",
+      "Pedagogisk guide steg för steg",
+    ],
+    imgAlt: "Jag och mitt AB",
+    imgSrc: "/images/testbild.png",
+  },
+  {
+    title: "Snabbverktyg",
+    desc:
+      "Enkla kalkyler för ränta-på-ränta, 4-procentregeln och andra snabba överslag.",
+    href: "/verktyg/fire-verktyg/",
+    guideHref: "/kunskap/",
+    guideLabel: "Läs principerna bakom →",
+    bullets: [
+      "Ränta-på-ränta med månadssparande",
+      "Uttagsnivåer enligt 4-%-regeln",
+      "Snabba sanity checks",
+    ],
+    imgAlt: "Snabbverktyg",
+    imgSrc: "/images/testbild.png",
+  },
+];
 ---
 
-<BaseLayout title="Verktyg – Ekonomilabb">
-  <TopNav />
-
-  <main class="max-w-6xl mx-auto px-4 py-12 space-y-8">
-    <header class="space-y-2">
+<BaseLayout title="Verktyg – Ekonomismedjan">
+  <!-- HEADER -->
+  <header class="space-y-3 pb-10">
+    <div class="flex items-end justify-between gap-4 flex-wrap">
       <h1 class="text-2xl font-semibold">Verktyg</h1>
-      <p class="text-slate-300 max-w-3xl">
-        Kalkylatorer och miniverktyg som hjälper dig modellera helheten: FIRE, pension och uttag – och för dig med AB även lön vs utdelning.
+      <span class="text-xs text-[var(--text-muted)]">{tools.length} verktyg</span>
+    </div>
+
+    <p class="text-[var(--text-muted)] max-w-3xl">
+      Praktiska kalkylatorer som hjälper dig förstå hur lön, sparande, pension och företagande
+      hänger ihop över ett helt liv.
+    </p>
+  </header>
+
+  <!-- TOOLS GRID -->
+  <section class="grid gap-6 md:grid-cols-3">
+    {tools.map((t) => (
+      <article class={card}>
+        <div class="space-y-4">
+          <div class="flex items-start gap-4">
+            <img
+              src={t.imgSrc}
+              alt={t.imgAlt}
+              class="h-14 w-14 rounded-xl border border-[var(--border)] bg-[var(--surface)] object-cover"
+              loading="lazy"
+            />
+            <div class="space-y-1 min-w-0">
+              <h2 class="text-lg font-semibold">{t.title}</h2>
+              <p class="text-sm text-[var(--text-muted)] leading-relaxed">
+                {t.desc}
+              </p>
+            </div>
+          </div>
+
+          <ul class="text-sm space-y-2">
+            {t.bullets.map((b) => (
+              <li class="flex gap-2">
+                <span class="text-[var(--gold)]">▸</span>
+                <span class="text-[var(--text)]/90">{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="flex flex-col gap-2 pt-2">
+            <a href={t.href} class={subtleBtn} aria-label={`Öppna: ${t.title}`}>
+              Öppna →
+            </a>
+            <a href={t.guideHref} class={textLink}>
+              {t.guideLabel}
+            </a>
+          </div>
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <!-- NOTE -->
+  <section class="pt-12">
+    <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/50 p-6">
+      <p class="text-sm text-[var(--text)]/90 max-w-3xl">
+        Alla verktyg på Ekonomismedjan bygger på förenklade antaganden.
+        De är till för förståelse och planering – inte som personlig rådgivning.
       </p>
-    </header>
-
-    <section class="grid gap-4 md:grid-cols-2">
-      <a
-        href="/verktyg/fire-pension/"
-        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-emerald-400/60 transition"
-      >
-        <div class="text-[11px] uppercase tracking-wide text-emerald-300">FIRE & pension</div>
-        <h2 class="text-lg font-semibold text-slate-50 mt-1">FIRE- & pensionskalkylator</h2>
-        <p class="text-sm text-slate-300 mt-2">
-          Simulera lön, sparande, ISK-uttag, allmän pension och tjänstepension över livet.
-        </p>
-        <div class="mt-4 text-sm text-emerald-200">Öppna →</div>
-      </a>
-
-      <a
-        href="/verktyg/jag-och-mitt-ab/"
-        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-sky-400/60 transition"
-      >
-        <div class="text-[11px] uppercase tracking-wide text-sky-300">AB + privat</div>
-        <h2 class="text-lg font-semibold text-slate-50 mt-1">Jag & mitt AB – lön vs utdelning</h2>
-        <p class="text-sm text-slate-300 mt-2">
-          Jämför scenarier och se hur bolagets resultat blir nettokrona i din ficka.
-        </p>
-        <div class="mt-4 text-sm text-sky-200">Öppna →</div>
-      </a>
-
-      <a
-        href="/verktyg/fire-verktyg/"
-        class="block rounded-2xl border border-slate-800 bg-slate-900/70 p-6 hover:border-violet-400/60 transition md:col-span-2"
-      >
-        <div class="text-[11px] uppercase tracking-wide text-violet-300">Snabbverktyg</div>
-        <h2 class="text-lg font-semibold text-slate-50 mt-1">FIRE-verktyg</h2>
-        <p class="text-sm text-slate-300 mt-2">
-          Ränta-på-ränta, 4%-regeln och andra snabbkalkyler.
-        </p>
-        <div class="mt-4 text-sm text-violet-200">Öppna →</div>
-      </a>
-    </section>
-  </main>
+    </div>
+  </section>
 </BaseLayout>

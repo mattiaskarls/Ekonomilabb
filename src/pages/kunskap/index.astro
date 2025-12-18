@@ -7,7 +7,7 @@ const posts = (await getCollection("kunskap")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-// Bygg taggstatistik
+// Bygg taggstatistik (robust mot skräp)
 const tagCounts = new Map<string, number>();
 
 for (const post of posts) {
@@ -24,7 +24,6 @@ const allTags = Array.from(tagCounts.entries())
   .map(([tag, count]) => ({ tag, count }))
   .sort((a, b) => a.tag.localeCompare(b.tag, "sv"));
 
-// Tag cloud-storlekar
 const counts = allTags.map((t) => t.count);
 const maxCount = counts.length ? Math.max(...counts) : 1;
 const minCount = counts.length ? Math.min(...counts) : 1;
@@ -39,17 +38,32 @@ function sizeClass(count: number) {
   return "text-xs md:text-sm";
 }
 
-const card =
-  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]/60";
+const sectionCard =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70";
+
+const postCard =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition hover:border-[var(--gold)]";
 
 const tagChip =
-  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+
+const tagPill =
+  "text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+
+const textLink =
+  "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition";
 ---
 
 <BaseLayout title="Kunskap – Ekonomismedjan">
   <!-- HEADER -->
   <header class="space-y-3 pb-8">
-    <h1 class="text-2xl font-semibold">Kunskap</h1>
+    <div class="flex items-end justify-between gap-4 flex-wrap">
+      <h1 class="text-2xl font-semibold">Kunskap</h1>
+      <span class="text-xs text-[var(--text-muted)]">
+        {posts.length} artiklar
+      </span>
+    </div>
+
     <p class="text-[var(--text-muted)] max-w-3xl">
       Artiklar och guider om FIRE, pension, ISK och hur företag och privat ekonomi hänger ihop över tid.
     </p>
@@ -57,12 +71,12 @@ const tagChip =
 
   <!-- TAG CLOUD -->
   {allTags.length ? (
-    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 p-5 space-y-4 mb-10">
+    <section class={`${sectionCard} p-5 space-y-4 mb-10`}>
       <div class="flex items-center justify-between gap-4">
         <h2 class="text-sm font-semibold">Utforska via taggar</h2>
-        <span class="text-xs text-[var(--text-muted)]">
-          {allTags.length} taggar
-        </span>
+        <a href="/kunskap/" class={textLink} title="Återställ filter">
+          Alla →
+        </a>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -71,6 +85,7 @@ const tagChip =
             href={`/kunskap/tagg/${slugifyTag(tag)}/`}
             class={`${tagChip} ${sizeClass(count)}`}
             title={`${count} inlägg`}
+            aria-label={`Visa tagg: ${tag} (${count} inlägg)`}
           >
             #{tag}
             <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
@@ -89,7 +104,7 @@ const tagChip =
   <!-- POSTS -->
   <section class="space-y-5">
     {posts.map((post) => (
-      <article class={card}>
+      <article class={postCard}>
         <p class="text-xs text-[var(--text-muted)] mb-2">
           {post.data.date.toLocaleDateString("sv-SE")}
         </p>
@@ -103,20 +118,21 @@ const tagChip =
             {post.data.title}
           </h2>
 
-          <p class="text-sm text-[var(--text)]/90 mt-1 leading-relaxed">
+          <p class="text-sm text-[var(--text-muted)] mt-1 leading-relaxed">
             {post.data.excerpt}
           </p>
         </a>
 
         {post.data.tags?.length ? (
-          <div class="mt-3 flex gap-2 flex-wrap">
+          <div class="mt-4 flex gap-2 flex-wrap">
             {post.data.tags
               .map((t) => (typeof t === "string" ? t.trim() : ""))
               .filter((t) => t.length > 0)
               .map((tag) => (
                 <a
                   href={`/kunskap/tagg/${slugifyTag(tag)}/`}
-                  class="text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition"
+                  class={tagPill}
+                  aria-label={`Visa tagg: ${tag}`}
                 >
                   #{tag}
                 </a>

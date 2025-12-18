@@ -3,23 +3,52 @@ import "../styles/global.css";
 import TopNav from "../components/TopNav.astro";
 
 const props = Astro.props;
-const title = typeof props.title === "string" ? props.title : "Ekonomismedjan";
+
+const title =
+  typeof props.title === "string" && props.title.trim().length > 0
+    ? props.title
+    : "Ekonomismedjan";
+
+const description =
+  typeof props.description === "string" && props.description.trim().length > 0
+    ? props.description
+    : "Ekonomismedjan – kunskap, verktyg och struktur för ekonomi som håller i längden.";
+
+const lang =
+  typeof props.lang === "string" && props.lang.trim().length > 0 ? props.lang : "sv";
 ---
 
 <!doctype html>
-<html lang="sv">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b0c0f" />
+
+    <!-- Social preview -->
+    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <!-- Page-specific head additions -->
+    <slot name="head" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)]">
-    <!-- Global top navigation -->
+  <body class="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] antialiased selection:bg-[var(--accent)]/30">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg bg-[var(--panel)] text-[var(--text)] border border-[var(--border)]"
+    >
+      Hoppa till innehåll
+    </a>
+
     <TopNav />
 
-    <!-- Main content area -->
-    <main class="flex-1">
+    <main id="main" class="flex-1">
       <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-10">
         <slot />
       </div>

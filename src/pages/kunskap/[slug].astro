@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import TopNav from "../../components/TopNav.astro";
 import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
@@ -16,15 +15,30 @@ const { Content } = await post.render();
 ---
 
 <BaseLayout title={post.data.title}>
-  <TopNav />
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <!-- Breadcrumbs -->
+    <nav aria-label="Brödsmulor" class="mb-6 text-xs text-[var(--text-muted)]">
+      <ol class="flex flex-wrap items-center gap-2">
+        <li>
+          <a href="/" class="hover:text-[var(--gold)] transition">Hem</a>
+        </li>
+        <li class="opacity-70">/</li>
+        <li>
+          <a href="/kunskap/" class="hover:text-[var(--gold)] transition">Kunskap</a>
+        </li>
+        <li class="opacity-70">/</li>
+        <li class="text-[var(--text)] truncate max-w-[70vw]">
+          {post.data.title}
+        </li>
+      </ol>
+    </nav>
 
-<main class="max-w-3xl mx-auto px-4 py-12">
-    <article class="prose prose-invert prose-slate max-w-none">
-        <p class="text-slate-400 text-sm">
+    <article class="prose prose-invert max-w-none">
+      <p class="text-xs text-[var(--text-muted)] mb-6">
         {post.data.date.toLocaleDateString("sv-SE")}
-        </p>
+      </p>
 
-        <Content />
+      <Content />
     </article>
-    </main>
+  </main>
 </BaseLayout>

@@ -39,23 +39,28 @@ function sizeClass(count: number) {
 }
 
 const card =
-  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]/60";
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition hover:border-[var(--gold)]";
 
 const tagChip =
-  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
+
+const tagPill =
+  "text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
 
 function typeBadge() {
-  return "border border-[var(--border)] text-[var(--text-muted)] bg-[var(--surface-soft)]/60";
+  return "border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)]";
 }
 ---
 
 <BaseLayout title="Resurser – Ekonomismedjan">
   <!-- HEADER -->
-  <header class="space-y-2 pb-8">
+  <header class="space-y-3 pb-8">
     <h1 class="text-2xl font-semibold">Resurser</h1>
+
     <p class="text-[var(--text-muted)] max-w-3xl">
-      Böcker, tjänster och verktyg jag tycker är värda din tid – med korta, ärliga kommentarer.
+      Böcker, tjänster och verktyg som är värda din tid – med korta, ärliga kommentarer.
     </p>
+
     <p class="text-xs text-[var(--text-muted)] max-w-3xl">
       Transparens: vissa länkar kan vara affiliatelänkar. Det kostar inte mer för dig men kan ge stöd till sidan.
     </p>
@@ -63,7 +68,7 @@ function typeBadge() {
 
   <!-- TAG CLOUD -->
   {allTags.length ? (
-    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 p-5 space-y-4 mb-10">
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 space-y-4 mb-10">
       <div class="flex items-center justify-between gap-4">
         <h2 class="text-sm font-semibold">Utforska via taggar</h2>
         <span class="text-xs text-[var(--text-muted)]">
@@ -77,6 +82,7 @@ function typeBadge() {
             href={`/resurser/tagg/${slugifyTag(tag)}/`}
             class={`${tagChip} ${sizeClass(count)}`}
             title={`${count} resurser`}
+            aria-label={`Visa tagg: ${tag} (${count} resurser)`}
           >
             #{tag}
             <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
@@ -92,7 +98,7 @@ function typeBadge() {
     </section>
   ) : null}
 
-  <!-- RESOURCES -->
+  <!-- RESOURCES LIST -->
   <section class="grid gap-5 md:grid-cols-2">
     {resources.map((r) => (
       <article class={card}>
@@ -100,12 +106,12 @@ function typeBadge() {
           <img
             src={r.data.coverImage}
             alt={`Omslag/logotyp: ${r.data.title}`}
-            class="h-16 w-16 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)]/40 object-cover"
+            class="h-16 w-16 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] object-cover"
             loading="lazy"
           />
 
           <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2 flex-wrap">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
               <span
                 class={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] ${typeBadge()}`}
               >
@@ -113,7 +119,7 @@ function typeBadge() {
               </span>
 
               {r.data.featured ? (
-                <span class="inline-flex items-center justify-center rounded-full border border-[var(--gold)]/60 px-2 py-0.5 text-[11px] text-[var(--gold)]">
+                <span class="inline-flex items-center justify-center rounded-full border border-[var(--gold)] px-2 py-0.5 text-[11px] text-[var(--gold)]">
                   Utvald
                 </span>
               ) : null}
@@ -145,7 +151,8 @@ function typeBadge() {
                   .map((tag) => (
                     <a
                       href={`/resurser/tagg/${slugifyTag(tag)}/`}
-                      class="text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition"
+                      class={tagPill}
+                      aria-label={`Visa tagg: ${tag}`}
                     >
                       #{tag}
                     </a>

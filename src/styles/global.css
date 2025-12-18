@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 /* =========================================
-   Ekonomismedjan – Theme (v1)
+   Ekonomismedjan – Global Theme (v1)
    All styling drivs via CSS-variabler.
    Byt färger här → hela siten följer med.
 ========================================= */
@@ -23,30 +23,55 @@
   --steel: #9aa3ad;         /* stål */
   --copper: #b87333;        /* koppar (sparsam) */
 
-  /* Focus ring */
+  /* Focus */
   --focus: rgba(212, 175, 55, 0.55);
 }
 
-/* Global defaults */
-html, body {
+/* =========================================
+   Global defaults
+========================================= */
+html,
+body {
   background: var(--bg);
   color: var(--text);
 }
 
-/* Selection (markering av text) */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Text selection */
 ::selection {
   background: rgba(212, 175, 55, 0.25);
 }
 
-/* Länkar – guld på hover */
+/* =========================================
+   Links
+========================================= */
 a {
   color: inherit;
+  text-decoration-color: rgba(212, 175, 55, 0.35);
 }
 a:hover {
   color: var(--gold);
 }
 
-/* Prose (blogg/markdown) – matcha mörk smedja */
+/* =========================================
+   Surfaces / panels
+========================================= */
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.surface-soft {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+/* =========================================
+   Prose (markdown / content)
+========================================= */
 .prose {
   --tw-prose-body: var(--text);
   --tw-prose-headings: var(--text);
@@ -66,11 +91,25 @@ a:hover {
   --tw-prose-td-borders: rgba(255, 255, 255, 0.08);
 }
 
-/* Focus ring (för inputs/länkar som använder focus:ring) */
+.prose blockquote {
+  font-style: normal;
+}
+
+/* =========================================
+   Focus ring
+========================================= */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
-html {
-  scrollbar-gutter: stable;
+
+/* =========================================
+   Scrollbar (subtle, industrial)
+========================================= */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
 }

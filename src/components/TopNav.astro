@@ -5,25 +5,39 @@ const links = [
   { href: "/verktyg/", label: "Verktyg" },
   { href: "/resurser/", label: "Resurser" },
 ];
+
+const path = Astro.url.pathname;
+
+// Enkel active-match: exakt "/" annars starts-with på sektion
+function isActive(href: string) {
+  if (href === "/") return path === "/";
+  return path.startsWith(href);
+}
 ---
 
-<nav class="w-full border-b border-[var(--border)] bg-[var(--bg)]">
-  <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
+<nav class="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--bg)]/85 backdrop-blur">
+  <div class="w-full max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between gap-6">
     <!-- Brand -->
     <a
       href="/"
       class="text-lg font-semibold tracking-wide text-[var(--text)] hover:text-[var(--gold)] transition"
+      aria-label="Ekonomismedjan – start"
     >
       Ekonomismedjan
     </a>
 
     <!-- Desktop nav -->
-    <ul class="hidden md:flex items-center gap-6">
+    <ul class="hidden md:flex items-center gap-8">
       {links.map((link) => (
         <li>
           <a
             href={link.href}
-            class="text-sm font-medium text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+            class={`text-sm font-medium transition ${
+              isActive(link.href)
+                ? "text-[var(--text)]"
+                : "text-[var(--text-muted)] hover:text-[var(--gold)]"
+            }`}
+            aria-current={isActive(link.href) ? "page" : undefined}
           >
             {link.label}
           </a>
@@ -31,9 +45,44 @@ const links = [
       ))}
     </ul>
 
-    <!-- Mobile placeholder (framtid) -->
-    <div class="md:hidden text-[var(--text-muted)] text-sm">
-      Meny
-    </div>
+    <!-- Mobile menu (no JS) -->
+    <details class="md:hidden relative">
+      <summary
+        class="list-none cursor-pointer select-none inline-flex items-center gap-2 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+        aria-label="Öppna meny"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          class="opacity-90"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Meny
+      </summary>
+
+      <div class="absolute right-0 mt-3 w-56 rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-lg overflow-hidden">
+        <ul class="py-2">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class={`block px-4 py-3 text-sm transition ${
+                  isActive(link.href)
+                    ? "text-[var(--text)] bg-[var(--surface-soft)]"
+                    : "text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--surface-soft)]"
+                }`}
+                aria-current={isActive(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </details>
   </div>
 </nav>
