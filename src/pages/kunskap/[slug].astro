@@ -12,9 +12,34 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+
+// Robust canonical (funkar även om Astro.site saknas lokalt)
+const origin = Astro.site?.toString().replace(/\/$/, "") ?? Astro.url.origin;
+const canonical = `${origin}/kunskap/${post.slug}/`;
 ---
 
-<BaseLayout title={post.data.title}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  canonical={canonical}
+>
+  <slot name="head">
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: post.data.title,
+        description: post.data.excerpt,
+        datePublished: post.data.date,
+        mainEntityOfPage: canonical,
+        publisher: {
+          "@type": "Organization",
+          name: "EkonomiSmedjan",
+        },
+      })}
+    </script>
+  </slot>
+
   <main class="max-w-3xl mx-auto px-4 py-12">
     <!-- Breadcrumbs -->
     <nav aria-label="Brödsmulor" class="mb-6 text-xs text-[var(--text-muted)]">

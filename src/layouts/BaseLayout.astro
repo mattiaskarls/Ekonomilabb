@@ -2,20 +2,37 @@
 import "../styles/global.css";
 import TopNav from "../components/TopNav.astro";
 
-const props = Astro.props;
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  lang = "sv",
+  noindex = false,
+} = Astro.props;
 
-const title =
-  typeof props.title === "string" && props.title.trim().length > 0
-    ? props.title
-    : "Ekonomismedjan";
+const siteName = "Ekonomismedjan";
+const siteUrl = Astro.site ?? "";
 
-const description =
-  typeof props.description === "string" && props.description.trim().length > 0
-    ? props.description
-    : "Ekonomismedjan – kunskap, verktyg och struktur för ekonomi som håller i längden.";
+const pageTitle =
+  typeof title === "string" && title.trim().length > 0
+    ? `${title} – ${siteName}`
+    : siteName;
 
-const lang =
-  typeof props.lang === "string" && props.lang.trim().length > 0 ? props.lang : "sv";
+const pageDescription =
+  typeof description === "string" && description.trim().length > 0
+    ? description
+    : "Kunskap, verktyg och struktur för ekonomi som håller i längden.";
+
+const canonicalUrl =
+  typeof canonical === "string" && canonical.length > 0
+    ? canonical
+    : siteUrl + Astro.url.pathname;
+
+const ogImageUrl =
+  typeof ogImage === "string" && ogImage.length > 0
+    ? ogImage
+    : undefined;
 ---
 
 <!doctype html>
@@ -24,27 +41,34 @@ const lang =
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    {ogImageUrl ? <meta property="og:image" content={ogImageUrl} /> : null}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    {ogImageUrl ? <meta name="twitter:image" content={ogImageUrl} /> : null}
+
     <meta name="theme-color" content="#0b0c0f" />
 
-    <!-- Social preview -->
-    <meta property="og:locale" content="sv_SE" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-
-    <!-- Page-specific head additions -->
     <slot name="head" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] antialiased selection:bg-[var(--accent)]/30">
-    <a
-      href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg bg-[var(--panel)] text-[var(--text)] border border-[var(--border)]"
-    >
-      Hoppa till innehåll
-    </a>
+  <body class="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)] antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only">Hoppa till innehåll</a>
 
     <TopNav />
 
