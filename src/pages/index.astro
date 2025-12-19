@@ -14,10 +14,6 @@ const featuredResources = allResources.filter((r) => r.data.featured);
 const fillResources = allResources.filter((r) => !r.data.featured);
 const selectedResources = [...featuredResources, ...fillResources].slice(0, 3);
 
-function typeBadge() {
-  return "border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)]";
-}
-
 const btnPrimary =
   "inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-5 py-3 transition";
 
@@ -42,7 +38,7 @@ const textLink =
     <div class="text-center space-y-6">
       <div class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs text-[var(--text-muted)]">
         <span class="h-2 w-2 rounded-full bg-[var(--gold)]"></span>
-        Verktyg + guider för helheten
+        Verktyg + guider för att smida din ekonomi
       </div>
 
       <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">
@@ -71,6 +67,8 @@ const textLink =
       {[
         {
           title: "FIRE & pension",
+          image: "/images/fireochpension.png",
+          alt: "FIRE och pension – ikon",
           text: "Modellera lön, ISK och pension – se helheten över livet.",
           bullets: [
             "När kan du sluta jobba?",
@@ -81,6 +79,8 @@ const textLink =
         },
         {
           title: "Jag & mitt AB",
+          image: "/images/jagochmittab.png",
+          alt: "Jag och mitt AB – ikon",
           text: "För dig med aktiebolag – förstå lön, utdelning och TJP.",
           bullets: [
             "Jämför scenarier",
@@ -91,6 +91,8 @@ const textLink =
         },
         {
           title: "Kunskap & resurser",
+          image: "/images/kunskap.png",
+          alt: "Kunskap och resurser – ikon",
           text: "Principer, artiklar och samlade resurser.",
           bullets: [
             "ISK & långsiktighet",
@@ -102,6 +104,13 @@ const textLink =
       ].map((c) => (
         <div class={card}>
           <div class={cardInner}>
+            <img
+              src={c.image}
+              alt={c.alt}
+              class="h-12 w-12 object-contain"
+              loading="lazy"
+            />
+
             <h2 class="text-lg font-semibold">{c.title}</h2>
             <p class="text-sm text-[var(--text-muted)]">{c.text}</p>
 

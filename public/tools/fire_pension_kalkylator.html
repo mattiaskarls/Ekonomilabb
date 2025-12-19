@@ -10,6 +10,57 @@
     rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>$</text></svg>"
   />
+<style>
+/* EkonomiSmedjan buttons */
+:root{
+  --gold:#eab308;
+  --gold-hover:#facc15;
+  --border: rgba(148,163,184,0.18);
+  --surface: rgba(17,24,39,0.55);
+  --surface-soft: rgba(2,6,23,0.35);
+  --text: #e5e7eb;
+  --text-muted: rgba(229,231,235,0.65);
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  background:var(--gold);
+  color:#000;
+  border:1px solid var(--gold);
+  transition: background-color .15s ease, border-color .15s ease, transform .05s ease;
+}
+.btn-primary:hover{
+  background:var(--gold-hover);
+  border-color:var(--gold-hover);
+}
+.btn-primary:active{ transform: translateY(1px); }
+
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  background:var(--surface-soft);
+  color:var(--text);
+  border:1px solid var(--border);
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease, transform .05s ease;
+}
+.btn-secondary:hover{
+  border-color: rgba(234,179,8,0.55);
+  color: var(--gold-hover);
+}
+.btn-secondary:active{ transform: translateY(1px); }
+</style>
 </head>
 
 <body class="bg-slate-950 text-slate-100 p-4 md:p-8">
@@ -24,7 +75,7 @@
     <div class="bg-slate-900/95 backdrop-blur shadow-xl rounded-2xl border border-slate-800 p-6">
       <div class="flex items-center justify-between gap-3">
         <h2 class="text-lg font-semibold text-slate-50">1. Grunddata & antaganden</h2>
-        <button id="shareUrlBtn" class="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-400/60 text-xs hover:bg-emerald-500/20">
+        <button id="shareUrlBtn" class="btn-secondary text-sm px-4 py-1.5">
           Skapa länk med mina värden
         </button>
       </div>
@@ -234,10 +285,10 @@
           </p>
         </div>
         <div class="flex flex-wrap gap-2 text-xs">
-          <button id="exportCsvBtn" class="px-3 py-1 rounded-full border border-slate-500 text-slate-200 hover:bg-slate-950">
+          <button  id="exportCsvBtn" class="btn-secondary text-sm px-3 py-1">
             Exportera årsdata (CSV)
           </button>
-          <button id="exportPngBtn" class="px-3 py-1 rounded-full border border-slate-500 text-slate-200 hover:bg-slate-950">
+          <button  id="exportPngBtn" class="btn-secondary text-sm px-3 py-1">
             Spara diagram (PNG)
           </button>
         </div>

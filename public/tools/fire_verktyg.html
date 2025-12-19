@@ -15,6 +15,57 @@
     rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>$</text></svg>"
   />
+<style>
+/* EkonomiSmedjan buttons */
+:root{
+  --gold:#eab308;
+  --gold-hover:#facc15;
+  --border: rgba(148,163,184,0.18);
+  --surface: rgba(17,24,39,0.55);
+  --surface-soft: rgba(2,6,23,0.35);
+  --text: #e5e7eb;
+  --text-muted: rgba(229,231,235,0.65);
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  background:var(--gold);
+  color:#000;
+  border:1px solid var(--gold);
+  transition: background-color .15s ease, border-color .15s ease, transform .05s ease;
+}
+.btn-primary:hover{
+  background:var(--gold-hover);
+  border-color:var(--gold-hover);
+}
+.btn-primary:active{ transform: translateY(1px); }
+
+.btn-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:600;
+  background:var(--surface-soft);
+  color:var(--text);
+  border:1px solid var(--border);
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease, transform .05s ease;
+}
+.btn-secondary:hover{
+  border-color: rgba(234,179,8,0.55);
+  color: var(--gold-hover);
+}
+.btn-secondary:active{ transform: translateY(1px); }
+</style>
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8">
   <div class="min-h-screen max-w-7xl mx-auto flex flex-col gap-6 pt-4 md:pt-8">
@@ -67,7 +118,7 @@
           </label>
         </div>
 
-        <button id="cmpRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="cmpRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -114,7 +165,7 @@
           </label>
         </div>
 
-        <button id="fiRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="fiRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -145,7 +196,7 @@
           </label>
         </div>
 
-        <button id="needRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="needRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -180,7 +231,7 @@
           </label>
         </div>
 
-        <button id="msRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="msRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -215,7 +266,7 @@
           </label>
         </div>
 
-        <button id="baristaRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="baristaRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -258,7 +309,7 @@
           </label>
         </div>
 
-        <button id="coastRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="coastRun" class="btn-primary mt-1">
           Räkna
         </button>
 
@@ -295,7 +346,7 @@
           </label>
         </div>
 
-        <button id="fourRun" class="inline-flex items-center mt-1 px-4 py-2 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 shadow shadow-emerald-500/30">
+        <button id="fourRun" class="btn-primary mt-1">
           Räkna &amp; rita graf
         </button>
 
