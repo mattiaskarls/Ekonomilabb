@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const breadcrumbs = [
+  { name: "Hem", href: "/" },
+  { name: "Verktyg", href: "/verktyg/" },
+  { name: "FIRE & pension – guide", href: "/verktyg/fire-pension-guide/" },
+];
+---
+
+<BaseLayout
+  title="FIRE & pension – guide"
+  description="Steg-för-steg-guide till FIRE & pension: antaganden, tolkning och vanliga misstag."
+  breadcrumbs={breadcrumbs}
+>
+  <header class="space-y-3 pb-8">
+    <h1 class="text-2xl font-semibold">FIRE & pension – guide</h1>
+    <p class="text-[var(--text-muted)] max-w-3xl">
+      Steg-för-steg genom alla fält och hur du tolkar resultatet. Läs guiden parallellt med kalkylatorn.
+    </p>
+
+    <div class="flex flex-wrap gap-2 pt-2">
+      <a
+        href="/verktyg/fire-pension/"
+        class="inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)] text-[var(--text)] px-4 py-2 transition"
+      >
+        Öppna kalkylatorn →
+      </a>
+      <a
+        href="/verktyg/"
+        class="text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition"
+      >
+        Till alla verktyg
+      </a>
+    </div>
+  </header>
+
+  <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)]/50 overflow-hidden">
+    <iframe
+      src="/tools/fire-pension/guide.html"
+      title="FIRE & pension – guide"
+      class="w-full h-[75vh] bg-[var(--bg)]"
+      style="min-height: 1100px;"
+      loading="lazy"
+      sandbox="allow-same-origin allow-scripts"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+
+  <p class="pt-3 text-sm text-[var(--text-muted)]">
+    Om guiden inte laddar: <a href="/tools/fire-pension/guide.html" class="underline hover:text-[var(--gold)]">öppna den i ny flik</a>.
+  </p>
+</BaseLayout>

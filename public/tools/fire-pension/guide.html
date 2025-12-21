@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FIRE & pension – guide</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg: #0b0c0f;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --surface: rgba(255,255,255,0.05);
+      --surface-soft: rgba(255,255,255,0.035);
+      --border: rgba(255,255,255,0.10);
+      --gold: #eab308;
+      --gold-hover: #facc15;
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      line-height: 1.5;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .card + .card { margin-top: 16px; }
+
+    h1 { font-size: 28px; margin: 0 0 10px; letter-spacing: -0.02em; }
+    h2 { font-size: 18px; margin: 0 0 10px; }
+    h3 { font-size: 14px; margin: 0 0 8px; color: var(--text); }
+    p { margin: 10px 0; color: var(--text); }
+    .muted { color: var(--text-muted); }
+    .small { font-size: 12px; color: var(--text-muted); }
+    .lead { font-size: 16px; color: var(--text); }
+
+    a { color: var(--text); }
+    a:hover { color: var(--gold); }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 150ms ease;
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: #0b0c0f;
+      border-color: transparent;
+    }
+    .btn-primary:hover { background: var(--gold-hover); color: #0b0c0f; }
+
+    .btn-secondary {
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+    .grid { display: grid; gap: 12px; }
+    @media (min-width: 900px){
+      .grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+      .grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+      .step-grid { grid-template-columns: 5fr 7fr; }
+    }
+
+    label { display: block; font-size: 13px; color: var(--text); }
+    input[type="number"]{
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.20);
+      color: var(--text);
+      outline: none;
+      box-sizing: border-box;
+    }
+    input[type="number"]:focus{
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(234,179,8,0.20);
+    }
+
+    .step { margin-top: 16px; }
+    ul { margin: 8px 0 0 18px; color: var(--text); }
+    li { margin: 6px 0; color: rgba(229,231,235,0.92); }
+
+    /* ===== Chart containers (FIX) ===== */
+    .chart {
+      height: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(0,0,0,0.15);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      box-sizing: border-box;
+    }
+
+    /* Den här ytan är den som ska växa – och den måste få min-height:0 i flex */
+    .chart-body {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* Låt Chart.js styra canvas – tvinga inte 100% med !important */
+    canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .divider { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; }
+    code { color: rgba(229,231,235,0.95); }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="card">
+      <h1>FIRE & pension – guide</h1>
+      <p class="lead">
+        Den här guiden går igenom kalkylatorn steg för steg. Målet är att du förstår mekaniken
+        och sen använder huvudkalkylatorn med dina egna siffror.
+      </p>
+      <p class="small">
+        Guiden använder ett förenklat exempel men samma logik: vi arbetar i dagens penningvärde (realt),
+        använder en schabloniserad skatt/pension och visar hur lön → skatt → nettolön → sparande → pension & ISK-uttag hänger ihop.
+      </p>
+
+      <div class="btn-row">
+        <a class="btn-primary" href="/verktyg/fire-pension/">Öppna kalkylatorn →</a>
+        <a class="btn-secondary" href="#steg1">Börja på steg 1 →</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Exempelinställningar</h2>
+      <p class="muted">
+        Ändra värdena nedan för att se hur graferna uppdateras. Detta påverkar bara guiden.
+      </p>
+
+      <div class="grid cols-5" style="margin-top:12px;">
+        <label>Startålder (år)
+          <input id="eduAge" type="number" value="35" />
+        </label>
+        <label>Lön per månad (kr)
+          <input id="eduGross" type="number" value="45000" />
+        </label>
+        <label>Kommun/regionskatt (%)
+          <input id="eduTax" type="number" value="30" step="0.1" />
+        </label>
+        <label>Sparkvot (% av nettolön)
+          <input id="eduSaveRate" type="number" value="10" step="0.1" />
+        </label>
+        <label>Löneökning (%/år)
+          <input id="eduSalaryGrowth" type="number" value="2" step="0.1" />
+        </label>
+      </div>
+
+      <div class="grid cols-4" style="margin-top:12px;">
+        <label>Real avkastning ISK / TJP (%)
+          <input id="eduReturn" type="number" value="4" step="0.1" />
+        </label>
+        <label>Real avkastning Allmän pension (%)
+          <input id="eduApReturn" type="number" value="1.9" step="0.1" />
+        </label>
+        <label>FIRE-ålder (sluta jobba)
+          <input id="eduWorkEndAge" type="number" value="60" />
+        </label>
+        <label>År vi simulerar framåt
+          <input id="eduYears" type="number" value="40" />
+        </label>
+      </div>
+
+      <p class="small" style="margin-top:10px;">
+        Tips: ändra en parameter i taget. Då ser du vad som driver effekten.
+      </p>
+    </section>
+
+    <section id="steg1" class="step">
+      <div class="grid step-grid" style="gap:16px;">
+        <div class="card">
+          <h2>Steg 1 – Lön, skatt och nettolön</h2>
+          <p class="muted">
+            Vi börjar med bruttolön → skatt → nettolön. Det är nettolönen som styr sparandet i nästa steg.
+          </p>
+          <ul>
+            <li>Kommun/regionskatt enligt inställning (t.ex. 30 %).</li>
+            <li>Förenklad statlig skatt över en brytpunkt (53 600 kr/mån).</li>
+            <li>Poängen är relationen, inte att pricka alla regler.</li>
+          </ul>
+          <p class="small">
+            Den gula delen i grafen är nettolön. Den röda är skatt (förenklad).
+          </p>
+        </div>
+
+        <div class="chart">
+          <h3>Bruttolön, skatt och nettolön per månad</h3>
+          <p class="small">
+            Staplar: nettolön + skatt. Linje: bruttolön. Streckad linje: brytpunkt statlig skatt.
+          </p>
+          <div class="chart-body">
+            <canvas id="incomeChart"></canvas>
+          </div>
+          <div class="divider small">
+            Testa att höja lön/löneökning och se hur skatten växer när du passerar brytpunkten.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="steg2" class="step">
+      <div class="grid step-grid" style="gap:16px;">
+        <div class="card">
+          <h2>Steg 2 – Hur lönen skapar pension via insättningar</h2>
+          <p class="muted">
+            Lön bygger både Allmän pension (AP) och Tjänstepension (TJP). Förenklad modell:
+          </p>
+          <ul>
+            <li><strong>AP</strong>: 17,5 % av lönen upp till ett tak (ca 51 000 kr/mån).</li>
+            <li><strong>TJP</strong>: 4,5 % upp till 50 000 kr/mån och 30 % på överstigande del.</li>
+          </ul>
+          <p class="small">
+            Poängen: över taket driver lön främst TJP, inte AP.
+          </p>
+        </div>
+
+        <div class="chart">
+          <h3>Månatliga avsättningar till AP, TJP & ISK</h3>
+          <p class="small">
+            Staplar: AP (röd), TJP (blå), ISK-sparande (gul). Linje: total avsättning.
+          </p>
+          <div class="chart-body">
+            <canvas id="contribChart"></canvas>
+          </div>
+          <div class="divider small">
+            Testa att höja lönen över taket – AP planar ut men TJP kan öka kraftigt.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="steg2b" class="step">
+      <div class="card">
+        <h2>Steg 2b – Uttag av Allmän pension och Tjänstepension</h2>
+
+        <h3>Premiebestämd vs livslång pension</h3>
+        <p class="muted">
+          I modellen behandlas AP och TJP förenklat som kapital som betalas ut över tid.
+          AP illustreras med <code>kapital / delningstal</code>. TJP som jämn utbetalning över vald period.
+        </p>
+
+        <h3>Exempel: delningstal</h3>
+        <ul>
+          <li>3 000 000 kr vid 65 år, delningstal ~17 → ca 14 700 kr/mån.</li>
+          <li>3 000 000 kr vid 70 år, delningstal ~14 → ca 17 800 kr/mån.</li>
+        </ul>
+
+        <p class="small">
+          Förenklat men pedagogiskt: senare uttag ger högre månadsbelopp eftersom delningstalet sjunker.
+        </p>
+      </div>
+    </section>
+
+    <section id="steg3" class="step">
+      <div class="card">
+        <h2>Steg 3 – Sparkvot & ISK</h2>
+        <p class="muted">
+          Sparkvoten är andelen av nettolönen som går till ISK. Vi antar att din reala avkastning redan är “efter skatt”.
+        </p>
+
+        <div class="chart" style="margin-top:12px; height:420px;">
+          <h3>Kapital över tid (ISK, AP, TJP)</h3>
+          <p class="small">Tre linjer som bygger intuition: hur kapital växer under arbetslivet.</p>
+          <div class="chart-body">
+            <canvas id="iskChart"></canvas>
+          </div>
+          <div class="divider small">
+            Testa att höja sparkvoten från 5 % till 15 % och se hur mycket kurvan flyttar sig.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="steg4" class="step">
+      <div class="card">
+        <h2>Steg 4 – 4%-regeln & förbrukningsfas</h2>
+        <p class="muted">
+          Pedagogisk bild av fyra faser: uppbyggnad → passiv tillväxt → 4%-uttag → förbrukning.
+        </p>
+
+        <div class="chart" style="margin-top:12px; height:460px;">
+          <h3>Faserna i ISK: insättningar, avkastning och uttag</h3>
+          <p class="small">
+            Staplar visar flöden per år. Linje visar ISK-kapital.
+          </p>
+          <div class="chart-body">
+            <canvas id="withdrawChart"></canvas>
+          </div>
+          <div class="divider small">
+            Faserna är förenklade för att visa logiken tydligt.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="steg5" class="step">
+      <div class="card">
+        <h2>Steg 5 – Allt tillsammans</h2>
+        <p class="muted">
+          En komprimerad översikt: lön, sparande och kapital. Använd som intuition, inte exakt prognos.
+        </p>
+
+        <div class="chart" style="margin-top:12px; height:420px;">
+          <h3>Översikt – förenklad livskurva</h3>
+          <p class="small">Här ser du en förenklad sammanfattning av tidigare steg.</p>
+          <div class="chart-body">
+            <canvas id="overviewChart"></canvas>
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top:14px;">
+          <a class="btn-primary" href="/verktyg/fire-pension/">Öppna kalkylatorn →</a>
+          <a class="btn-secondary" href="#steg1">Tillbaka till steg 1 ↑</a>
+        </div>
+
+        <p class="small" style="margin-top:10px;">
+          Nästa steg: kör din egen input i kalkylatorn och använd guiden som manual när du justerar antaganden.
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (function() {
+      const byId = (id) => document.getElementById(id);
+
+      const eduRefs = {
+        age: byId('eduAge'),
+        gross: byId('eduGross'),
+        tax: byId('eduTax'),
+        saveRate: byId('eduSaveRate'),
+        salaryGrowth: byId('eduSalaryGrowth'),
+        returnPct: byId('eduReturn'),
+        apReturnPct: byId('eduApReturn'),
+        workEndAge: byId('eduWorkEndAge'),
+        years: byId('eduYears')
+      };
+
+      const STATE_TAX_BREAKPOINT = 53600;
+
+      const bringLinesFront = {
+        id: 'bringLinesFront',
+        afterDatasetsDraw(chart) {
+          const metaSets = chart._metasets || chart.getSortedVisibleDatasetMetas();
+          const lineMetas = metaSets.filter(m => m.type === 'line');
+          lineMetas.forEach(meta => meta.controller.draw());
+        }
+      };
+
+      const drawThresholdLine = {
+        id: 'drawThresholdLine',
+        afterDraw(chart, args, options) {
+          if (!options || typeof options.yValue !== 'number') return;
+          const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+          if (!y) return;
+          const yPixel = y.getPixelForValue(options.yValue);
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([6, 4]);
+          ctx.strokeStyle = '#e5e7eb';
+          ctx.lineWidth = 1;
+          ctx.moveTo(left, yPixel);
+          ctx.lineTo(right, yPixel);
+          ctx.stroke();
+          ctx.restore();
+        }
+      };
+
+      function calcTax(yearlyGross, kommunal) {
+        if (yearlyGross <= 0) return { net: 0, tax: 0, avg: 0 };
+        const kommunalTax = yearlyGross * (kommunal / 100);
+        const breakpointYearly = STATE_TAX_BREAKPOINT * 12;
+        let stateTax = 0;
+        if (yearlyGross > breakpointYearly) {
+          stateTax = (yearlyGross - breakpointYearly) * 0.20;
+        }
+        const totalTax = kommunalTax + stateTax;
+        const net = yearlyGross - totalTax;
+        return { net, tax: totalTax, avg: totalTax / yearlyGross };
+      }
+
+      function getEduInputs() {
+        return {
+          age: parseFloat(eduRefs.age.value) || 35,
+          gross: parseFloat(eduRefs.gross.value) || 45000,
+          tax: parseFloat(eduRefs.tax.value) || 30,
+          saveRate: parseFloat(eduRefs.saveRate.value) || 10,
+          salaryGrowth: parseFloat(eduRefs.salaryGrowth.value) || 2,
+          returnPct: parseFloat(eduRefs.returnPct.value) || 4,
+          apReturnPct: parseFloat(eduRefs.apReturnPct.value) || 1.9,
+          workEndAge: parseFloat(eduRefs.workEndAge.value) || 60,
+          years: parseFloat(eduRefs.years.value) || 40
+        };
+      }
+
+      let incomeChart = null;
+      let contribChart = null;
+      let iskChart = null;
+      let withdrawChart = null;
+      let overviewChart = null;
+
+      function simulate() {
+        const inp = getEduInputs();
+        const r = inp.returnPct / 100;
+        const apR = inp.apReturnPct / 100;
+
+        const ages = [];
+        for (let i = 0; i <= inp.years; i++) ages.push(inp.age + i);
+
+        let salary = inp.gross;
+        let isk = 0;
+        let apCapital = 0;
+        let tpCapital = 0;
+
+        const result = [];
+
+        ages.forEach((age) => {
+          const working = age < inp.workEndAge;
+          const grossMonth = working ? salary : 0;
+          const grossYear = grossMonth * 12;
+
+          const taxRes = calcTax(grossYear, inp.tax);
+          const netYear = taxRes.net;
+          const monthlyNet = netYear / 12;
+
+          const yearlySave = working ? (monthlyNet * (inp.saveRate / 100) * 12) : 0;
+          const apContribution = working ? Math.min(grossMonth, 51000) * 0.175 * 12 : 0;
+          const tpContribution = working
+            ? (Math.min(grossMonth, 50000) * 0.045 + Math.max(0, grossMonth - 50000) * 0.30) * 12
+            : 0;
+
+          isk = (isk + yearlySave) * (1 + r);
+          apCapital = (apCapital + apContribution) * (1 + apR);
+          tpCapital = (tpCapital + tpContribution) * (1 + r);
+
+          result.push({
+            age, grossMonth, monthlyNet,
+            taxMonth: (taxRes.tax / 12),
+            apContributionMonth: apContribution / 12,
+            tpContributionMonth: tpContribution / 12,
+            saveMonth: yearlySave / 12,
+            iskCapital: isk, apCapital, tpCapital
+          });
+
+          salary = salary * (1 + inp.salaryGrowth / 100);
+        });
+
+        return result;
+      }
+
+      function renderCharts() {
+        const data = simulate();
+        const labels = data.map(d => d.age);
+        const inp = getEduInputs();
+        const r = inp.returnPct / 100;
+
+        const grossArr = data.map(d => d.grossMonth);
+        const netArr = data.map(d => d.monthlyNet);
+        const taxArr = data.map(d => Math.max(d.grossMonth - d.monthlyNet, 0));
+
+        const apArr = data.map(d => d.apContributionMonth);
+        const tpArr = data.map(d => d.tpContributionMonth);
+        const saveArr = data.map(d => d.saveMonth);
+
+        const iskArr = data.map(d => d.iskCapital);
+        const apCapArr = data.map(d => d.apCapital);
+        const tpCapArr = data.map(d => d.tpCapital);
+
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const contribCtx = document.getElementById('contribChart').getContext('2d');
+        const iskCtx = document.getElementById('iskChart').getContext('2d');
+        const withdrawCtx = document.getElementById('withdrawChart').getContext('2d');
+        const overviewCtx = document.getElementById('overviewChart').getContext('2d');
+
+        const incomeData = {
+          labels,
+          datasets: [
+            { type: 'bar', label: 'Nettolön/mån', data: netArr, backgroundColor: 'rgba(234,179,8,0.35)', stack: 'income' },
+            { type: 'bar', label: 'Skatt/mån (förenklad)', data: taxArr, backgroundColor: 'rgba(248,113,113,0.35)', stack: 'income' },
+            { type: 'line', label: 'Bruttolön/mån', data: grossArr, borderColor: '#e5e7eb', borderWidth: 3, pointRadius: 0, tension: 0.2, yAxisID: 'y' }
+          ]
+        };
+
+        const baseScales = {
+          x: { stacked: true, ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.18)' } },
+          y: {
+            stacked: true, position: 'left',
+            ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) },
+            grid: { color: 'rgba(148,163,184,0.18)' }
+          }
+        };
+
+        const incomeOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr/mån` } },
+            drawThresholdLine: { yValue: STATE_TAX_BREAKPOINT }
+          },
+          scales: baseScales
+        };
+
+        if (incomeChart) incomeChart.destroy();
+        incomeChart = new Chart(incomeCtx, { type: 'bar', data: incomeData, options: incomeOptions, plugins: [bringLinesFront, drawThresholdLine] });
+
+        const contribData = {
+          labels,
+          datasets: [
+            { type: 'bar', label: 'Allmän pension – avsättning/mån', data: apArr, stack: 'contrib', backgroundColor: 'rgba(248,113,113,0.40)' },
+            { type: 'bar', label: 'Tjänstepension – avsättning/mån', data: tpArr, stack: 'contrib', backgroundColor: 'rgba(148,163,184,0.35)' },
+            { type: 'bar', label: 'ISK-sparande (sparkvot) – avsättning/mån', data: saveArr, stack: 'contrib', backgroundColor: 'rgba(234,179,8,0.30)' },
+            { type: 'line', label: 'Total avsättning/mån', data: apArr.map((v, i) => v + tpArr[i] + saveArr[i]), borderWidth: 3, borderColor: '#e5e7eb', pointRadius: 0, tension: 0.2, yAxisID: 'y' }
+          ]
+        };
+
+        const contribOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr/mån` } }
+          },
+          scales: baseScales
+        };
+
+        if (contribChart) contribChart.destroy();
+        contribChart = new Chart(contribCtx, { type: 'bar', data: contribData, options: contribOptions, plugins: [bringLinesFront] });
+
+        const iskData = {
+          labels,
+          datasets: [
+            { type: 'line', label: 'ISK-kapital', data: iskArr, borderWidth: 3, borderColor: '#eab308', pointRadius: 0, tension: 0.25 },
+            { type: 'line', label: 'AP-kapital (förenklad)', data: apCapArr, borderWidth: 3, borderColor: '#f87171', pointRadius: 0, tension: 0.25 },
+            { type: 'line', label: 'TP-kapital (förenklad)', data: tpCapArr, borderWidth: 3, borderColor: '#94a3b8', pointRadius: 0, tension: 0.25 }
+          ]
+        };
+
+        const iskOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr` } }
+          },
+          scales: {
+            x: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.18)' } },
+            y: { ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) }, grid: { color: 'rgba(148,163,184,0.18)' } }
+          }
+        };
+
+        if (iskChart) iskChart.destroy();
+        iskChart = new Chart(iskCtx, { type: 'line', data: iskData, options: iskOptions, plugins: [bringLinesFront] });
+
+        const workEndAge = inp.workEndAge;
+        const phase2StartAge = workEndAge;
+        const phase3StartAge = workEndAge + 5;
+        const phase4StartAge = phase3StartAge + 10;
+        const phase4Years = 15;
+
+        const depArr = [], growthArr = [], w4Arr = [], wSpendArr = [], phaseCapArr = [];
+        let cap = 0;
+
+        for (let i = 0; i < labels.length; i++) {
+          const age = labels[i];
+          const d = data[i];
+
+          let depositY = 0, growthY = 0, w4Y = 0, wSpendY = 0;
+          const startCap = cap;
+
+          if (age < phase2StartAge) {
+            depositY = d.saveMonth * 12;
+            const endCap = (startCap + depositY) * (1 + r);
+            growthY = endCap - startCap - depositY;
+            cap = endCap;
+          } else if (age >= phase2StartAge && age < phase3StartAge) {
+            const endCap = startCap * (1 + r);
+            growthY = endCap - startCap;
+            cap = endCap;
+          } else if (age >= phase3StartAge && age < phase4StartAge) {
+            const withdrawRate = 0.04;
+            w4Y = startCap * withdrawRate;
+            growthY = w4Y;
+            cap = startCap;
+          } else if (age >= phase4StartAge && age < phase4StartAge + phase4Years) {
+            const yearsLeft = (phase4StartAge + phase4Years) - age;
+            if (yearsLeft > 0 && startCap > 0) {
+              wSpendY = startCap / yearsLeft;
+              cap = Math.max(0, startCap - wSpendY);
+              growthY = 0;
+            } else {
+              cap = startCap;
+            }
+          } else {
+            cap = startCap;
+          }
+
+          depArr.push(depositY);
+          growthArr.push(growthY);
+          w4Arr.push(w4Y);
+          wSpendArr.push(wSpendY);
+          phaseCapArr.push(cap);
+        }
+
+        const withdrawData = {
+          labels,
+          datasets: [
+            { type: 'bar', label: 'Insättningar / år', data: depArr, stack: 'flows', backgroundColor: 'rgba(234,179,8,0.28)' },
+            { type: 'bar', label: 'Värdeökning / år', data: growthArr, stack: 'flows', backgroundColor: 'rgba(148,163,184,0.25)' },
+            { type: 'bar', label: 'Uttag 4% / år', data: w4Arr, stack: 'flows', backgroundColor: 'rgba(234,179,8,0.42)' },
+            { type: 'bar', label: 'Uttag förbrukning / år', data: wSpendArr, stack: 'flows', backgroundColor: 'rgba(248,113,113,0.30)' },
+            { type: 'line', label: 'ISK-kapital', data: phaseCapArr, borderWidth: 3, borderColor: '#eab308', pointRadius: 0, tension: 0.25, yAxisID: 'y1' }
+          ]
+        };
+
+        const withdrawOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const label = ctx.dataset.label || '';
+                  if (ctx.dataset.type === 'line') return `${label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr`;
+                  return `${label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr/år`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { stacked: true, ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.18)' } },
+            y: {
+              stacked: true, position: 'left',
+              ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) },
+              grid: { color: 'rgba(148,163,184,0.18)' }
+            },
+            y1: {
+              position: 'right',
+              ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        };
+
+        if (withdrawChart) withdrawChart.destroy();
+        withdrawChart = new Chart(withdrawCtx, { type: 'bar', data: withdrawData, options: withdrawOptions, plugins: [bringLinesFront] });
+
+        const overviewData = {
+          labels,
+          datasets: [
+            { type: 'bar', label: 'Bruttolön/mån', data: grossArr, stack: 'income', backgroundColor: 'rgba(148,163,184,0.25)' },
+            { type: 'bar', label: 'Sparkvot till ISK/mån', data: saveArr, stack: 'income', backgroundColor: 'rgba(234,179,8,0.25)' },
+            { type: 'line', label: 'ISK-kapital', data: iskArr, borderWidth: 3, borderColor: '#eab308', pointRadius: 0, tension: 0.25, yAxisID: 'y1' }
+          ]
+        };
+
+        const overviewOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { labels: { color: '#e5e7eb' } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  if (ctx.dataset.type === 'line') return `${ctx.dataset.label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr`;
+                  return `${ctx.dataset.label}: ${Math.round(ctx.parsed.y).toLocaleString('sv-SE')} kr/mån`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { stacked: true, ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.18)' } },
+            y: {
+              stacked: true, position: 'left',
+              ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) },
+              grid: { color: 'rgba(148,163,184,0.18)' }
+            },
+            y1: {
+              position: 'right',
+              ticks: { color: '#e5e7eb', callback: (v) => new Intl.NumberFormat('sv-SE', { maximumFractionDigits: 0 }).format(v) },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        };
+
+        if (overviewChart) overviewChart.destroy();
+        overviewChart = new Chart(overviewCtx, { type: 'bar', data: overviewData, options: overviewOptions, plugins: [bringLinesFront] });
+      }
+
+      Object.values(eduRefs).forEach(input => input.addEventListener('input', renderCharts));
+      renderCharts();
+    })();
+  </script>
+</body>
+</html>

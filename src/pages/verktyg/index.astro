@@ -27,6 +27,21 @@ const tools = [
     imgSrc: "/images/fireochpension.png",
   },
   {
+    title: "FIRE & pension – guide",
+    desc:
+      "Steg-för-steg-guide: antaganden, fält och tolkning av resultaten.",
+    href: "/verktyg/fire-pension-guide/",
+    guideHref: "/verktyg/fire-pension/",
+    guideLabel: "Öppna kalkylatorn →",
+    bullets: [
+      "Vad varje fält betyder",
+      "Hur du tolkar resultatet",
+      "Vanliga misstag och rimlighetstester",
+    ],
+    imgAlt: "FIRE och pension – guide",
+    imgSrc: "/images/fireochpensionguide.png",
+  },
+  {
     title: "Jag & mitt AB",
     desc:
       "För dig som driver aktiebolag och vill optimera mellan lön, utdelning och tjänstepension.",
@@ -82,6 +97,8 @@ const tools = [
             <img
               src={t.imgSrc}
               alt={t.imgAlt}
+              width="56"
+              height="56"
               class="h-14 w-14 rounded-xl border border-[var(--border)] bg-[var(--surface)] object-cover"
               loading="lazy"
             />

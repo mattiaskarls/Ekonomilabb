@@ -15,30 +15,36 @@ const fillResources = allResources.filter((r) => !r.data.featured);
 const selectedResources = [...featuredResources, ...fillResources].slice(0, 3);
 
 const btnPrimary =
-  "inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-5 py-3 transition";
+  "inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-5 py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]";
 
 const btnSecondary =
-  "inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:text-[var(--gold)] hover:border-[var(--gold)] font-medium px-5 py-3 transition";
+  "inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:text-[var(--gold)] hover:border-[var(--gold)] font-medium px-5 py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]";
 
 const card =
-  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70";
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 transition hover:border-[var(--gold)]";
 
 const cardInner = "p-5 space-y-4";
 
 const subtleBtn =
-  "inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)] text-[var(--text)] px-4 py-2 transition";
+  "inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)] text-[var(--text)] px-4 py-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]";
 
 const textLink =
-  "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition";
+  "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)] rounded";
+
+const smallCard =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70 p-5 transition hover:border-[var(--gold)]";
 ---
 
-<BaseLayout title="Ekonomismedjan – smid din framtida ekonomi">
+<BaseLayout
+  title="Ekonomismedjan – smid din framtida ekonomi"
+  description="Verktyg och guider för att förstå din hela ekonomi: lön, sparande, pension och ev företagande. Räkna på konsekvenserna innan du tar beslut."
+>
   <!-- HERO -->
-  <section class="pt-6 pb-12">
-    <div class="text-center space-y-6">
+  <section class="pt-6 pb-10">
+    <div class="text-center space-y-5">
       <div class="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-1 text-xs text-[var(--text-muted)]">
         <span class="h-2 w-2 rounded-full bg-[var(--gold)]"></span>
-        Verktyg + guider för att smida din ekonomi
+        Verktyg + guider för din ekonomi
       </div>
 
       <h1 class="text-3xl md:text-4xl font-semibold tracking-tight">
@@ -46,23 +52,108 @@ const textLink =
       </h1>
 
       <p class="max-w-3xl mx-auto text-base md:text-lg leading-relaxed">
-        Du jobbar, sparar på ISK och bygger pensionskapital. Men hur hänger allt ihop över tid?
-        När kan du sluta jobba? Hur påverkar lön, sparande och företagande varandra?
-      </p>
-
-      <p class="max-w-3xl mx-auto text-sm md:text-base text-[var(--text-muted)]">
-        Ekonomismedjan hjälper dig modellera helheten så att du fattar beslut baserat på siffror – inte känsla.
+        Här kan du lära dig mer om din ekonomi och använda avancerade verktyg för att förstå hur din ekonomi ser ut idag samt hur den kommer att se ut i framtiden beroende på de val du gör nu.<br>
+        Förstå sambanden mellan lön, sparande och pension. <br>När kan du gå i pension?<br> Hur mycket behöver du spara?
       </p>
 
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-        <a href="/verktyg/" class={btnPrimary}>Utforska verktygen</a>
-        <a href="/kunskap/" class={btnSecondary}>Börja med kunskap</a>
+        <a href="/verktyg/fire-pension/" class={btnPrimary}>
+          Räkna på FIRE & pension
+        </a>
+
       </div>
     </div>
   </section>
 
-  <!-- FEATURE BLOCKS -->
+  <!-- START HERE / PATHS -->
   <section class="pb-14">
+    <div class="grid gap-6 md:grid-cols-3">
+      <div class={smallCard}>
+        <h2 class="text-lg font-semibold">Över 40? Börja här!</h2>
+        <p class="text-sm text-[var(--text-muted)] mt-2">
+          Har du koll på din intjänade pension, och vilken pension du kommer att få när du slutar arbeta?
+          Om inte - då är det hög tid nu!
+        </p>
+
+        <ol class="mt-4 text-sm space-y-3">
+          <li class="flex gap-3">
+            <span class="text-[var(--gold)] font-semibold">1</span>
+            <span>
+              Gå till <a href="https://www.minpension.se" target="_blank"={textLink}>MinPension.se</a> och se hur mycket du har tjänat in i Allmän Pension och Tjänstepension. Skriv ner dessa siffror och återkom sen hit.
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-[var(--gold)] font-semibold">2</span>
+            <span>
+              Gå till guiden för FIRE & Pensionskalylatorn och gå igenom de olika stegen för att förstå hur pensionskapital byggs upp och vad FIRE innebär
+
+        <div class="pt-4">
+          <a href="/verktyg/fire-pension-guide/" class={subtleBtn}>FIRE & pension - Guide →</a>
+        </div>
+
+
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-[var(--gold)] font-semibold">3</span>
+            <span>
+              Sen är du redo att modellera din framtida ekonomi med lön, pension och sparande/FIRE i den stora kalkylatorn.
+              <div class="pt-4">
+                <a href="/verktyg/fire-pension/" class={subtleBtn}>FIRE & pension - Kalkylatorn →</a>
+              </div>
+
+
+            </span>
+          </li>
+        </ol>
+
+
+      </div>
+
+      <div class={smallCard}>
+        <h2 class="text-lg font-semibold">Vill du lära dig mer om din privata ekonomi?</h2>
+        <p class="text-sm text-[var(--text-muted)] mt-2">
+          Vet du vad FIRE står för?<br>
+          Vad 4%-regeln innebär?<br>
+          Skillnad på att spara och investera?
+        </p>
+
+        <div class="mt-4 space-y-2">
+          <a href="/kunskap/" class={subtleBtn}>Kunskap →</a><br>
+          <a href="/verktyg/fire-verktyg/" class={subtleBtn}>Verktyg för FIRE →</a>
+        </div>
+
+        <p class="mt-4 text-xs text-[var(--text-muted)]">
+          Tips: starta med dina riktiga siffror. Moddelera sen olika scenarier.
+        </p>
+      </div>
+
+      <div class={smallCard}>
+        <h2 class="text-lg font-semibold">Har du ett eget AB, tex ett konsultbolag?</h2>
+        <p class="text-sm text-[var(--text-muted)] mt-2">
+          När man har ett eget aktiebolag finns det stora möjligheter att optimera sin ekonomi genom att ta ut rätt lön, utdelning och avsätta pengar till sin tjänstepension.
+          Driver du bolag? Lär dig hur skatt för dig privat och ditt bolag påverkar din framtida ekonomi.
+        </p>
+
+        <div class="mt-4 space-y-2">
+          <a href="/verktyg/jag-och-mitt-ab/" class={subtleBtn}>Jag & mitt AB →</a>
+          <a href="/resurser/tagg/aktiebolag/" class={subtleBtn}>Resurser för företagare →</a>
+        </div>
+
+        <p class="mt-4 text-xs text-[var(--text-muted)]">
+          Obs: verktygen bygger på förenklade antaganden. Poängen är förståelse och planering.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED TOOLS / GUIDES (keeps your “cards”, but sharper purpose) -->
+  <section class="pb-14">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold">Utvalda verktyg</h2>
+      <a href="/verktyg/" class={textLink}>Visa alla →</a>
+    </div>
+
     <div class="grid gap-6 md:grid-cols-3">
       {[
         {
@@ -70,11 +161,7 @@ const textLink =
           image: "/images/fireochpension.png",
           alt: "FIRE och pension – ikon",
           text: "Modellera lön, ISK och pension – se helheten över livet.",
-          bullets: [
-            "När kan du sluta jobba?",
-            "Månadsinkomst efter FIRE",
-            "ISK: uppbyggnad → uttag",
-          ],
+          bullets: ["När kan du sluta jobba?", "Månadsinkomst efter FIRE", "ISK: uppbyggnad → uttag"],
           tool: "/verktyg/fire-pension/",
         },
         {
@@ -82,24 +169,16 @@ const textLink =
           image: "/images/jagochmittab.png",
           alt: "Jag och mitt AB – ikon",
           text: "För dig med aktiebolag – förstå lön, utdelning och TJP.",
-          bullets: [
-            "Jämför scenarier",
-            "Effekt på bolag & privat",
-            "Steg-för-steg-guide",
-          ],
+          bullets: ["Jämför scenarier", "Effekt på bolag & privat", "Steg-för-steg-guide"],
           tool: "/verktyg/jag-och-mitt-ab/",
         },
         {
-          title: "Kunskap & resurser",
-          image: "/images/kunskap.png",
-          alt: "Kunskap och resurser – ikon",
-          text: "Principer, artiklar och samlade resurser.",
-          bullets: [
-            "ISK & långsiktighet",
-            "FIRE som plan",
-            "Resurser (sen affiliate)",
-          ],
-          tool: "/kunskap/",
+          title: "Snabbverktyg",
+          image: "/images/verktyg.png",
+          alt: "Snabbverktyg – ikon",
+          text: "Snabba överslag: ränta-på-ränta, 4%-regeln och sanity checks.",
+          bullets: ["Månadssparande & tillväxt", "Uttagsnivåer", "Snabb verklighetskontroll"],
+          tool: "/verktyg/fire-verktyg/",
         },
       ].map((c) => (
         <div class={card}>
@@ -107,25 +186,25 @@ const textLink =
             <img
               src={c.image}
               alt={c.alt}
+              width="48"
+              height="48"
               class="h-12 w-12 object-contain"
               loading="lazy"
             />
 
-            <h2 class="text-lg font-semibold">{c.title}</h2>
+            <h3 class="text-lg font-semibold">{c.title}</h3>
             <p class="text-sm text-[var(--text-muted)]">{c.text}</p>
 
             <ul class="text-sm space-y-1">
               {c.bullets.map((b) => (
                 <li class="flex gap-2">
                   <span class="text-[var(--gold)]">•</span>
-                  {b}
+                  <span>{b}</span>
                 </li>
               ))}
             </ul>
 
-            <a href={c.tool} class={subtleBtn}>
-              Öppna →
-            </a>
+            <a href={c.tool} class={subtleBtn}>Öppna →</a>
           </div>
         </div>
       ))}
@@ -133,7 +212,7 @@ const textLink =
   </section>
 
   <!-- LATEST -->
-  <section class="pb-16">
+  <section class="pb-14">
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-semibold">Senaste artiklar</h2>
       <a href="/kunskap/" class={textLink}>Visa alla →</a>
@@ -143,7 +222,7 @@ const textLink =
       {latestPosts.map((post) => (
         <a
           href={`/kunskap/${post.slug}/`}
-          class="block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 hover:border-[var(--gold)] transition"
+          class="block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 hover:border-[var(--gold)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
         >
           <p class="text-xs text-[var(--text-muted)]">
             {post.data.date.toLocaleDateString("sv-SE")}
@@ -157,7 +236,35 @@ const textLink =
     </div>
   </section>
 
-  <!-- FOOTER NOTE -->
+  <!-- RESOURCES (you already fetch them; now we use them) -->
+  <section class="pb-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold">Resurser (utvalda)</h2>
+      <a href="/resurser/" class={textLink}>Visa alla →</a>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-3">
+      {selectedResources.map((r) => (
+        <a
+          href={`/resurser/${r.slug}/`}
+          class="block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 hover:border-[var(--gold)] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
+        >
+          <p class="text-xs text-[var(--text-muted)]">
+            {r.data.date.toLocaleDateString("sv-SE")}
+            {r.data.featured ? " · Utvald" : ""}
+          </p>
+          <h3 class="text-lg font-semibold mt-1">{r.data.title}</h3>
+          {r.data.excerpt ? (
+            <p class="text-sm text-[var(--text-muted)] mt-2">
+              {r.data.excerpt}
+            </p>
+          ) : null}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- DISCLAIMER -->
   <section class="pb-4 border-t border-[var(--border)] pt-6">
     <p class="text-xs text-[var(--text-muted)] max-w-3xl">
       Disclaimer: Innehållet är utbildning och allmän information – inte personlig investeringsrådgivning.
