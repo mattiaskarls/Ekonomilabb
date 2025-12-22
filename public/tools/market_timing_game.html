@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Market timing – Ekonomismedjan</title>
+
+  <!-- Använd samma theme-variabler som sajten -->
+  <link rel="stylesheet" href="../../src/styles/global.css">
+
+  <style>
+    /* Minimal “layout css” som utnyttjar dina CSS-variabler */
+    :root { color-scheme: dark; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .stack { display: grid; gap: 12px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+    }
+    @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+
+    .card {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      background: rgba(17,21,26,0.60); /* likt bg-[var(--surface)]/60 */
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 650;
+      margin: 0;
+    }
+    .muted {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* Chip-knappar i samma anda som fire-pension (border/surface-soft + gold hover) :contentReference[oaicite:4]{index=4} */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(21,26,33,0.60); /* surface-soft/60 */
+      color: var(--text);
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color .15s ease, color .15s ease, background .15s ease, transform .05s ease;
+    }
+    .chip:hover { border-color: var(--gold); color: var(--gold); }
+    .chip:active { transform: translateY(1px); }
+    .chip.primary { border-color: rgba(212,175,55,0.55); }
+    .chip:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+    .btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .split {
+      display: grid;
+      gap: 12px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 340px;
+      display: block;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .controls { display: grid; gap: 12px; margin-top: 10px; }
+    .control {
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    /* === RANGE (guld) === */
+    input[type="range"]{
+      width:100%;
+      -webkit-appearance:none;
+      appearance:none;
+      background: linear-gradient(
+        to right,
+        rgba(212,175,55,0.70) 0%,
+        rgba(212,175,55,0.70) var(--pct, 25%),
+        rgba(255,255,255,0.10) var(--pct, 25%),
+        rgba(255,255,255,0.10) 100%
+      );
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 999px;
+      height: 8px;
+      accent-color: var(--gold);
+    }
+    input[type="range"]:focus { outline: none; }
+
+    /* WebKit */
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:8px;
+      border-radius:999px;
+      background: transparent;
+      border: none;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:18px; height:18px;
+      border-radius:999px;
+      margin-top:-6px;
+      background: var(--gold);
+      border: 2px solid rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+    }
+
+    /* Firefox */
+    input[type="range"]::-moz-range-track{
+      height:8px;
+      border-radius:999px;
+      background: transparent;
+      border: none;
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:18px; height:18px;
+      border-radius:999px;
+      background: var(--gold);
+      border: 2px solid rgba(0,0,0,0.35);
+    }
+    input[type="range"]::-moz-range-progress{
+      height:8px;
+      border-radius:999px;
+      background: transparent;
+    }
+
+
+    .mono {
+      font-variant-numeric: tabular-nums;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+    .stat {
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .stat .k { font-size: 12px; color: var(--text-muted); }
+    .stat .v { margin-top: 2px; font-size: 18px; font-weight: 700; }
+    .hr { height: 1px; background: rgba(255,255,255,0.06); margin: 12px 0; }
+
+    /* allocation bar */
+    .alloc { margin-top: 10px; display: grid; gap: 8px; }
+    .barOuter {
+      height: 16px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+    }
+    .barCash { height: 100%; background: rgba(212,175,55,0.75); }   /* gold-ish */
+    .barInv  { height: 100%; background: rgba(154,163,173,0.65); }  /* steel-ish */
+
+    .legend { display:flex; gap: 10px; flex-wrap: wrap; color: var(--text-muted); font-size: 12px; }
+    .pill {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+
+    /* Game over modal */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    .overlay.show { display: flex; }
+
+    .modal {
+      width: min(760px, 100%);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(17,21,26,0.92);
+      box-shadow: 0 18px 70px rgba(0,0,0,0.55);
+      padding: 16px;
+    }
+    .modal h2 { margin: 0 0 8px; font-size: 18px; }
+    .modal p { margin: 8px 0; line-height: 1.45; color: var(--text); }
+    .modal .muted { color: var(--text-muted); }
+    .modal .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+    /* High-score list */
+    #scoreList { color: var(--text-muted); }
+    #scoreList li { margin: 6px 0; }
+    
+    input[type="text"] {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      outline: none;
+    }
+
+    /* använder din focus-ring via :focus-visible från global.css :contentReference[oaicite:5]{index=5} */
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel stack">
+      <div class="stack" style="gap:6px;">
+        <h1 class="title">Market timing</h1>
+        <div class="muted">- 3 år historik synligt när spelet startar. <br>- Framtiden är dold tills du spolar fram. <br>- Spelet pågår i 10 år (120 mån)<br>- Försök att slå 'Köp&Behåll' och 'Månadsspar' och se hur lätt det är...</div>
+      </div>
+
+      <div class="row">
+        <!-- LEFT -->
+        <div class="panel">
+          <canvas id="chart" width="1000" height="340"></canvas>
+
+          <div class="btnrow" style="margin-top:12px;">
+            <button class="chip primary" id="btnNew">Ny bana</button>
+            <button class="chip" id="btnWait">Vänta (+1 månad)</button>
+            <button class="chip" id="btnFwd6">+6 månader</button>
+            <button class="chip" id="btnFwd12">+12 månader</button>
+            <button class="chip" id="btnToEnd">Till slut</button>
+          </div>
+
+          <div class="controls">
+            <div class="control">
+              <label>
+                <span>Köp (% av cash)</span>
+                <span class="mono"><span id="buyPctLbl">25</span>%</span>
+              </label>
+              <input id="buyPct" type="range" min="0" max="100" step="1" value="25" />
+              <div class="btnrow" style="margin-top:10px;">
+                <button class="chip" id="btnBuy">Köp</button>
+                <button class="chip" id="btnBuyAll">Köp 100%</button>
+              </div>
+            </div>
+
+            <div class="control">
+              <label>
+                <span>Sälj (% av innehav)</span>
+                <span class="mono"><span id="sellPctLbl">25</span>%</span>
+              </label>
+              <input id="sellPct" type="range" min="0" max="100" step="1" value="25" />
+              <div class="btnrow" style="margin-top:10px;">
+                <button class="chip" id="btnSell">Sälj</button>
+                <button class="chip" id="btnSellAll">Sälj 100%</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="muted">Markörer: grön ring = K (köp), röd ring = S (sälj), med %-etikett. Axlar: index=100 vid start av historik.</div>
+
+          <div class="hr"></div>
+
+          <div class="panel" style="padding:12px; background: rgba(17,21,26,0.40);">
+            <div class="muted" style="margin-bottom:6px;"><strong>Spelparametrar</strong></div>
+            <div class="muted mono" id="stCfg"></div>
+          </div>
+
+          <div class="panel" style="padding:12px; background: rgba(17,21,26,0.40);">
+            <div class="muted" style="margin-bottom:6px;"><strong>Så genereras datan</strong></div>
+            <div class="muted">
+              Grafen är simulerad med <span class="mono">Geometric Brownian Motion (GBM)</span>.
+              Varje månad uppdateras priset med en slumpterm (volatilitet) och en långsiktig drift (förväntad avkastning).
+              Det ger “börslik” rörelse utan att använda verklig historik.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel">
+          <div class="grid3">
+            <div class="stat">
+              <div class="k">Synlig period</div>
+              <div class="v mono" id="stVisible">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Index (nu)</div>
+              <div class="v mono" id="stPrice">—</div>
+            </div>
+            <div class="stat">
+              <div class="k">Månader kvar</div>
+              <div class="v mono" id="stYearsLeft">—</div>
+            </div>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="grid2">
+            <div class="stat">
+              <div class="k">Du: Total</div>
+              <div class="v mono" id="stYouTotal">—</div>
+              <div class="muted mono" id="stYouSub"></div>
+
+              <div class="alloc">
+                <div class="muted mono" id="stCashInvLine">Cash —% / —% Innehav</div>
+                <div class="barOuter">
+                  <div class="barCash" id="barCash" style="width:50%"></div>
+                  <div class="barInv" id="barInv" style="width:50%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <div class="stat">
+              <div class="k">Köp & behåll: Total</div>
+              <div class="v mono" id="stBH">—</div>
+              <div class="muted mono" id="stBHSub"></div>
+            </div>
+
+            <div class="stat">
+              <div class="k">Månadsspar (hela perioden): Total</div>
+              <div class="v mono" id="stDCA">—</div>
+              <div class="muted mono" id="stDCASub"></div>
+            </div>
+
+            <div class="stat">
+              <div class="k">Ledning</div>
+              <div class="v mono" id="stLead">—</div>
+              <div class="muted" id="stLeadSub"></div>
+            </div>
+          </div>
+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2>Game Over</h2>
+      <div class="muted mono" id="goMeta">—</div>
+
+      <p id="goText1"></p>
+      <p id="goText2"></p>
+      <p id="goText3"></p>
+
+      <div class="actions">
+        <button class="chip primary" id="btnReplaySame">Spela samma bana igen</button>
+        <button class="chip" id="btnReplayNew">Nytt spel</button>
+        <button class="chip" id="btnCloseModal">Stäng</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="muted"><strong>High-score (lokalt i din browser)</strong></div>
+      <div class="btnrow" style="margin-top:10px;">
+        <input id="nameInput" type="text" placeholder="Namn (valfritt)" />
+        <button class="chip" id="btnSaveScore">Spara resultat</button>
+        <button class="chip" id="btnClearScores">Rensa</button>
+      </div>
+      <div class="muted" id="saveHint" style="margin-top:6px;">Sparar bara på denna dator (localStorage).</div>
+      <ol class="mono" id="scoreList" style="margin:10px 0 0; padding-left: 18px;"></ol>
+    </div>
+  </div>
+
+<script>
+/* ========= GBM ========= */
+function randnBM() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+function generateGBM({ S0=1000, mu_annual=0.07, sigma_annual=0.20, steps=240, freq="monthly" } = {}) {
+  const dt = freq === "daily" ? (1/252) : (1/12);
+  const prices = new Array(steps + 1);
+  prices[0] = S0;
+  for (let t = 0; t < steps; t++) {
+    const z = randnBM();
+    const lr = (mu_annual - 0.5 * sigma_annual * sigma_annual) * dt + sigma_annual * Math.sqrt(dt) * z;
+    prices[t + 1] = prices[t] * Math.exp(lr);
+  }
+  return { prices };
+}
+
+/* ======== utils ======== */
+const el = (id) => document.getElementById(id);
+function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+function fmtSEK(x) { return Math.round(x).toLocaleString("sv-SE"); }
+function fmt1(x) { return (Math.round(x * 10) / 10).toFixed(1); }
+
+/* ======= portfolio ======= */
+function portfolio(cash) { return { cash, units: 0, avgCost: 0 }; }
+function valueOf(p, price) { return p.cash + p.units * price; }
+function buyPct(p, price, pct) {
+  const pc = clamp(pct, 0, 100);
+  const amount = p.cash * (pc / 100);
+  if (amount <= 0) return 0;
+  const u = amount / price;
+  const totalCost = p.avgCost * p.units + price * u;
+  const totalUnits = p.units + u;
+  p.cash -= amount;
+  p.units = totalUnits;
+  p.avgCost = totalUnits > 0 ? totalCost / totalUnits : 0;
+  return amount;
+}
+function sellPct(p, price, pct) {
+  const pc = clamp(pct, 0, 100);
+  const u = p.units * (pc / 100);
+  if (u <= 0) return 0;
+  const amount = u * price;
+  p.cash += amount;
+  p.units -= u;
+  if (p.units <= 1e-12) { p.units = 0; p.avgCost = 0; }
+  return amount;
+}
+
+/* ======== game ======== */
+let prices = [];
+let game = null;
+
+function randInt(a, b) { return Math.floor(a + Math.random() * (b - a + 1)); }
+
+function createGame({
+  prices,
+  startCash = 1_000_000,
+  lookback = 36,       // 3 år
+  horizon = 120,       // 10 år
+  mu_annual = 0.07,
+  sigma_annual = 0.20,
+  buyHoldPctDay1 = 100,
+  dcaPctPerMonth = 10,
+  dcaMonths = 120,     // månadsspar hela perioden (10 år)
+  forcedT0 = null,
+} = {}) {
+  const minT0 = lookback;
+  const maxT0 = (prices.length - 1) - horizon;
+  const t0 = forcedT0 != null ? forcedT0 : randInt(minT0, maxT0);
+
+  const g = {
+    prices,
+    cfg: { startCash, lookback, horizon, mu_annual, sigma_annual, buyHoldPctDay1, dcaPctPerMonth, dcaMonths },
+    t0,
+    tVisible: t0,
+    tEnd: t0 + horizon,
+
+    player: portfolio(startCash),
+    buyHold: portfolio(startCash),
+    dca: portfolio(startCash),
+
+    trades: [],
+  };
+
+  const p0 = prices[t0];
+
+  // köp&behåll vid start
+  if (buyHoldPctDay1 > 0) {
+    const amt = buyPct(g.buyHold, p0, buyHoldPctDay1);
+    g.trades.push({ who:"buyHold", type:"buy", t:t0, price:p0, pct:buyHoldPctDay1, amount:amt });
+  }
+
+  // DCA startmånad
+  if (dcaMonths > 0 && dcaPctPerMonth > 0) {
+    const amt = buyPct(g.dca, p0, dcaPctPerMonth);
+    g.trades.push({ who:"dca", type:"buy", t:t0, price:p0, pct:dcaPctPerMonth, amount:amt });
+  }
+
+  return g;
+}
+
+function canAdvance(g) { return g.tVisible < g.tEnd; }
+
+function advance(g, months=1) {
+  if (!canAdvance(g)) return;
+  const target = Math.min(g.tVisible + months, g.tEnd);
+
+  while (g.tVisible < target) {
+    g.tVisible += 1;
+
+    const priceNow = g.prices[g.tVisible];
+    const m = g.tVisible - g.t0; // 0,1,2...
+
+    // DCA månad 1..dcaMonths-1
+    if (m >= 1 && m < g.cfg.dcaMonths && g.cfg.dcaPctPerMonth > 0) {
+      const amt = buyPct(g.dca, priceNow, g.cfg.dcaPctPerMonth);
+      g.trades.push({ who:"dca", type:"buy", t:g.tVisible, price:priceNow, pct:g.cfg.dcaPctPerMonth, amount:amt });
+    }
+  }
+
+  if (!canAdvance(g)) showGameOver();
+}
+
+function buy(g, pct) {
+  const priceNow = g.prices[g.tVisible];
+  const amt = buyPct(g.player, priceNow, pct);
+  if (amt > 0) g.trades.push({ who:"player", type:"buy", t:g.tVisible, price:priceNow, pct, amount:amt });
+}
+
+function sell(g, pct) {
+  const priceNow = g.prices[g.tVisible];
+  const amt = sellPct(g.player, priceNow, pct);
+  if (amt > 0) g.trades.push({ who:"player", type:"sell", t:g.tVisible, price:priceNow, pct, amount:amt });
+}
+
+function snapshot(g) {
+  const priceNow = g.prices[g.tVisible];
+  const you = { cash:g.player.cash, units:g.player.units, avgCost:g.player.avgCost, value:valueOf(g.player, priceNow) };
+  const bh  = { cash:g.buyHold.cash, units:g.buyHold.units, value:valueOf(g.buyHold, priceNow) };
+  const dca = { cash:g.dca.cash, units:g.dca.units, value:valueOf(g.dca, priceNow) };
+  return { priceNow, you, bh, dca };
+}
+
+/* ======== chart drawing (med axlar, normalisering, nu-gap) ======== */
+const canvas = el("chart");
+const ctx = canvas.getContext("2d");
+
+const PAD = { left: 58, right: 24, top: 16, bottom: 34 };
+const NOW_GAP_PX = 120;
+
+function roundRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+rr, y);
+  ctx.arcTo(x+w, y, x+w, y+h, rr);
+  ctx.arcTo(x+w, y+h, x, y+h, rr);
+  ctx.arcTo(x, y+h, x, y, rr);
+  ctx.arcTo(x, y, x+w, y, rr);
+  ctx.closePath();
+}
+
+function drawBadge(x, y, letter, text, isBuy) {
+  const stroke = isBuy ? "#1a7f37" : "#c62828";
+  const fill = "rgba(11,14,17,0.90)"; // match bg
+  const textColor = stroke;
+
+  ctx.save();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = stroke;
+  ctx.fillStyle = fill;
+
+  ctx.beginPath();
+  ctx.arc(x, y, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = textColor;
+  ctx.font = "700 11px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(letter, x, y);
+
+  const pad = 6;
+  const flagText = `${letter}-${text}`;
+  ctx.font = "700 11px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  const w = ctx.measureText(flagText).width;
+  const fx = x + 14;
+  const fy = y - 12;
+
+  ctx.fillStyle = "rgba(17,21,26,0.92)";
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = 2;
+  roundRect(ctx, fx, fy, w + pad*2, 18, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = textColor;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText(flagText, fx + pad, fy + 9);
+
+  ctx.restore();
+}
+
+
+function niceStep(rawStep) {
+  const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const n = rawStep / pow;
+  let nice;
+  if (n <= 1) nice = 1;
+  else if (n <= 2) nice = 2;
+  else if (n <= 5) nice = 5;
+  else nice = 10;
+  return nice * pow;
+}
+
+function computeNiceAxis(minVal, maxVal, maxTicks = 8) {
+  const range = Math.max(1e-9, maxVal - minVal);
+  const step = niceStep(range / (maxTicks - 1));
+  const niceMin = Math.floor(minVal / step) * step;
+  const niceMax = Math.ceil(maxVal / step) * step;
+  return { niceMin, niceMax, step };
+}
+
+function draw() {
+  const g = game;
+  const s = snapshot(g);
+
+  const leftT = g.t0 - g.cfg.lookback;
+  const rightT = g.tVisible;
+
+  const segmentRaw = prices.slice(leftT, rightT + 1);
+  const base = segmentRaw[0];
+  const segment = segmentRaw.map(p => (p / base) * 100);
+  const nowIndex = segment[segment.length - 1];
+
+  const W = canvas.width, H = canvas.height;
+  const plotX0 = PAD.left, plotX1 = W - PAD.right;
+  const plotY0 = PAD.top,  plotY1 = H - PAD.bottom;
+  const plotH = plotY1 - plotY0;
+
+  const xEnd = Math.max(plotX0 + 20, plotX1 - NOW_GAP_PX);
+  const xStart = plotX0;
+  const xW = xEnd - xStart;
+
+  const segMin = Math.min(...segment);
+  const segMax = Math.max(...segment);
+
+  // Dynamisk “nice” axel med ~8 tickar
+  const { niceMin: yMin, niceMax: yMax, step: yStep } = computeNiceAxis(segMin, segMax, 8);
+  const yRange = Math.max(1e-9, yMax - yMin);
+function xAt(i) {
+    if (segment.length === 1) return xStart;
+    return xStart + (i / (segment.length - 1)) * xW;
+  }
+  function yAt(v) {
+    return plotY1 - ((v - yMin) / yRange) * plotH;
+  }
+
+  ctx.clearRect(0,0,W,H);
+
+  // Y grid + labels
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.06)";
+  ctx.fillStyle = "rgba(225,231,235,0.75)";
+  ctx.lineWidth = 1;
+  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+
+  for (let yTick = yMin; yTick <= yMax + 1e-9; yTick += yStep) {
+    const yy = yAt(yTick);
+    ctx.beginPath();
+    ctx.moveTo(plotX0, yy);
+    ctx.lineTo(plotX1, yy);
+    ctx.stroke();
+    ctx.fillText((Math.abs(yStep) < 1 ? yTick.toFixed(1) : String(Math.round(yTick))), plotX0 - 8, yy);
+  }
+  ctx.restore();
+
+  // X baseline
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(plotX0, plotY1);
+  ctx.lineTo(plotX1, plotY1);
+  ctx.stroke();
+  ctx.restore();
+
+  // X ticks: bara år (var 12:e månad)
+  ctx.save();
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.fillStyle = "rgba(225,231,235,0.70)";
+  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+
+  const totalMonthsVisible = rightT - leftT;
+
+  for (let m = 0; m <= totalMonthsVisible; m += 12) {
+    const xx = xAt(m);
+    ctx.beginPath();
+    ctx.moveTo(xx, plotY1);
+    ctx.lineTo(xx, plotY1 + 6);
+    ctx.stroke();
+
+    const year = Math.floor(m / 12);
+    ctx.fillText(`Å${year}`, xx, plotY1 + 8);
+  }
+  ctx.restore();
+
+// Line
+  ctx.save();
+  ctx.strokeStyle = "rgba(212,175,55,0.85)"; // gold-ish line
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  segment.forEach((v, i) => {
+    const xx = xAt(i);
+    const yy = yAt(v);
+    if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  });
+  ctx.stroke();
+  ctx.restore();
+
+// Start marker (spelets start = t0)
+  const iStart = g.cfg.lookback; // segmentet börjar på t0-lookback
+  const xStartMarker = xAt(iStart);
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(225,231,235,0.22)";
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(xStartMarker, plotY0);
+  ctx.lineTo(xStartMarker, plotY1);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(225,231,235,0.70)";
+  ctx.font = "12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillText("Start", xStartMarker + 6, plotY0 + 2);
+  ctx.restore();
+
+  // “Now” marker
+  const xNow = xAt(segment.length - 1);
+  ctx.save();
+  ctx.strokeStyle = "rgba(212,175,55,0.35)";
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(xNow, plotY0);
+  ctx.lineTo(xNow, plotY1);
+  ctx.stroke();
+  ctx.restore();
+
+  // Player trade badges
+  const playerTrades = g.trades.filter(t => t.who === "player" && t.t >= leftT && t.t <= rightT);
+  for (const t of playerTrades) {
+    const i = t.t - leftT;
+    const v = (t.price / base) * 100;
+    const xx = xAt(i);
+    const yy = yAt(v);
+    const pctText = `${Math.round(t.pct)}%`;
+    if (t.type === "buy") drawBadge(xx, yy, "K", pctText, true);
+    if (t.type === "sell") drawBadge(xx, yy, "S", pctText, false);
+  }
+
+  // UI
+  const visibleMonthsSinceStart = g.tVisible - g.t0;
+  el("stVisible").textContent = `${-g.cfg.lookback}..+${visibleMonthsSinceStart} månader`;
+  el("stPrice").textContent = fmt1(nowIndex);
+  el("stYearsLeft").textContent = String(g.tEnd - g.tVisible);
+
+  const invValue = s.you.units * s.priceNow;
+  el("stYouTotal").textContent = fmtSEK(s.you.value);
+  el("stYouSub").textContent = `cash ${fmtSEK(s.you.cash)} | innehav ${fmtSEK(invValue)} | units ${s.you.units.toFixed(4)} | avg ${fmt1(s.you.avgCost)}`;
+
+  el("stBH").textContent = fmtSEK(s.bh.value);
+  el("stBHSub").textContent = `cash ${fmtSEK(s.bh.cash)} | units ${s.bh.units.toFixed(4)}`;
+
+  el("stDCA").textContent = fmtSEK(s.dca.value);
+  el("stDCASub").textContent = `cash ${fmtSEK(s.dca.cash)} | units ${s.dca.units.toFixed(4)}`;
+
+  // allocation
+  const total = s.you.cash + invValue;
+  const cashPct = total > 0 ? (s.you.cash / total) * 100 : 0;
+  const invPct = total > 0 ? (invValue / total) * 100 : 0;
+  el("barCash").style.width = `${cashPct}%`;
+  el("barInv").style.width = `${invPct}%`;
+  el("stCashInvLine").textContent = `Cash ${cashPct.toFixed(0)}% / ${invPct.toFixed(0)}% Innehav`;
+  const best = [
+    { name: "Du", v: s.you.value },
+    { name: "Köp&behåll", v: s.bh.value },
+    { name: "Månadsspar", v: s.dca.value },
+  ].sort((a,b)=>b.v-a.v);
+  const lead = best[0], runner = best[1];
+  const diff = lead.v - runner.v;
+  const diffPct = runner.v > 0 ? (diff / runner.v) * 100 : 0;
+  el("stLead").textContent = lead.name;
+  el("stLeadSub").textContent = `${fmtSEK(diff)} kr före tvåan (${diffPct.toFixed(1)}%)`;
+
+  el("stCfg").textContent =
+    `historik=${g.cfg.lookback}m | horizon=${g.cfg.horizon}m | start=${fmtSEK(g.cfg.startCash)} | BH=${g.cfg.buyHoldPctDay1}% | DCA=${g.cfg.dcaPctPerMonth}% x ${g.cfg.dcaMonths}m | mu=${g.cfg.mu_annual} sigma=${g.cfg.sigma_annual}`;
+
+  // buttons
+  const done = !canAdvance(g);
+  el("btnWait").disabled = done;
+  el("btnFwd6").disabled = done;
+  el("btnFwd12").disabled = done;
+  el("btnToEnd").disabled = done;
+
+  const canSellNow = g.player.units > 0;
+  el("btnSell").disabled = !canSellNow;
+  el("btnSellAll").disabled = !canSellNow;
+
+  window.game = g;
+  window.prices = prices;
+}
+
+/* ======== Game Over + High score ======== */
+function loadScores() {
+  return JSON.parse(localStorage.getItem("mtg_highscores") || "[]");
+}
+function saveScore(entry, limit = 10) {
+  const scores = loadScores();
+  scores.push(entry);
+  scores.sort((a,b) => b.finalValue - a.finalValue);
+  localStorage.setItem("mtg_highscores", JSON.stringify(scores.slice(0, limit)));
+}
+function clearScores() { localStorage.removeItem("mtg_highscores"); }
+function renderScores() {
+  const list = el("scoreList");
+  const scores = loadScores();
+  list.innerHTML = "";
+  scores.forEach((s, idx) => {
+    const li = document.createElement("li");
+    li.textContent = `${idx+1}. ${s.name} — ${fmtSEK(s.finalValue)} kr (BH ${fmtSEK(s.bhValue)}, MS ${fmtSEK(s.dcaValue)})`;
+    list.appendChild(li);
+  });
+}
+
+function showGameOver() {
+  const g = game;
+  const s = snapshot(g);
+
+  el("goMeta").textContent = `Period: ${g.cfg.horizon/12} år | Historik: ${g.cfg.lookback/12} år`;
+
+  el("goText1").textContent =
+    `Du lyckades öka värdet på din miljon till ${fmtSEK(s.you.value)} kr.`;
+
+  el("goText2").textContent =
+    `Hade du investerat allt initialt hade du under samma period haft ${fmtSEK(s.bh.value)} kr.`;
+
+  el("goText3").textContent =
+    `Hade du i stället månadssparat samma belopp under hela perioden hade du haft ${fmtSEK(s.dca.value)} kr nu. Vill du spela samma bana/data igen? Eller nytt spel?`;
+
+  el("overlay").classList.add("show");
+  renderScores();
+}
+
+function hideGameOver() { el("overlay").classList.remove("show"); }
+
+function resetPortfoliosKeepSameData() {
+  const cfg = game.cfg;
+  const sameT0 = game.t0;
+
+  game = createGame({
+    prices,
+    startCash: cfg.startCash,
+    lookback: cfg.lookback,
+    horizon: cfg.horizon,
+    mu_annual: cfg.mu_annual,
+    sigma_annual: cfg.sigma_annual,
+    buyHoldPctDay1: cfg.buyHoldPctDay1,
+    dcaPctPerMonth: cfg.dcaPctPerMonth,
+    dcaMonths: cfg.dcaMonths,
+    forcedT0: sameT0
+  });
+
+  // init slider fills
+  setRangePct(el("buyPct"));
+  setRangePct(el("sellPct"));
+
+  hideGameOver();
+  draw();
+}
+
+/* ======== UI wiring ======== */
+function setRangePct(rangeEl) {
+  const min = Number(rangeEl.min || 0);
+  const max = Number(rangeEl.max || 100);
+  const val = Number(rangeEl.value || 0);
+  const pct = ((val - min) / (max - min)) * 100;
+  rangeEl.style.setProperty("--pct", pct.toFixed(2) + "%");
+}
+
+el("buyPct").addEventListener("input", (e) => { el("buyPctLbl").textContent = e.target.value; setRangePct(e.target); });
+el("sellPct").addEventListener("input", (e) => { el("sellPctLbl").textContent = e.target.value; setRangePct(e.target); });
+
+el("btnNew").addEventListener("click", () => newRun());
+
+el("btnWait").addEventListener("click", () => { advance(game, 1); draw(); });
+el("btnFwd6").addEventListener("click", () => { advance(game, 6); draw(); });
+el("btnFwd12").addEventListener("click", () => { advance(game, 12); draw(); });
+el("btnToEnd").addEventListener("click", () => { advance(game, 100000); draw(); });
+
+el("btnBuy").addEventListener("click", () => { buy(game, Number(el("buyPct").value)); draw(); });
+el("btnBuyAll").addEventListener("click", () => { buy(game, 100); draw(); });
+
+el("btnSell").addEventListener("click", () => { sell(game, Number(el("sellPct").value)); draw(); });
+el("btnSellAll").addEventListener("click", () => { sell(game, 100); draw(); });
+
+el("btnReplaySame").addEventListener("click", () => resetPortfoliosKeepSameData());
+el("btnReplayNew").addEventListener("click", () => { hideGameOver(); newRun(); });
+el("btnCloseModal").addEventListener("click", () => hideGameOver());
+
+el("btnSaveScore").addEventListener("click", () => {
+  const name = (el("nameInput").value || "Anonym").trim().slice(0, 24);
+  const s = snapshot(game);
+
+  saveScore({
+    name,
+    finalValue: s.you.value,
+    bhValue: s.bh.value,
+    dcaValue: s.dca.value,
+    when: new Date().toISOString(),
+    t0: game.t0
+  });
+
+  renderScores();
+  el("saveHint").textContent = "Sparat!";
+  setTimeout(()=> el("saveHint").textContent = "Sparar bara på denna dator (localStorage).", 1200);
+});
+
+el("btnClearScores").addEventListener("click", () => {
+  clearScores();
+  renderScores();
+});
+
+function newRun() {
+  const mu = 0.07;
+  const sigma = 0.20;
+
+  const lookback = 36;
+  const horizon = 120;
+
+  const totalMonths = 360; // 30 år för random
+  const out = generateGBM({ S0: 1000, mu_annual: mu, sigma_annual: sigma, steps: totalMonths, freq: "monthly" });
+  prices = out.prices;
+
+  game = createGame({
+    prices,
+    startCash: 1_000_000,
+    lookback,
+    horizon,
+    mu_annual: mu,
+    sigma_annual: sigma,
+    buyHoldPctDay1: 100,
+    dcaPctPerMonth: 10,
+    dcaMonths: 120
+  });
+
+  hideGameOver();
+  draw();
+}
+
+// init
+newRun();
+</script>
+</body>
+</html>

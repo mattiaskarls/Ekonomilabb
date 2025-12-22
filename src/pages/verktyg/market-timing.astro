@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const chip =
+  "inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)]/60 text-[var(--text)] px-4 py-2 text-sm transition hover:border-[var(--gold)] hover:text-[var(--gold)]";
+
+const note =
+  "text-sm text-[var(--text-muted)] leading-relaxed";
+---
+
+<BaseLayout title="Market timing – spel">
+  <div class="h-[calc(100dvh-96px)] flex flex-col">
+    <header class="space-y-3 pb-4 flex-none">
+      <h1 class="text-2xl font-semibold">Market timing</h1>
+
+      <p class={note}>
+        Kom igen. Det är bara att köpa billigt och sälja dyrt. Hur svårt kan det vara?
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-1 sm:justify-start">
+        <a
+          href="/tools/market_timing_game.html"
+          target="_blank"
+          rel="noopener"
+          class={chip}
+        >
+          Öppna i ny flik →
+        </a>
+
+
+      </div>
+    </header>
+
+    <section class="flex-1 min-h-0 rounded-2xl border border-[var(--border)] bg-[var(--surface)]/60 overflow-hidden">
+      <iframe
+        src="/tools/market_timing_game.html"
+        title="Market timing – spel"
+        class="block w-full h-full"
+        style="border:0"
+        loading="lazy"
+      ></iframe>
+    </section>
+  </div>
+</BaseLayout>
