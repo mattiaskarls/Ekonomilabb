@@ -11,7 +11,8 @@ excerpt: "Alla säger det. Få lyckas. Här är varför."
 - Ett bättre alternativ
 
 ## Kärnidén
-I teorin är det enkelt.  
+I teorin är det enkelt. Köp när kursen är låg och sälj på topparna.<BR>
+![Tajma Marknaden](../../../public/images/tajmamarknaden.png) 
 I praktiken styrs marknaden av psykologi, inte logik.
 
 De flesta köper när det känns tryggt – och säljer när det gör ont.
@@ -19,9 +20,16 @@ De flesta köper när det känns tryggt – och säljer när det gör ont.
 ## Exempel
 **Börsfall:**
 
-- Media skriker kris
-- Sparare säljer
-- Marknaden vänder upp utan förvarning
+- Media skriker kris!
+- Sälj nu innan det blir ännu värre!
+- Marknaden vänder upp snabbt utan förvarning
+
+**Börseufori:**
+
+- Media skriver om vilka aktier som gör dig rik
+- Agda 83 år, blir framgångsrik "daytrader"
+- Marknaden går som tåget och alla pratar aktier
+- Börsen viker ner "över en natt"
 
 ## Vanliga misstag
 - Att tro att man kan förutse marknaden
@@ -30,4 +38,4 @@ De flesta köper när det känns tryggt – och säljer när det gör ont.
 ## Nästa steg
 Vill du bygga disciplin istället för tur?
 
-[Läs: Automatiskt månadssparande – varför det slår tajming](/kunskap/manadssparande/)
+[Prova att tajma marknaden i spelet här](/verktyg/market-timing/)

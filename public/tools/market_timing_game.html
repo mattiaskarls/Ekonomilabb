@@ -262,6 +262,7 @@
 
           <div class="btnrow" style="margin-top:12px;">
             <button class="chip primary" id="btnNew">Ny bana</button>
+            <button class="chip primary" id="btnStart">Starta spelet</button>
             <button class="chip" id="btnWait">Vänta (+1 månad)</button>
             <button class="chip" id="btnFwd6">+6 månader</button>
             <button class="chip" id="btnFwd12">+12 månader</button>
@@ -458,6 +459,12 @@ function sellPct(p, price, pct) {
 let prices = [];
 let game = null;
 
+// Intro/start state
+let started = false;
+let introAnimating = false;
+let introRightT = null; // render endpoint during intro animation
+let showHint = false;
+
 function randInt(a, b) { return Math.floor(a + Math.random() * (b - a + 1)); }
 
 function createGame({
@@ -630,12 +637,17 @@ function computeNiceAxis(minVal, maxVal, maxTicks = 8) {
   return { niceMin, niceMax, step };
 }
 
-function draw() {
+function draw(overrideRightT=null) {
   const g = game;
   const s = snapshot(g);
 
   const leftT = g.t0 - g.cfg.lookback;
-  const rightT = g.tVisible;
+  const rightT = (overrideRightT != null) ? overrideRightT : g.tVisible;
+
+  if (rightT < leftT) {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    return;
+  }
 
   const segmentRaw = prices.slice(leftT, rightT + 1);
   const base = segmentRaw[0];
@@ -696,7 +708,7 @@ function xAt(i) {
   ctx.stroke();
   ctx.restore();
 
-  // X ticks: bara år (var 12:e månad)
+  // X ticks: -3..0..10 (år relativt start)
   ctx.save();
   ctx.strokeStyle = "rgba(255,255,255,0.08)";
   ctx.fillStyle = "rgba(225,231,235,0.70)";
@@ -705,6 +717,7 @@ function xAt(i) {
   ctx.textBaseline = "top";
 
   const totalMonthsVisible = rightT - leftT;
+  const lookbackYears = Math.round(g.cfg.lookback / 12);
 
   for (let m = 0; m <= totalMonthsVisible; m += 12) {
     const xx = xAt(m);
@@ -713,8 +726,8 @@ function xAt(i) {
     ctx.lineTo(xx, plotY1 + 6);
     ctx.stroke();
 
-    const year = Math.floor(m / 12);
-    ctx.fillText(`Å${year}`, xx, plotY1 + 8);
+    const yearRel = Math.round(m / 12) - lookbackYears;
+    ctx.fillText(String(yearRel), xx, plotY1 + 8);
   }
   ctx.restore();
 
@@ -774,6 +787,40 @@ function xAt(i) {
     if (t.type === "sell") drawBadge(xx, yy, "S", pctText, false);
   }
 
+
+  // In-canvas hint after intro
+  if (showHint && !introAnimating) {
+    const msg1 = "Du har 1 MSEK.";
+    const msg2a = "Köp nu eller vänta på bättre läge";
+    const msg2b = "genom att spola fram tiden nedan.";
+    const msg3 = "Kör!";
+    const bw = 520;
+    const bh = 104;
+    const bx = Math.max(plotX0 + 10, xStartMarker - bw - 14);
+    const by = plotY0 + 18;
+    ctx.save();
+    ctx.fillStyle = "rgba(17,21,26,0.72)";
+    ctx.strokeStyle = "rgba(212,175,55,0.40)";
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, bx, by, bw, bh, 14);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "rgba(225,231,235,0.92)";
+    ctx.font = "800 16px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText(msg1, bx + 14, by + 12);
+    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+    ctx.fillStyle = "rgba(225,231,235,0.78)";
+    ctx.fillText(msg2a, bx + 12, by + 40);
+    ctx.fillText(msg2b, bx + 12, by + 60);
+    ctx.font = "800 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+    ctx.fillStyle = "rgba(212,175,55,0.95)";
+    ctx.fillText(msg3, bx + 14, by + 82);
+    ctx.restore();
+  }
+
+
   // UI
   const visibleMonthsSinceStart = g.tVisible - g.t0;
   el("stVisible").textContent = `${-g.cfg.lookback}..+${visibleMonthsSinceStart} månader`;
@@ -813,14 +860,17 @@ function xAt(i) {
 
   // buttons
   const done = !canAdvance(g);
-  el("btnWait").disabled = done;
-  el("btnFwd6").disabled = done;
-  el("btnFwd12").disabled = done;
-  el("btnToEnd").disabled = done;
+  const locked = !started || introAnimating;
+  el("btnWait").disabled = done || locked;
+  el("btnFwd6").disabled = done || locked;
+  el("btnFwd12").disabled = done || locked;
+  el("btnToEnd").disabled = done || locked;
 
   const canSellNow = g.player.units > 0;
-  el("btnSell").disabled = !canSellNow;
-  el("btnSellAll").disabled = !canSellNow;
+  el("btnSell").disabled = (!canSellNow) || locked;
+  el("btnSellAll").disabled = (!canSellNow) || locked;
+  el("btnBuy").disabled = locked;
+  el("btnBuyAll").disabled = locked;
 
   window.game = g;
   window.prices = prices;
@@ -890,6 +940,9 @@ function resetPortfoliosKeepSameData() {
   setRangePct(el("buyPct"));
   setRangePct(el("sellPct"));
 
+  started = true;
+  introAnimating = false;
+  showHint = false;
   hideGameOver();
   draw();
 }
@@ -903,21 +956,66 @@ function setRangePct(rangeEl) {
   rangeEl.style.setProperty("--pct", pct.toFixed(2) + "%");
 }
 
+
+function setControlsForIntro() {
+  started = false;
+  introAnimating = false;
+  introRightT = null;
+  showHint = false;
+  setRangePct(el("buyPct"));
+  setRangePct(el("sellPct"));
+}
+
+function dismissHint() { if (showHint) { showHint = false; } }
+
+function startIntro() {
+  if (introAnimating || started) return;
+  introAnimating = true;
+  showHint = false;
+
+  const g = game;
+  const leftT = g.t0 - g.cfg.lookback;
+  const startT = leftT;
+  const endT = g.t0;
+
+  const duration = 1100;
+  const tStart = performance.now();
+  let lastT = startT;
+
+  function frame(now) {
+    const p = Math.min(1, (now - tStart) / duration);
+    const t = Math.floor(startT + p * (endT - startT));
+    if (t !== lastT) lastT = t;
+    draw(lastT);
+    if (p < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      introAnimating = false;
+      started = true;
+      showHint = true;
+      draw(); // normal render at t0
+      }
+  }
+  requestAnimationFrame(frame);
+}
+
+
 el("buyPct").addEventListener("input", (e) => { el("buyPctLbl").textContent = e.target.value; setRangePct(e.target); });
 el("sellPct").addEventListener("input", (e) => { el("sellPctLbl").textContent = e.target.value; setRangePct(e.target); });
 
 el("btnNew").addEventListener("click", () => newRun());
+el("btnStart").addEventListener("click", () => startIntro());
 
-el("btnWait").addEventListener("click", () => { advance(game, 1); draw(); });
-el("btnFwd6").addEventListener("click", () => { advance(game, 6); draw(); });
-el("btnFwd12").addEventListener("click", () => { advance(game, 12); draw(); });
-el("btnToEnd").addEventListener("click", () => { advance(game, 100000); draw(); });
+el("btnWait").addEventListener("click", () => { dismissHint(); advance(game, 1); draw(); });
+el("btnFwd6").addEventListener("click", () => { dismissHint(); advance(game, 6); draw(); });
+el("btnFwd12").addEventListener("click", () => { dismissHint(); advance(game, 12); draw(); });
+el("btnToEnd").addEventListener("click", () => { dismissHint(); advance(game, 100000); draw(); });
 
-el("btnBuy").addEventListener("click", () => { buy(game, Number(el("buyPct").value)); draw(); });
-el("btnBuyAll").addEventListener("click", () => { buy(game, 100); draw(); });
+el("btnBuy").addEventListener("click", () => { dismissHint(); buy(game, Number(el("buyPct").value)); draw(); });
+el("btnBuyAll").addEventListener("click", () => { dismissHint(); buy(game, 100); draw(); });
 
-el("btnSell").addEventListener("click", () => { sell(game, Number(el("sellPct").value)); draw(); });
-el("btnSellAll").addEventListener("click", () => { sell(game, 100); draw(); });
+el("btnSell").addEventListener("click", () => { dismissHint(); sell(game, Number(el("sellPct").value)); draw(); });
+el("btnSellAll").addEventListener("click", () => { dismissHint(); sell(game, 100); draw(); });
 
 el("btnReplaySame").addEventListener("click", () => resetPortfoliosKeepSameData());
 el("btnReplayNew").addEventListener("click", () => { hideGameOver(); newRun(); });
@@ -969,8 +1067,11 @@ function newRun() {
     dcaMonths: 120
   });
 
+  setControlsForIntro();
+  const leftT = game.t0 - game.cfg.lookback;
+  draw(leftT);
+
   hideGameOver();
-  draw();
 }
 
 // init
