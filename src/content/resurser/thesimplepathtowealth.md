@@ -9,18 +9,19 @@ featured: true
 
 links:
   - label: "Amazon"
-    url: "https://amazon.se/..."
+    url: "https://amzn.eu/d/aWp42t7"
   - label: "Bokus"
-    url: "https://bokus.com/..."
+    url: "https://www.bokus.com/bok/9798893310474/simple-path-to-wealth/"
 ---
 
 ## Boken i korthet
 Det här är FIRE utan fluff.  
 Fokus på indexfonder, låga kostnader och sunt förnuft.
+Bra läsning för alla, men kanske mest för nybörjaren.
 
 ## För vem passar den?
 - Perfekt för nybörjare
-- Mindre relevant om du vill spekulera aktivt
+- Mindre relevant om du vill investera mer aktivt
 
 ## Vad jag gillar
 - Extremt tydlig

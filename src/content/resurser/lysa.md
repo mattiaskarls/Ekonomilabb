@@ -9,7 +9,7 @@ featured: true
 
 links:
   - label: "Skapa konto hos LYSA"
-    url: "https://lysa.se/..."
+    url: "https://lysa.se/"
 ---
 
 ## Kort om resursen

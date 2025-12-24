@@ -9,7 +9,7 @@ featured: false
 
 links:
   - label: "Avanza"
-    url: "https://www.avanza.se"
+    url: "https://www.avanza.se/bli-kund.html/registrera/identifiera"
 
 ---
 

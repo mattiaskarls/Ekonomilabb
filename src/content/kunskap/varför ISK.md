@@ -12,9 +12,9 @@ excerpt: "ISK är det enklaste och mest flexibla sättet att spara i fonder och 
 
 ## Kärnidén
 Investeringssparkontot är konstruerat för vanliga sparare.  
-Du slipper deklarera affärer och betalar istället en låg schablonskatt.
+Du slipper deklarera affärer och betalar istället en låg schablonskatt (ca 1% under 2026).
 
-För de flesta som sparar långsiktigt slår enkelheten allt annat.
+För de flesta som sparar långsiktigt slår enkelheten allt annat. Speciellt nu med en skattebefrielse upp till 300 000 kr (från 2026).
 
 ## Exempel
 **Scenario:** Du köper och säljer fonder flera gånger per år.
@@ -27,7 +27,7 @@ För de flesta som sparar långsiktigt slår enkelheten allt annat.
 - Att tro att ISK alltid är bäst (kort sparhorisont kan vara fel)
 - Att inte förstå att skatt tas ut även när värdet går ner
 
-## Nästa steg
-Vill du jämföra ISK med andra kontotyper?
+## Summerat
+ISK är ett bra val för i princip alla. Enda undantaget är om du vill investera i utländska aktier som betalar utdelning. Då är en Kaptialförsäkring ett bättre val.
 
-[Läs: ISK eller kapitalförsäkring – vad är skillnaden?](/kunskap/isk-vs-kf/)
+[Tillbaka](/kunskap/)

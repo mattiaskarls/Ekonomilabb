@@ -1,0 +1,421 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Besparingskalkylator"
+  description="Se hur engångs-, års-, månads- och dagssparande växer över tid med real avkastning."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Besparingskalkylator</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Avkastning är <span class="text-[var(--text)] font-medium">real</span> (efter inflation).
+        Insättningar antas ske <span class="text-[var(--text)] font-medium">i början av varje år</span>.
+      </p>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Din ålder
+          <input id="startAge" type="number" value="30"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Slutålder
+          <input id="endAge" type="number" value="65"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Avkastning (realt, %/år)
+          <input id="returnPct" type="number" value="5" step="0.1"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+      <p class="text-xs text-[var(--text-muted)]">
+        Dagssparande räknas om med 365 dagar/år.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold">Besparingar</h2>
+        <button id="addPresets"
+          class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+          Lägg in exempelposter
+        </button>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold">Engångs</h3>
+            <button data-add="one"
+              class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-1 hover:border-[var(--gold)] text-sm">
+              Lägg till
+            </button>
+          </div>
+          <div id="list-one" class="space-y-2"></div>
+          <p class="text-sm text-[var(--text-muted)]">Summa: <span id="sum-one">0</span> kr</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold">År</h3>
+            <button data-add="year"
+              class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-1 hover:border-[var(--gold)] text-sm">
+              Lägg till
+            </button>
+          </div>
+          <div id="list-year" class="space-y-2"></div>
+          <p class="text-sm text-[var(--text-muted)]">Summa: <span id="sum-year">0</span> kr/år</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold">Månad</h3>
+            <button data-add="month"
+              class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-1 hover:border-[var(--gold)] text-sm">
+              Lägg till
+            </button>
+          </div>
+          <div id="list-month" class="space-y-2"></div>
+          <p class="text-sm text-[var(--text-muted)]">Summa: <span id="sum-month">0</span> kr/mån</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold">Dag</h3>
+            <button data-add="day"
+              class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-1 hover:border-[var(--gold)] text-sm">
+              Lägg till
+            </button>
+          </div>
+          <div id="list-day" class="space-y-2"></div>
+          <p class="text-sm text-[var(--text-muted)]">Summa: <span id="sum-day">0</span> kr/dag</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2">
+      <h2 class="text-lg font-semibold">Kapital över tid</h2>
+
+      <div class="h-[520px] flex flex-col gap-2 rounded-2xl border border-[var(--border)] bg-black/15 p-3">
+        <div class="flex-1 min-h-0 relative">
+          <canvas id="chart"></canvas>
+        </div>
+        <p class="text-sm text-[var(--text-muted)]">
+          Staplarna visar hur engångs-, års-, månads- och dagssparande bidrar till totalen.
+        </p>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2">
+      <h2 class="text-lg font-semibold">Summering</h2>
+
+      <!-- 🔥 FIRE-knorren -->
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4 text-sm">
+        <p class="text-[var(--text)]">
+          Dina besparingar du investerat skulle ge dig ett sparkapital på
+          <span id="fireCapital" class="font-semibold">0</span> kronor vid slutet av perioden.
+          Enligt 4% regeln skulle det ge dig möjlighet till ett månadsuttag på
+          <span id="fireMonthly" class="font-semibold">0</span> kronor utan att förbruka kapitalet under resten av ditt liv.
+        </p>
+        <p class="text-xs text-[var(--text-muted)] mt-2">
+          4%-regeln är en tumregel (förenklad). Ingen garanti.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="text-left text-[var(--text-muted)]">
+            <tr class="border-b border-[var(--border)]">
+              <th class="py-2 pr-4">Sparform</th>
+              <th class="py-2 pr-4">Sparat (nom.)</th>
+              <th class="py-2 pr-4">Avkastning</th>
+              <th class="py-2 pr-4">Totalt</th>
+              <th class="py-2 pr-4">Andel</th>
+            </tr>
+          </thead>
+          <tbody id="summaryRows"></tbody>
+        </table>
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)] pt-2">
+        Förenklad modell. Syftet är insikt, inte prognos.
+      </p>
+    </section>
+  </div>
+
+  <script is:inline type="module">
+    import { simulateSavings } from "/src/lib/savingsGrowth.js";
+
+    // Ladda Chart.js (CDN)
+    const chartScript = document.createElement("script");
+    chartScript.src = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+    document.head.appendChild(chartScript);
+
+    const $ = (id) => document.getElementById(id);
+
+    function money(n) {
+      return Math.round(Number(n) || 0).toLocaleString("sv-SE");
+    }
+
+    const state = {
+      one: [],
+      year: [],
+      month: [],
+      day: [],
+      presetsLoaded: false,
+    };
+
+    function rowEditor(kind, idx, row) {
+      const wrap = document.createElement("div");
+      wrap.className = "grid grid-cols-[1fr_160px_44px] gap-2 items-center";
+
+      wrap.innerHTML = `
+        <input data-kind="${kind}" data-idx="${idx}" data-field="label"
+          class="w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]"
+          value="${row.label ?? ""}" placeholder="Beskrivning" />
+        <div class="flex items-center gap-2">
+          <input data-kind="${kind}" data-idx="${idx}" data-field="amount" type="number"
+            class="w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]"
+            value="${row.amount ?? 0}" />
+        </div>
+        <button data-del="${kind}" data-idx="${idx}"
+          class="h-10 rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)]">✕</button>
+      `;
+      return wrap;
+    }
+
+    function renderList(kind) {
+      const el = $("list-" + kind);
+      el.innerHTML = "";
+      state[kind].forEach((row, idx) => el.appendChild(rowEditor(kind, idx, row)));
+    }
+
+    function sumKind(kind) {
+      return state[kind].reduce((a, r) => a + (Number(r.amount) || 0), 0);
+    }
+
+    function renderSums() {
+      $("sum-one").textContent = money(sumKind("one"));
+      $("sum-year").textContent = money(sumKind("year"));
+      $("sum-month").textContent = money(sumKind("month"));
+      $("sum-day").textContent = money(sumKind("day"));
+    }
+
+    function renderFireKnot(result) {
+      const capital = result?.summary?.total?.final ?? 0;
+      const monthly = (capital * 0.04) / 12;
+
+      $("fireCapital").textContent = money(capital);
+      $("fireMonthly").textContent = money(monthly);
+    }
+
+    function appendMainRow(rowsEl, name, key, summary) {
+      const nominal = summary.nominal[key];
+      const growth = summary.growth[key];
+      const total = summary.final[key];
+      const share = summary.sharePct[key];
+
+      const tr = document.createElement("tr");
+      tr.className = "border-b border-[var(--border)]";
+      tr.innerHTML = `
+        <td class="py-2 pr-4 font-semibold">${name}</td>
+        <td class="py-2 pr-4">${money(nominal)} kr</td>
+        <td class="py-2 pr-4">${money(growth)} kr</td>
+        <td class="py-2 pr-4">${money(total)} kr</td>
+        <td class="py-2 pr-4">${share.toFixed(1)}%</td>
+      `;
+      rowsEl.appendChild(tr);
+    }
+
+    function appendItemRows(rowsEl, items) {
+      items.forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.className = "text-[13px] text-[var(--text-muted)] border-b border-[var(--border)]/50";
+        tr.innerHTML = `
+          <td class="py-1 pr-4 pl-6">– ${item.label || "(utan namn)"}</td>
+          <td class="py-1 pr-4">${money(item.nominal)} kr</td>
+          <td class="py-1 pr-4">${money(item.growth)} kr</td>
+          <td class="py-1 pr-4">${money(item.final)} kr</td>
+          <td class="py-1 pr-4"></td>
+        `;
+        rowsEl.appendChild(tr);
+      });
+    }
+
+    function renderSummary(result) {
+      const rows = $("summaryRows");
+      rows.innerHTML = "";
+
+      // Engång
+      appendMainRow(rows, "Engång", "one", result.summary);
+      appendItemRows(rows, result.perItem.one);
+
+      // År
+      appendMainRow(rows, "År", "year", result.summary);
+      appendItemRows(rows, result.perItem.year);
+
+      // Månad
+      appendMainRow(rows, "Månad", "month", result.summary);
+      appendItemRows(rows, result.perItem.month);
+
+      // Dag
+      appendMainRow(rows, "Dag", "day", result.summary);
+      appendItemRows(rows, result.perItem.day);
+
+      // SUMMA
+      const trSum = document.createElement("tr");
+      trSum.innerHTML = `
+        <td class="py-2 pr-4 font-semibold">SUMMA</td>
+        <td class="py-2 pr-4 font-semibold">${money(result.summary.total.nominal)} kr</td>
+        <td class="py-2 pr-4 font-semibold">${money(result.summary.total.growth)} kr</td>
+        <td class="py-2 pr-4 font-semibold">${money(result.summary.total.final)} kr</td>
+        <td class="py-2 pr-4 font-semibold">100%</td>
+      `;
+      rows.appendChild(trSum);
+    }
+
+    let chart;
+
+    function buildChart(result) {
+      if (!window.Chart) return;
+
+      const ctx = $("chart").getContext("2d");
+      const ages = result.ages;
+
+      const one = result.series.map(d => d.buckets.one);
+      const year = result.series.map(d => d.buckets.year);
+      const month = result.series.map(d => d.buckets.month);
+      const day = result.series.map(d => d.buckets.day);
+
+      const data = {
+        labels: ages,
+        datasets: [
+          { type: "bar", label: "Engångs", data: one, stack: "cap" },
+          { type: "bar", label: "År", data: year, stack: "cap" },
+          { type: "bar", label: "Månad", data: month, stack: "cap" },
+          { type: "bar", label: "Dag", data: day, stack: "cap" },
+        ],
+      };
+
+      const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: "index", intersect: false },
+        plugins: {
+          legend: { labels: { color: "#e5e7eb" } },
+          tooltip: {
+            callbacks: {
+              label: (c) => `${c.dataset.label}: ${Math.round(c.parsed.y).toLocaleString("sv-SE")} kr`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            stacked: true,
+            ticks: { color: "#e5e7eb" },
+            grid: { color: "rgba(148,163,184,0.18)" },
+          },
+          y: {
+            stacked: true,
+            ticks: {
+              color: "#e5e7eb",
+              callback: (v) => Math.round(v).toLocaleString("sv-SE"),
+            },
+            grid: { color: "rgba(148,163,184,0.18)" },
+          },
+        },
+      };
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, { type: "bar", data, options });
+    }
+
+    function update() {
+      const startAge = Number($("startAge").value) || 30;
+      const endAge = Number($("endAge").value) || 65;
+      const realReturnPct = Number($("returnPct").value) || 7;
+
+      const result = simulateSavings({
+        startAge,
+        endAge,
+        realReturnPct,
+        oneTimeItems: state.one,
+        yearlyItems: state.year,
+        monthlyItems: state.month,
+        dailyItems: state.day,
+      });
+
+      renderSums();
+      renderFireKnot(result);
+      renderSummary(result);
+      buildChart(result);
+    }
+
+    // Events: add/del
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+
+      const add = t?.dataset?.add;
+      if (add) {
+        state[add].push({ label: "", amount: 0 });
+        renderList(add);
+        update();
+        return;
+      }
+
+      const del = t?.dataset?.del;
+      if (del) {
+        const idx = Number(t.dataset.idx);
+        state[del].splice(idx, 1);
+        renderList(del);
+        update();
+        return;
+      }
+    });
+
+    // Events: input
+    document.addEventListener("input", (e) => {
+      const t = e.target;
+      const kind = t?.dataset?.kind;
+      if (!kind) return;
+
+      const idx = Number(t.dataset.idx);
+      const field = t.dataset.field;
+      state[kind][idx][field] = field === "amount" ? Number(t.value) : t.value;
+
+      update();
+    });
+
+    // Presets
+    $("addPresets").addEventListener("click", () => {
+      if (state.presetsLoaded) return;
+      state.presetsLoaded = true;
+
+      state.one = [{ label: "Sälja mopeden", amount: 5000 }];
+      state.year = [{ label: "Ny hemförsäkring", amount: 500 }];
+      state.month = [
+        { label: "Avsluta Disney+", amount: 149 },
+        { label: "Avsluta HBO Max", amount: 189 },
+      ];
+      state.day = [
+        { label: "Sluta med dagslinser", amount: 5 },
+        { label: "Sluta snusa", amount: 40 },
+      ];
+
+      ["one","year","month","day"].forEach(renderList);
+      update();
+    });
+
+    // Init
+    ["one","year","month","day"].forEach(renderList);
+
+    chartScript.onload = () => {
+      update();
+      ["startAge", "endAge", "returnPct"].forEach((id) => $(id).addEventListener("input", update));
+    };
+  </script>
+</BaseLayout>
