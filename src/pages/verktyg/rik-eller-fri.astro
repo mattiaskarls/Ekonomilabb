@@ -1,0 +1,229 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Rik eller fri?"
+  description="Jämför två liv (Scenario A vs B) och se hur många år och arbetstimmar du vinner eller förlorar innan FIRE."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Rik eller fri?</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Jämför två scenarion. Avkastning är <span class="text-[var(--text)] font-medium">real</span> (efter inflation).
+        Vi antar sparande <span class="text-[var(--text)] font-medium">i början av varje år</span>.
+      </p>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Din ålder
+          <input id="startAge" type="number" value="33"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Maxålder i simulering
+          <input id="maxAge" type="number" value="80"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Avkastning (realt, %/år)
+          <input id="returnPct" type="number" value="5" step="0.1"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Säker uttagsnivå (%/år)
+          <input id="swPct" type="number" value="4" step="0.1"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Arbetstid (h/år)
+          <input id="workHoursPerYear" type="number" value="2080"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <div class="text-xs text-[var(--text-muted)] flex items-end">
+          FIRE-mål = årsutgift / uttagsnivå (4% → 25× årsutgift)
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      
+<div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-4">
+          <img
+            src="/images/rik.png"
+            alt="Rik livsstil"
+            class="h-16 w-16 rounded-2xl object-cover border border-[var(--border)]"
+          />
+          <div>
+            <h2 class="text-lg font-semibold">Scenario A (rik livsstil)</h2>
+            <p class="text-xs text-[var(--text-muted)]">
+              Hög konsumtion, högre FIRE-mål, ofta mindre frihet.
+            </p>
+          </div>
+        </div>
+
+        <button id="loadExamples"
+          class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+          Ladda exempel
+        </button>
+      </div>
+
+<div class="grid gap-3 md:grid-cols-4">
+
+    <label class="text-sm">Startkapital A (kr)
+  <input
+    id="startCapitalA"
+    type="number"
+    value="0"
+    class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]"
+  />
+</label>
+
+
+  <label class="text-sm">Nettolön A (kr/mån)
+    <input id="netIncomeA" type="number" value="45000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Kostnader A (kr/mån)
+    <input id="monthlySpendA" type="number" value="32000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Sparande A (kr/mån)
+    <input id="monthlySaveA" type="number" value="13000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Sparkvot A (%)
+    <input id="saveRateA" type="number" value="28.9" step="0.1"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+</div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      
+<h2 class="sr-only">Scenario B</h2>
+      <div class="flex items-center gap-4">
+        <img
+          src="/images/fri.png"
+          alt="Fri livsstil"
+          class="h-16 w-16 rounded-2xl object-cover border border-[var(--border)]"
+        />
+        <div>
+          <h2 class="text-lg font-semibold">Scenario B (fri livsstil)</h2>
+          <p class="text-xs text-[var(--text-muted)]">
+            Lägre kostnader, lägre FIRE-mål, mer frihet snabbare.
+          </p>
+        </div>
+      </div>
+
+
+
+      
+<div class="grid gap-3 md:grid-cols-4">
+
+    <label class="text-sm">Startkapital B (kr)
+  <input
+    id="startCapitalB"
+    type="number"
+    value="0"
+    class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]"
+  />
+</label>
+
+
+
+  <label class="text-sm">Nettolön B (kr/mån)
+    <input id="netIncomeB" type="number" value="45000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Kostnader B (kr/mån)
+    <input id="monthlySpendB" type="number" value="32000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Sparande B (kr/mån)
+    <input id="monthlySaveB" type="number" value="13000"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+
+  <label class="text-sm">Sparkvot A (%)
+    <input id="saveRateA" type="number" value="28.9" step="0.1"
+      class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+  </label>
+</div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2">
+      <h2 class="text-lg font-semibold">Resultat</h2>
+
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4 text-sm space-y-2">
+        <p class="text-[var(--text)]">
+          Scenario A: FIRE vid <span id="fireA" class="font-semibold">–</span>
+          (<span id="yearsLeftA" class="font-semibold">–</span> kvar).
+        </p>
+        <p class="text-[var(--text)]">
+          Scenario B: FIRE vid <span id="fireB" class="font-semibold">–</span>
+          (<span id="yearsLeftB" class="font-semibold">–</span> kvar).
+        </p>
+
+        <div class="border-t border-[var(--border)] pt-2 space-y-1">
+          <p class="text-[var(--text)]">
+            Skillnad: <span id="deltaTime" class="font-semibold">–</span>
+          </p>
+          <p class="text-[var(--text)]">
+            Brutalt räknat: <span id="deltaHours" class="font-semibold">–</span>
+          </p>
+          <p class="text-xs text-[var(--text-muted)]" id="deltaExplain"></p>
+          <p class="text-xs text-[var(--text-muted)] italic">
+            Scenario A köper status. Scenario B köper tid.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2">
+      <h2 class="text-lg font-semibold">Kapital över tid</h2>
+
+      <div class="h-[520px] flex flex-col gap-2 rounded-2xl border border-[var(--border)] bg-black/15 p-3">
+        <div class="flex-1 min-h-0 relative">
+          <canvas id="chart"></canvas>
+        </div>
+        <p class="text-sm text-[var(--text-muted)]">
+          Linjer: kapital och FIRE-mål för respektive scenario. När kapitalet korsar målet är du “FIRE” enligt antagandena.
+        </p>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-2">
+      <h2 class="text-lg font-semibold">Detaljer</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="text-left text-[var(--text-muted)]">
+            <tr class="border-b border-[var(--border)]">
+              <th class="py-2 pr-4">Scenario</th>
+              <th class="py-2 pr-4">Årsutgift</th>
+              <th class="py-2 pr-4">Årssparande</th>
+              <th class="py-2 pr-4">FIRE-mål</th>
+              <th class="py-2 pr-4">FIRE-tidpunkt</th>
+            </tr>
+          </thead>
+          <tbody id="detailsRows"></tbody>
+        </table>
+      </div>
+      <p class="text-xs text-[var(--text-muted)] pt-2">
+        Förenklad modell. Syftet är insikt, inte prognos.
+      </p>
+    </section>
+  </div>
+
+  <script type="module" src="/js/rikEllerFri.client.js"></script>
+</BaseLayout>
