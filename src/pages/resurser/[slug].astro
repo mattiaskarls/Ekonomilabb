@@ -48,7 +48,7 @@ const links = resource.data.links ?? [];
     </script>
   </slot>
 
-  <main class="max-w-4xl mx-auto px-4 py-12 space-y-10">
+  <main class="py-12 space-y-10">
     <!-- Breadcrumbs -->
     <nav aria-label="Brödsmulor" class="text-xs text-[var(--text-muted)]">
       <ol class="flex flex-wrap items-center gap-2">
@@ -134,8 +134,8 @@ const links = resource.data.links ?? [];
     </section>
 
     <!-- Innehåll -->
-    <article class="prose prose-invert max-w-none">
-      <Content />
-    </article>
+<article class="prose prose-invert max-w-3xl">
+  <Content />
+</article>
   </main>
 </BaseLayout>

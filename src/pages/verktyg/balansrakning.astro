@@ -1,0 +1,167 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Balansräkning"
+  description="Bygg en enkel balansräkning för privat ekonomi. Allt sparas lokalt i din webbläsare."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Balansräkning</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Förenklad ögonblicksbild: <span class="text-[var(--text)] font-medium">Tillgångar − Skulder = Eget kapital</span>.
+        All data stannar i din webbläsare. Ingen inloggning. Ingen server.
+      </p>
+      <p class="text-xs text-[var(--text-muted)]">
+        Senast sparad: <span id="brLastSaved" class="text-[var(--text)]">–</span>
+      </p>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">Tillgångar</h2>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Bankkonto (kr)
+          <input id="a_bank" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">ISK / Värdepapper (kr)
+          <input id="a_isk" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Pension (kr, uppskattning)
+          <input id="a_pension" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Bostad (marknadsvärde, kr)
+          <input id="a_housing" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Övrigt (kr)
+          <input id="a_other" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)]">
+        Du kan skriva <code class="text-[var(--text)]">25000</code> eller <code class="text-[var(--text)]">25 000</code>.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">Skulder</h2>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Bolån (kr)
+          <input id="l_mortgage" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Privatlån (kr)
+          <input id="l_loans" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+
+        <label class="text-sm">Kreditkort (kr)
+          <input id="l_credit" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <label class="text-sm">Övriga skulder (kr)
+          <input id="l_other" inputmode="numeric" placeholder="0"
+            class="mt-1 w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+        </label>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold">Resultat</h2>
+        <div class="flex items-center gap-2">
+          <button id="brReset"
+            class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+            Nollställ
+          </button>
+          <button id="brSave"
+            class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+            Spara lokalt
+          </button>
+        </div>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-3">
+        <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4">
+          <div class="text-xs text-[var(--text-muted)]">Tillgångar</div>
+          <div id="outAssets" class="text-xl font-semibold">–</div>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4">
+          <div class="text-xs text-[var(--text-muted)]">Skulder</div>
+          <div id="outLiabs" class="text-xl font-semibold">–</div>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4">
+          <div class="text-xs text-[var(--text-muted)]">Eget kapital</div>
+          <div id="outEquity" class="text-xl font-semibold">–</div>
+          <div id="outEquityHint" class="text-xs text-[var(--text-muted)] mt-1"></div>
+        </div>
+      </div>
+
+      <div id="brWarnings" class="space-y-2"></div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-lg font-semibold">Diagram</h2>
+        <button id="brShare"
+          class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+          Skapa unik länk
+        </button>
+      </div>
+
+      <div class="grid gap-3 md:grid-cols-2">
+        <div class="rounded-2xl border border-[var(--border)] bg-black/15 p-3">
+          <div class="text-sm text-[var(--text-muted)]">Tillgångsfördelning</div>
+          <div class="h-[320px] relative">
+            <canvas id="chartDonut"></canvas>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border border-[var(--border)] bg-black/15 p-3">
+          <div class="text-sm text-[var(--text-muted)]">Tillgångar = Skulder + EK</div>
+          <div class="h-[320px] relative">
+            <canvas id="chartBar"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="sharePanel" class="hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4 space-y-2">
+        <div class="text-sm font-semibold">Delbar länk</div>
+        <div class="flex gap-2">
+          <input id="shareUrl" readonly
+            class="w-full rounded-xl border border-[var(--border)] bg-black/20 px-3 py-2 outline-none focus:border-[var(--gold)]" />
+          <button id="copyUrl"
+            class="rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] px-3 py-2 hover:border-[var(--gold)] text-sm">
+            Kopiera
+          </button>
+        </div>
+        <p id="shareHint" class="text-xs text-[var(--text-muted)]"></p>
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)]">
+        Tips: En delad länk innehåller dina siffror (komprimerat). Skicka den bara till någon du vill dela med.
+      </p>
+    </section>
+  </div>
+
+  <script type="module" src="/js/balansrakning.client.js"></script>
+</BaseLayout>

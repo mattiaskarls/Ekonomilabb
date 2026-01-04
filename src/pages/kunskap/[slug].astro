@@ -40,7 +40,7 @@ const canonical = `${origin}/kunskap/${post.slug}/`;
     </script>
   </slot>
 
-  <main class="max-w-3xl mx-auto px-4 py-12">
+  <main class="py-12">
     <!-- Breadcrumbs -->
     <nav aria-label="Brödsmulor" class="mb-6 text-xs text-[var(--text-muted)]">
       <ol class="flex flex-wrap items-center gap-2">
@@ -58,7 +58,7 @@ const canonical = `${origin}/kunskap/${post.slug}/`;
       </ol>
     </nav>
 
-    <article class="prose prose-invert max-w-none">
+    <article class="prose prose-invert max-w-3xl">
       <p class="text-xs text-[var(--text-muted)] mb-6">
         {post.data.date.toLocaleDateString("sv-SE")}
       </p>

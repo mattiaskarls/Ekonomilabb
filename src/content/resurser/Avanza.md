@@ -1,29 +1,60 @@
 ---
-title: "Avanza Bank"
-date: 2025-11-20
-excerpt: "Sveriges bästa nätmäklare och bank"
-tags: ["fire", "isk", "Aktiebolag"]
-type: "tjänst"        # bok | tjänst | verktyg
+title: "Avanza – välj själv"
+excerpt: "En plattform för dig som vill välja fonder och investeringar själv."
+date: 2026-01-04
 coverImage: "/images/resurser/Avanza.png"
+type: tjänst
 featured: false
-
 links:
-  - label: "Avanza"
-    url: "https://www.avanza.se/bli-kund.html/registrera/identifiera"
+  - label: "Öppna konto hos Avanza"
+    url: "https://www.avanza.se/bli-kund.html"
+---
+
+## Vad är Avanza?
+
+Avanza är en nätbank och investeringsplattform där du själv väljer:
+- fonder
+- aktier
+- ETF:er
+- kontotyper (ISK, depå m.m.)
+
+Det är ett verktyg för den som vill ha kontroll.
 
 ---
 
-## Vad är Avanza
-Avanza är en modern och billig bank på nätet där du kan ha din ISK eller KapitalFörsäkring. Du kan köpa och sälja fonder, aktier, ETFer till konkurrenskraftiga.
-Avanza har dessutom en väldigt bra lösning för tjänstepension till företag med låga avgifter och smidig administration. 
+## När passar Avanza bra?
 
-## För vem passar Avanza?
-- Passar i princip alla som vill investera i aktier eller fonder
-- För företag som vill erbjuda sina anställda tjänstepension
+Avanza passar ofta bra om du:
+- vill välja fonder själv
+- vill förstå vad du äger
+- accepterar att fatta fler beslut
+- är beredd att följa upp ditt sparande
 
-## Vad jag gillar
-- Tydlig site
-- Lättanvänt
+Det ger flexibilitet, men kräver ansvar.
 
-## Min sammanfattning
-Sveriges bästa nätmäklare!
+---
+
+## När passar Avanza sämre?
+
+Avanza kan vara mindre lämpligt om du:
+- vill ha ett helt automatiserat upplägg
+- lätt frestas att ändra strategi
+- ogärna jämför och väljer själv
+
+Frihet innebär också fler val.
+
+---
+
+## Sammanfattning
+
+Avanza är ett kraftfullt verktyg.  
+Det fungerar bäst när:
+- strategin är tydlig
+- upplägget är enkelt
+- besluten inte ändras för ofta
+
+Kontroll är en tillgång – om den används rätt.
+
+👉 Relaterad kunskap:  
+- [Fonder utan fondjakt](/kunskap/fonder-utan-fondjakt/)
+- [Risk, avkastning och beteende](/kunskap/risk-avkastning-och-beteende/)

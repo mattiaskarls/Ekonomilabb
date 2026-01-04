@@ -1,23 +1,47 @@
 ---
+// src/pages/kunskap/index.astro
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { slugifyTag } from "../../utils/slugify";
 
-const posts = (await getCollection("kunskap")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+const allPosts = await getCollection("kunskap");
+type Post = (typeof allPosts)[number];
 
-// Bygg taggstatistik (robust mot skräp)
+// Manuell ordning för “kursplanen”
+const CORE_SLUGS = [
+  "hur-ska-man-tanka-kring-sparande",
+  "strukturera-din-ekonomi-som-ett-foretag",
+  "risk-avkastning-och-beteende",
+  "vad-ar-isk-och-nar-passar-det",
+  "fonder-utan-fondjakt",
+  "kopa-billigt-och-salja-dyrt-varfor-det-inte-funkar",
+];
+
+const bySlug = new Map<string, Post>(allPosts.map((p) => [p.slug, p]));
+
+function isPost(x: Post | undefined): x is Post {
+  return Boolean(x);
+}
+
+// Kärnguider i exakt ordning, filtrera bort saknade (t.ex. om du inte hunnit skapa alla än)
+const corePosts = CORE_SLUGS.map((s) => bySlug.get(s)).filter(isPost);
+
+// Övriga inlägg (om du senare lägger till fler) – datum-sorterade
+const coreSet = new Set<string>(CORE_SLUGS);
+
+const otherPosts: Post[] = allPosts
+  .filter((p) => !coreSet.has(p.slug))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Tag cloud (robust)
 const tagCounts = new Map<string, number>();
 
-for (const post of posts) {
+for (const post of allPosts) {
   const tags = (post.data.tags ?? [])
     .map((t) => (typeof t === "string" ? t.trim() : ""))
     .filter((t) => t.length > 0);
 
-  for (const tag of tags) {
-    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-  }
+  for (const tag of tags) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
 }
 
 const allTags = Array.from(tagCounts.entries())
@@ -40,16 +64,12 @@ function sizeClass(count: number) {
 
 const sectionCard =
   "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70";
-
 const postCard =
   "rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition hover:border-[var(--gold)]";
-
 const tagChip =
   "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
-
 const tagPill =
   "text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
-
 const textLink =
   "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition";
 ---
@@ -60,50 +80,44 @@ const textLink =
     <div class="flex items-end justify-between gap-4 flex-wrap">
       <h1 class="text-2xl font-semibold">Kunskap</h1>
       <span class="text-xs text-[var(--text-muted)]">
-        {posts.length} artiklar
+        {allPosts.length} artiklar
       </span>
     </div>
 
     <p class="text-[var(--text-muted)] max-w-3xl">
-      Artiklar och guider om FIRE, pension, ISK och hur företag och privat ekonomi hänger ihop över tid.
+      Här är grunderna och tänket bakom EkonomiSmedjan. Börja i rätt ordning så
+      blir resten enkelt.
     </p>
   </header>
 
-  <!-- TAG CLOUD -->
-  {allTags.length ? (
-    <section class={`${sectionCard} p-5 space-y-4 mb-10`}>
-      <div class="flex items-center justify-between gap-4">
-        <h2 class="text-sm font-semibold">Utforska via taggar</h2>
-        <a href="/kunskap/" class={textLink} title="Återställ filter">
-          Alla →
-        </a>
-      </div>
+  <!-- STARTA HÄR -->
+  <section class={`${sectionCard} p-5 md:p-6 space-y-3 mb-10`}>
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <h2 class="text-sm font-semibold">Ny här? Börja här.</h2>
+      <span class="text-xs text-[var(--text-muted)]">Startpunkt</span>
+    </div>
 
-      <div class="flex flex-wrap gap-2">
-        {allTags.map(({ tag, count }) => (
-          <a
-            href={`/kunskap/tagg/${slugifyTag(tag)}/`}
-            class={`${tagChip} ${sizeClass(count)}`}
-            title={`${count} inlägg`}
-            aria-label={`Visa tagg: ${tag} (${count} inlägg)`}
-          >
-            #{tag}
-            <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
-              {count}
-            </span>
-          </a>
-        ))}
-      </div>
+    <p class="text-sm text-[var(--text-muted)] max-w-3xl">
+      EkonomiSmedjan bygger på en enkel idé: struktur och beteende slår
+      optimering. Börja med grunderna innan du fastnar i detaljer.
+    </p>
 
-      <p class="text-xs text-[var(--text-muted)]">
-        Större tagg = vanligare tema.
-      </p>
-    </section>
-  ) : null}
+    <a
+      href="/kunskap/hur-ska-man-tanka-kring-sparande/"
+      class="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm hover:border-[var(--gold)] transition"
+    >
+      Läs guiden →
+    </a>
+  </section>
 
-  <!-- POSTS -->
-  <section class="space-y-5">
-    {posts.map((post) => (
+  <!-- KÄRNGUIDER -->
+  <section class="space-y-5 mb-12">
+    <div class="flex items-end justify-between gap-4 flex-wrap">
+      <h2 class="text-lg font-semibold">Kärnguider</h2>
+      <span class="text-xs text-[var(--text-muted)]">Läs i ordning</span>
+    </div>
+
+    {corePosts.map((post) => (
       <article class={postCard}>
         <p class="text-xs text-[var(--text-muted)] mb-2">
           {post.data.date.toLocaleDateString("sv-SE")}
@@ -114,9 +128,9 @@ const textLink =
           class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
           aria-label={`Öppna: ${post.data.title}`}
         >
-          <h2 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+          <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
             {post.data.title}
-          </h2>
+          </h3>
 
           <p class="text-sm text-[var(--text-muted)] mt-1 leading-relaxed">
             {post.data.excerpt}
@@ -142,4 +156,83 @@ const textLink =
       </article>
     ))}
   </section>
+
+  <!-- TAG CLOUD -->
+  {allTags.length ? (
+    <section class={`${sectionCard} p-5 space-y-4 mb-12`}>
+      <div class="flex items-center justify-between gap-4">
+        <h2 class="text-sm font-semibold">Utforska via taggar</h2>
+        <a href="/kunskap/" class={textLink} title="Återställ filter">
+          Alla →
+        </a>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        {allTags.map(({ tag, count }) => (
+          <a
+            href={`/kunskap/tagg/${slugifyTag(tag)}/`}
+            class={`${tagChip} ${sizeClass(count)}`}
+            title={`${count} inlägg`}
+            aria-label={`Visa tagg: ${tag} (${count} inlägg)`}
+          >
+            #{tag}
+            <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
+              {count}
+            </span>
+          </a>
+        ))}
+      </div>
+
+      <p class="text-xs text-[var(--text-muted)]">Större tagg = vanligare tema.</p>
+    </section>
+  ) : null}
+
+  <!-- FLER ARTIKLAR -->
+  {otherPosts.length ? (
+    <section class="space-y-5">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-semibold">Fler artiklar</h2>
+        <span class="text-xs text-[var(--text-muted)]">{otherPosts.length} st</span>
+      </div>
+
+      {otherPosts.map((post) => (
+        <article class={postCard}>
+          <p class="text-xs text-[var(--text-muted)] mb-2">
+            {post.data.date.toLocaleDateString("sv-SE")}
+          </p>
+
+          <a
+            href={`/kunskap/${post.slug}/`}
+            class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+            aria-label={`Öppna: ${post.data.title}`}
+          >
+            <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+              {post.data.title}
+            </h3>
+
+            <p class="text-sm text-[var(--text-muted)] mt-1 leading-relaxed">
+              {post.data.excerpt}
+            </p>
+          </a>
+
+          {post.data.tags?.length ? (
+            <div class="mt-4 flex gap-2 flex-wrap">
+              {post.data.tags
+                .map((t) => (typeof t === "string" ? t.trim() : ""))
+                .filter((t) => t.length > 0)
+                .map((tag) => (
+                  <a
+                    href={`/kunskap/tagg/${slugifyTag(tag)}/`}
+                    class={tagPill}
+                    aria-label={`Visa tagg: ${tag}`}
+                  >
+                    #{tag}
+                  </a>
+                ))}
+            </div>
+          ) : null}
+        </article>
+      ))}
+    </section>
+  ) : null}
 </BaseLayout>

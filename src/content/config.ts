@@ -1,49 +1,46 @@
 import { defineCollection, z } from "astro:content";
 
-/* ======================
-   Kunskap (artiklar)
-====================== */
-const kunskapCollection = defineCollection({
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    tags: z.array(z.string()).optional(),
-    excerpt: z.string(),
+export const collections = {
+  kunskap: defineCollection({
+    type: "content",
+    schema: z.object({
+      title: z.string(),
+      excerpt: z.string(),
+      date: z.date(),
+      type: z.string().optional(),
+      tags: z.array(z.string()).optional(),
+      cta: z
+        .object({
+          title: z.string(),
+          links: z.array(
+            z.object({
+              label: z.string(),
+              href: z.string(),
+            })
+          ),
+        })
+        .optional(),
+    }),
   }),
-});
 
-/* ======================
-   Resurser (böcker, tjänster, verktyg)
-====================== */
-const resurserCollection = defineCollection({
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    excerpt: z.string(),
-    tags: z.array(z.string()).optional(),
+  resurser: defineCollection({
+    type: "content",
+    schema: z.object({
+      title: z.string(),
+      excerpt: z.string(),
 
-    // Typ av resurs
-    type: z.enum(["bok", "tjänst", "verktyg"]),
+      // 👇 ändringarna är här
+      date: z.date().optional(),
+      coverImage: z.string().optional(),
 
-    // Bild (bokomslag, logotyp etc)
-    coverImage: z.string(),
-
-    // Affiliate-/köplänkar
-    links: z
-      .array(
+      type: z.enum(["tjänst", "verktyg", "bok"]),
+      featured: z.boolean().optional(),
+      links: z.array(
         z.object({
           label: z.string(),
           url: z.string().url(),
         })
-      )
-      .optional(),
-
-    // Valfritt: markera utvalda resurser
-    featured: z.boolean().optional(),
+      ),
+    }),
   }),
-});
-
-export const collections = {
-  kunskap: kunskapCollection,
-  resurser: resurserCollection,
 };

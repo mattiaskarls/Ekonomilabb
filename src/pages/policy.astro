@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const lastUpdated = "2026-01-04";
+const contactEmail = "ekonomismedjan@google.com";
+---
+
+<BaseLayout
+  title="Policy"
+  description="Integritetspolicy och användarvillkor för EkonomiSmedjan."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Policy</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Här hittar du integritetspolicy och användarvillkor för EkonomiSmedjan (webb + app).
+      </p>
+      <div class="text-xs text-[var(--text-muted)]">
+        Senast uppdaterad: <span class="text-[var(--text)]">{lastUpdated}</span>
+      </div>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 space-y-4">
+      <div class="grid gap-3 sm:grid-cols-2">
+        <a
+          href="/privacy"
+          class="inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-5 py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
+        >
+          Integritetspolicy →
+        </a>
+
+        <a
+          href="/terms"
+          class="inline-flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] hover:border-[var(--gold)] text-[var(--text)] font-medium px-5 py-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gold)]"
+        >
+          Användarvillkor →
+        </a>
+      </div>
+
+      <div class="text-sm text-[var(--text-muted)] space-y-2">
+        <p>
+          EkonomiSmedjan hanterar inga pengar och genomför inga transaktioner. Eventuella investeringar sker hos extern aktör.
+        </p>
+        <p>
+          Kontakt:{" "}
+          <a class="underline hover:text-[var(--gold)]" href={`mailto:${contactEmail}`}>
+            {contactEmail}
+          </a>
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

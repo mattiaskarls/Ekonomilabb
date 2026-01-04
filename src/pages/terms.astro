@@ -1,0 +1,114 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const lastUpdated = "2026-01-04";
+const contactEmail = "ekonomismedjan@google.com";
+---
+
+<BaseLayout
+  title="Användarvillkor"
+  description="Villkor för EkonomiSmedjan – ansvar, riskinformation, ingen rådgivning, och hur tjänsten får användas."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Användarvillkor</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Genom att använda EkonomiSmedjan (webbplats och/eller app) accepterar du dessa villkor.
+      </p>
+      <div class="text-xs text-[var(--text-muted)]">
+        Senast uppdaterad: <span class="text-[var(--text)]">{lastUpdated}</span>
+      </div>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">1. Om tjänsten</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        EkonomiSmedjan är ett statistik- och motivationsverktyg för mikro-besparingar (t.ex. uteblivna köp).
+        Appen kan uppmana användaren att själv investera motsvarande belopp hos extern bank eller investeringsplattform.
+      </p>
+      <p class="text-sm text-[var(--text-muted)]">
+        Tjänsten tillhandahålls av <span class="text-[var(--text)] font-semibold">Kharon AB</span>, org.nr
+        <span class="text-[var(--text)]">559418-3443</span>.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">2. Ingen hantering av pengar</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>EkonomiSmedjan tar inte emot insättningar.</li>
+        <li>EkonomiSmedjan förvarar inga medel.</li>
+        <li>EkonomiSmedjan genomför inga transaktioner.</li>
+        <li>EkonomiSmedjan har ingen åtkomst till användarens bankkonton.</li>
+      </ul>
+      <p class="text-sm text-[var(--text-muted)]">
+        All eventuell överföring eller investering sker utanför appen och är användarens eget ansvar.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">3. Ingen finansiell rådgivning</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        EkonomiSmedjan ger ingen personlig finansiell rådgivning och lämnar inga rekommendationer om specifika finansiella produkter.
+        Information och statistik är av allmän/utbildande karaktär.
+      </p>
+      <p class="text-sm text-[var(--text-muted)]">
+        Användaren ansvarar själv för alla ekonomiska beslut och bör vid behov kontakta licensierad rådgivare.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">4. Riskinformation</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>Investeringar innebär risk. Värdet kan både öka och minska.</li>
+        <li>Du kan förlora delar av eller hela ditt investerade kapital.</li>
+        <li>Historisk avkastning är ingen garanti för framtida avkastning.</li>
+        <li>Avkastning kan i värsta fall bli noll.</li>
+      </ul>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">5. Användning och ansvar</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>Du ansvarar för att uppgifter du matar in är korrekta.</li>
+        <li>Du ansvarar för hur du använder informationen i tjänsten.</li>
+        <li>Du får inte använda tjänsten för olagliga ändamål.</li>
+        <li>Du får inte försöka störa, kringgå eller angripa tjänstens drift eller säkerhet.</li>
+      </ul>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">6. Begränsningar och ansvarsfriskrivning</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Tjänsten tillhandahålls i befintligt skick. Vi garanterar inte att information, beräkningar eller statistik är
+        fullständiga, felfria eller alltid tillgängliga.
+      </p>
+      <p class="text-sm text-[var(--text-muted)]">
+        Kharon AB ansvarar inte för direkta eller indirekta skador eller förluster som uppstår genom användning av tjänsten,
+        inklusive ekonomiska beslut eller investeringsutfall baserade på information från appen.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">7. Immateriella rättigheter</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Innehåll, varumärken, texter och design tillhör Kharon AB eller licensgivare. Du får inte kopiera eller distribuera
+        material utan tillstånd, utöver vad som är tillåtet enligt lag.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">8. Ändringar</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Vi kan uppdatera villkoren. Den senaste versionen publiceras på denna sida.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">9. Kontakt</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Frågor om villkoren? Kontakta:
+        <a class="underline hover:text-[var(--gold)]" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>

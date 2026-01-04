@@ -1,172 +1,201 @@
 ---
+// src/pages/resurser/index.astro
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { slugifyTag } from "../../utils/slugify";
 
-const resources = (await getCollection("resurser")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+const allResources = await getCollection("resurser");
+type Resource = (typeof allResources)[number];
 
-// Taggstatistik
-const tagCounts = new Map<string, number>();
+const bySlug = new Map<string, Resource>(allResources.map((r) => [r.slug, r]));
 
-for (const r of resources) {
-  const tags = (r.data.tags ?? [])
-    .map((t) => (typeof t === "string" ? t.trim() : ""))
-    .filter((t) => t.length > 0);
+const rLysa = bySlug.get("lysa");
+const rAvanza = bySlug.get("avanza");
+const rMinPension = bySlug.get("minpension");
+const rBook = bySlug.get("the-simple-path-to-wealth");
 
-  for (const tag of tags) {
-    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-  }
-}
+const ORDER = ["lysa", "avanza", "minpension", "the-simple-path-to-wealth"];
+const orderSet = new Set<string>(ORDER);
 
-const allTags = Array.from(tagCounts.entries())
-  .map(([tag, count]) => ({ tag, count }))
-  .sort((a, b) => a.tag.localeCompare(b.tag, "sv"));
+const others: Resource[] = allResources
+  .filter((r) => !orderSet.has(r.slug))
+  .sort((a, b) => {
+    const fa = a.data.featured === true ? 1 : 0;
+    const fb = b.data.featured === true ? 1 : 0;
+    return fb - fa;
+  });
 
-const counts = allTags.map((t) => t.count);
-const maxCount = counts.length ? Math.max(...counts) : 1;
-const minCount = counts.length ? Math.min(...counts) : 1;
-
-function sizeClass(count: number) {
-  const t =
-    maxCount === minCount ? 0.5 : (count - minCount) / (maxCount - minCount);
-
-  if (t >= 0.85) return "text-base md:text-lg";
-  if (t >= 0.6) return "text-sm md:text-base";
-  if (t >= 0.35) return "text-sm";
-  return "text-xs md:text-sm";
-}
-
-const card =
+const sectionCard =
+  "rounded-2xl border border-[var(--border)] bg-[var(--surface)]/70";
+const resourceCard =
   "rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 transition hover:border-[var(--gold)]";
-
-const tagChip =
-  "inline-flex items-center rounded-full border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-1 text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
-
-const tagPill =
-  "text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition";
-
-function typeBadge() {
-  return "border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)]";
-}
+const textLink =
+  "text-sm text-[var(--text-muted)] hover:text-[var(--gold)] transition";
 ---
 
-<BaseLayout title="Resurser – Ekonomismedjan">
-  <!-- HEADER -->
+<BaseLayout title="Resurser – EkonomiSmedjan">
   <header class="space-y-3 pb-8">
-    <h1 class="text-2xl font-semibold">Resurser</h1>
+    <div class="flex items-end justify-between gap-4 flex-wrap">
+      <h1 class="text-2xl font-semibold">Resurser</h1>
+      <span class="text-xs text-[var(--text-muted)]">
+        {allResources.length} resurser
+      </span>
+    </div>
 
     <p class="text-[var(--text-muted)] max-w-3xl">
-      Böcker, tjänster och verktyg som är värda din tid – med korta, ärliga kommentarer.
+      Resurserna här är inte rekommendationer. De är exempel på verktyg,
+      plattformar och böcker som kan passa – beroende på hur du valt att
+      strukturera din ekonomi.
     </p>
 
-    <p class="text-xs text-[var(--text-muted)] max-w-3xl">
-      Transparens: vissa länkar kan vara affiliatelänkar. Det kostar inte mer för dig men kan ge stöd till sidan.
-    </p>
+    <a href="/kunskap/hur-ska-man-tanka-kring-sparande/" class={textLink}>
+      Läs först: Hur du ska tänka →
+    </a>
   </header>
 
-  <!-- TAG CLOUD -->
-  {allTags.length ? (
-    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5 space-y-4 mb-10">
-      <div class="flex items-center justify-between gap-4">
-        <h2 class="text-sm font-semibold">Utforska via taggar</h2>
-        <span class="text-xs text-[var(--text-muted)]">
-          {allTags.length} taggar
-        </span>
+  <section class="space-y-10">
+    <!-- Automatiserat sparande -->
+    <div class="space-y-4">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-semibold">Automatiserat sparande</h2>
+        <span class="text-xs text-[var(--text-muted)]">Autopilot</span>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        {allTags.map(({ tag, count }) => (
+      {rLysa ? (
+        <article class={resourceCard}>
           <a
-            href={`/resurser/tagg/${slugifyTag(tag)}/`}
-            class={`${tagChip} ${sizeClass(count)}`}
-            title={`${count} resurser`}
-            aria-label={`Visa tagg: ${tag} (${count} resurser)`}
+            href={`/resurser/${rLysa.slug}/`}
+            class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+            aria-label={`Öppna: ${rLysa.data.title}`}
           >
-            #{tag}
-            <span class="ml-2 text-[10px] md:text-xs text-[var(--text-muted)]">
-              {count}
-            </span>
+            <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+              {rLysa.data.title}
+            </h3>
+            <p class="text-sm mt-1 leading-relaxed text-[var(--text-muted)]">
+              {rLysa.data.excerpt}
+            </p>
           </a>
-        ))}
+        </article>
+      ) : (
+        <div class={`${sectionCard} p-5 text-sm text-[var(--text-muted)]`}>
+          Saknas: /resurser/lysa/
+        </div>
+      )}
+    </div>
+
+    <!-- Välj själv -->
+    <div class="space-y-4">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-semibold">Välj själv</h2>
+        <span class="text-xs text-[var(--text-muted)]">Kontroll</span>
       </div>
 
-      <p class="text-xs text-[var(--text-muted)]">
-        Större tagg = vanligare tema.
-      </p>
-    </section>
-  ) : null}
-
-  <!-- RESOURCES LIST -->
-  <section class="grid gap-5 md:grid-cols-2">
-    {resources.map((r) => (
-      <article class={card}>
-        <div class="flex gap-4">
-          <!-- FIXAD BILDRUTA -->
-          <div class="h-16 w-16 flex items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-soft)]">
-            <img
-              src={r.data.coverImage}
-              alt={`Omslag/logotyp: ${r.data.title}`}
-              width="64"
-              height="64"
-              class="max-h-full max-w-full object-contain"
-              loading="lazy"
-            />
-          </div>
-
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2 flex-wrap mb-1">
-              <span
-                class={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] ${typeBadge()}`}
-              >
-                {r.data.type}
-              </span>
-
-              {r.data.featured ? (
-                <span class="inline-flex items-center justify-center rounded-full border border-[var(--gold)] px-2 py-0.5 text-[11px] text-[var(--gold)]">
-                  Utvald
-                </span>
-              ) : null}
-
-              <span class="text-[11px] text-[var(--text-muted)]">
-                {r.data.date.toLocaleDateString("sv-SE")}
-              </span>
-            </div>
-
-            <a
-              href={`/resurser/${r.slug}/`}
-              class="block mt-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
-              aria-label={`Öppna resurs: ${r.data.title}`}
-            >
-              <h2 class="text-lg font-semibold hover:text-[var(--gold)] transition truncate">
-                {r.data.title}
-              </h2>
-
-              <p class="text-sm text-[var(--text)]/90 mt-1 line-clamp-3">
-                {r.data.excerpt}
-              </p>
-            </a>
-
-            {r.data.tags?.length ? (
-              <div class="mt-3 flex gap-2 flex-wrap">
-                {r.data.tags
-                  .map((t) => (typeof t === "string" ? t.trim() : ""))
-                  .filter((t) => t.length > 0)
-                  .map((tag) => (
-                    <a
-                      href={`/resurser/tagg/${slugifyTag(tag)}/`}
-                      class={tagPill}
-                      aria-label={`Visa tagg: ${tag}`}
-                    >
-                      #{tag}
-                    </a>
-                  ))}
-              </div>
-            ) : null}
-          </div>
+      {rAvanza ? (
+        <article class={resourceCard}>
+          <a
+            href={`/resurser/${rAvanza.slug}/`}
+            class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+            aria-label={`Öppna: ${rAvanza.data.title}`}
+          >
+            <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+              {rAvanza.data.title}
+            </h3>
+            <p class="text-sm mt-1 leading-relaxed text-[var(--text-muted)]">
+              {rAvanza.data.excerpt}
+            </p>
+          </a>
+        </article>
+      ) : (
+        <div class={`${sectionCard} p-5 text-sm text-[var(--text-muted)]`}>
+          Saknas: /resurser/avanza/
         </div>
-      </article>
-    ))}
+      )}
+    </div>
+
+    <!-- Överblick & fakta -->
+    <div class="space-y-4">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-semibold">Överblick & fakta</h2>
+        <span class="text-xs text-[var(--text-muted)]">Nuläge</span>
+      </div>
+
+      {rMinPension ? (
+        <article class={resourceCard}>
+          <a
+            href={`/resurser/${rMinPension.slug}/`}
+            class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+            aria-label={`Öppna: ${rMinPension.data.title}`}
+          >
+            <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+              {rMinPension.data.title}
+            </h3>
+            <p class="text-sm mt-1 leading-relaxed text-[var(--text-muted)]">
+              {rMinPension.data.excerpt}
+            </p>
+          </a>
+        </article>
+      ) : (
+        <div class={`${sectionCard} p-5 text-sm text-[var(--text-muted)]`}>
+          Saknas: /resurser/minpension/
+        </div>
+      )}
+    </div>
+
+    <!-- Fördjupning -->
+    <div class="space-y-4">
+      <div class="flex items-end justify-between gap-4 flex-wrap">
+        <h2 class="text-lg font-semibold">Fördjupning</h2>
+        <span class="text-xs text-[var(--text-muted)]">Perspektiv</span>
+      </div>
+
+      {rBook ? (
+        <article class={resourceCard}>
+          <a
+            href={`/resurser/${rBook.slug}/`}
+            class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+            aria-label={`Öppna: ${rBook.data.title}`}
+          >
+            <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+              {rBook.data.title}
+            </h3>
+            <p class="text-sm mt-1 leading-relaxed text-[var(--text-muted)]">
+              {rBook.data.excerpt}
+            </p>
+          </a>
+        </article>
+      ) : (
+        <div class={`${sectionCard} p-5 text-sm text-[var(--text-muted)]`}>
+          Saknas: /resurser/the-simple-path-to-wealth/
+        </div>
+      )}
+    </div>
+
+    <!-- Övriga resurser -->
+    {others.length ? (
+      <div class="space-y-4">
+        <div class="flex items-end justify-between gap-4 flex-wrap">
+          <h2 class="text-lg font-semibold">Övrigt</h2>
+          <span class="text-xs text-[var(--text-muted)]">{others.length} st</span>
+        </div>
+
+        <div class="grid gap-5">
+          {others.map((r) => (
+            <article class={resourceCard}>
+              <a
+                href={`/resurser/${r.slug}/`}
+                class="block rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--focus)]"
+                aria-label={`Öppna: ${r.data.title}`}
+              >
+                <h3 class="text-lg font-semibold hover:text-[var(--gold)] transition">
+                  {r.data.title}
+                </h3>
+                <p class="text-sm mt-1 leading-relaxed text-[var(--text-muted)]">
+                  {r.data.excerpt}
+                </p>
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    ) : null}
   </section>
 </BaseLayout>

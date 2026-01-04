@@ -1,0 +1,148 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const lastUpdated = "2026-01-04";
+const contactEmail = "ekonomismedjan@google.com";
+---
+
+<BaseLayout
+  title="Integritetspolicy"
+  description="Hur EkonomiSmedjan behandlar personuppgifter, lagring, delning och dina rättigheter."
+>
+  <div class="max-w-5xl mx-auto px-4 py-6 space-y-4">
+    <header class="space-y-2">
+      <h1 class="text-2xl font-semibold">Integritetspolicy</h1>
+      <p class="text-[var(--text-muted)] max-w-3xl">
+        Den här integritetspolicyn beskriver hur EkonomiSmedjan hanterar personuppgifter och annan data när du använder
+        webbplatsen och/eller appen.
+      </p>
+      <div class="text-xs text-[var(--text-muted)]">
+        Senast uppdaterad: <span class="text-[var(--text)]">{lastUpdated}</span>
+      </div>
+    </header>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">1. Personuppgiftsansvarig</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Personuppgiftsansvarig för behandlingen av personuppgifter är:
+      </p>
+      <div class="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]/50 p-4 text-sm space-y-1">
+        <div class="text-[var(--text)] font-semibold">Kharon AB</div>
+        <div class="text-[var(--text-muted)]">Org.nr: <span class="text-[var(--text)]">559418-3443</span></div>
+        <div class="text-[var(--text-muted)]">
+          Kontakt: <a class="underline hover:text-[var(--gold)]" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">2. Vad tjänsten gör (viktigt)</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>Appen hanterar inga pengar och genomför inga transaktioner.</li>
+        <li>Appen låter dig registrera mikro-besparingar (t.ex. “skippat köp”) och visar statistik.</li>
+        <li>Du kan uppmanas att själv investera ett belopp via extern bank/investeringsplattform.</li>
+      </ul>
+      <p class="text-sm text-[var(--text-muted)]">
+        EkonomiSmedjan har inte åtkomst till dina bankkonton och samlar inte in bankinloggningar.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">3. Vilka uppgifter vi kan behandla</h2>
+
+      <div class="space-y-2">
+        <h3 class="text-base font-semibold">3.1 Uppgifter du själv lämnar</h3>
+        <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+          <li>Data du registrerar i appen (t.ex. typ av besparing, belopp, datum, noteringar).</li>
+          <li>Kontaktuppgifter om du mejlar oss (t.ex. e-postadress och meddelandeinnehåll).</li>
+        </ul>
+      </div>
+
+      <div class="space-y-2">
+        <h3 class="text-base font-semibold">3.2 Tekniska uppgifter</h3>
+        <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+          <li>Enhets- och appinformation som behövs för drift, säkerhet och felsökning.</li>
+          <li>IP-adress kan förekomma vid webbtrafik/serverloggar.</li>
+        </ul>
+      </div>
+
+      <p class="text-sm text-[var(--text-muted)]">
+        Vi efterfrågar inte känsliga personuppgifter. Undvik att skriva känslig information i fritextfält.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">4. Varför vi behandlar uppgifter</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>För att tillhandahålla appens funktioner och statistik.</li>
+        <li>För att förbättra tjänstens kvalitet, stabilitet och säkerhet.</li>
+        <li>För att hantera supportärenden och kommunikation.</li>
+        <li>För att uppfylla rättsliga skyldigheter om det krävs.</li>
+      </ul>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">5. Rättslig grund</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Behandling sker vanligtvis med stöd av:
+      </p>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li><span class="text-[var(--text)]">Avtal</span> – för att leverera tjänsten.</li>
+        <li><span class="text-[var(--text)]">Berättigat intresse</span> – för drift, säkerhet och förbättring.</li>
+        <li><span class="text-[var(--text)]">Rättslig förpliktelse</span> – om lag kräver det.</li>
+        <li><span class="text-[var(--text)]">Samtycke</span> – om vi använder icke-nödvändiga cookies/analys (om tillämpligt).</li>
+      </ul>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">6. Delning och tredjepartsleverantörer</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Vi säljer inte personuppgifter. Uppgifter kan delas med tekniska leverantörer som krävs för drift (t.ex. hosting,
+        loggning eller analys) samt när det krävs enligt lag.
+      </p>
+      <p class="text-sm text-[var(--text-muted)]">
+        Externa banker/investeringsplattformar som du själv använder (t.ex. Avanza) är fristående parter och har egna villkor
+        och integritetspolicys.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">7. Lagringstid</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Vi lagrar uppgifter så länge det behövs för att tillhandahålla tjänsten, uppfylla lagkrav eller hantera support.
+        Lagringstider kan variera beroende på uppgiftstyp.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-4">
+      <h2 class="text-lg font-semibold">8. Dina rättigheter</h2>
+      <ul class="text-sm text-[var(--text-muted)] list-disc pl-5 space-y-1">
+        <li>Rätt att få tillgång till dina uppgifter.</li>
+        <li>Rätt att begära rättelse eller radering.</li>
+        <li>Rätt att invända mot viss behandling och begära begränsning.</li>
+        <li>Rätt att få ut uppgifter (dataportabilitet) i vissa fall.</li>
+        <li>Rätt att lämna klagomål till Integritetsskyddsmyndigheten (IMY).</li>
+      </ul>
+      <p class="text-sm text-[var(--text-muted)]">
+        Kontakta oss via <a class="underline hover:text-[var(--gold)]" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        om du vill använda dina rättigheter.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">9. Cookies</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Webbplatsen kan använda cookies för grundläggande funktion och/eller statistik. Om du använder analytics, ange gärna
+        leverantör och syfte här. I appen kan motsvarande tekniker användas för drift och felrapportering.
+      </p>
+    </section>
+
+    <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 space-y-3">
+      <h2 class="text-lg font-semibold">10. Kontakt</h2>
+      <p class="text-sm text-[var(--text-muted)]">
+        Frågor om integritet? Kontakta:
+        <a class="underline hover:text-[var(--gold)]" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
