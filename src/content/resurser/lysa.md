@@ -1,61 +1,116 @@
 ---
 title: "Lysa – automatiserat fondsparande"
-excerpt: "För dig som vill spara långsiktigt utan att välja fonder själv."
+excerpt: "Automatisering för den som vill minska beslutsbördan."
 date: 2026-01-04
-coverImage: "/images/resurser/lysa.png"
 type: tjänst
-featured: true
+featured: false
 links:
-  - label: "Skapa konto hos Lysa"
-    url: "https://lysa.se/"
+  - label: "Lysa"
+    url: "https://www.lysa.se/"
 ---
 
-## Vad är Lysa?
+# Lysa – automatiserat fondsparande
 
-Lysa är en fondrobot som automatiserar hela sparprocessen.  
-Du svarar på några frågor om tidshorisont och risk – resten sköts i bakgrunden.
+Lysa är en automatisk spartjänst som investerar pengar i ränte- och aktieindexfonder enligt en förutbestämd metod.  
+Tjänsten är utformad för att minska behovet av löpande beslut och förenkla långsiktigt sparande.
 
-Det innebär:
-- automatisk fördelning
-- löpande ombalansering
-- inga fondval att hålla koll på
+Lysa tar inte bort risk –  
+men den kan ta bort en del av de beslut som ofta leder till misstag.
 
 ---
 
-## När passar Lysa bra?
+## Hur Lysa fungerar
 
-Lysa passar ofta bra om du:
+När du använder Lysa:
+- svarar du på frågor om tidshorisont och risk
+- pengarna investeras automatiskt i indexfonder
+- portföljen anpassas och ombalanseras över tid
+
+Investeringsmetoden bygger på principer som:
+- låga avgifter
+- bred riskspridning
+- risk anpassad efter individ
+- långsiktigt fullföljande av strategi
+
+Vilken avkastning du får beror på marknadsutvecklingen.  
+Det finns inga garantier.
+
+---
+
+## Viktigt om risk
+
+**Investeringar i värdepapper och fonder innebär alltid en risk.**  
+En investering kan både öka och minska i värde och det är inte säkert att du får tillbaka det investerade kapitalet.
+
+Lysa minskar inte marknadsrisk.  
+Den kan däremot minska risken för att fatta dåliga beslut i fel lägen.
+
+---
+
+## När Lysa kan passa bra
+
+Lysa kan passa för dig som:
 - vill spara långsiktigt
-- inte vill välja fonder själv
-- värdesätter enkelhet och disciplin
-- hellre gör “tillräckligt bra” än optimalt
+- inte vill fatta löpande investeringsbeslut
+- värderar enkelhet och struktur
+- vet att beteende är en större risk än fondval
 
-För många är den största vinsten att slippa fatta löpande beslut.
+Tjänsten kan fungera väl som:
+- bas i ett långsiktigt sparande
+- komplement till mer manuella lösningar
+
+👉 Grundtänket bör sitta först:  
+[Hur ska man tänka kring sparande och investeringar?](/kunskap/tanka-kring-sparande)
 
 ---
 
-## När passar Lysa sämre?
+## När Lysa kan vara mindre lämpligt
 
-Lysa är mindre lämpligt om du:
-- vill ha full kontroll över fondval
-- vill investera aktivt
-- vill optimera detaljer själv
-- ofta ändrar strategi
+Lysa kan vara mindre lämpligt om:
+- du vill välja fonder själv
+- du ofta ändrar uppfattning om risk
+- du vill optimera i detalj
+- du har mycket specifika preferenser
 
-Det är inte ett verktyg för kortsiktig handel.
+Automatisering fungerar bäst när du låter den vara ifred.
+
+---
+
+## Lysa i relation till fonder och konton
+
+Lysa investerar i indexfonder och använder vanligtvis:
+- investeringssparkonto (ISK)
+- ibland kapitalförsäkring, beroende på upplägg
+
+Kontot påverkar skatten.  
+Strategin påverkar risken.
+
+👉 Fördjupning om fonder:  
+[Fonder utan fondjakt](/kunskap/fonder)
+
+👉 Om konton:  
+[Vad är ISK – och när passar det?](/kunskap/isk)
+
+---
+
+## Om samarbeten och länkar
+
+EkonomiSmedjan kan i framtiden använda **sponsrade länkar** till Lysa.  
+Om och när sådana länkar används kommer det att framgå tydligt.
+
+Innehållet på den här sidan är oberoende av om ett samarbete finns eller inte.
 
 ---
 
 ## Sammanfattning
 
-Lysa är inte för alla.  
-Men för många är den ett effektivt sätt att:
-- komma igång
-- hålla planen
-- undvika beteendefällor
+Lysa är ett verktyg för automatisering.  
+Inte en garanti för avkastning.
 
-Ett rimligt val när enkelhet är viktigare än kontroll.
+För rätt person kan den:
+- förenkla sparandet
+- minska risken för impulsiva beslut
+- göra det lättare att hålla en långsiktig plan
 
-👉 Relaterad kunskap:  
-- [Fonder utan fondjakt](/kunskap/fonder-utan-fondjakt/)
-- [Vad är ISK – och när passar det?](/kunskap/vad-ar-isk-och-nar-passar-det/)
+Men även här gäller samma sak som alltid:  
+struktur och tänkande kommer först.

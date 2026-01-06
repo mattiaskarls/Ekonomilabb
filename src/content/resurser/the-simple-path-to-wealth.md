@@ -1,57 +1,102 @@
 ---
 title: "The Simple Path to Wealth – JL Collins"
-excerpt: "En rak bok om långsiktigt sparande utan genvägar."
+excerpt: "Tråkigt på rätt sätt."
 date: 2026-01-04
-coverImage: "/images/resurser/simple-path-wealth.jpg"
 type: bok
-featured: true
+featured: false
 links:
-  - label: "Köp på Amazon"
-    url: "https://amzn.to/3LdQx8O"
-  - label: "Köp på Bokus"
-    url: "https://www.bokus.com/bok/9798893310474/simple-path-to-wealth/"
+  - label: "The Simple Path to Wealth (Amazon)"
+    url: "https://www.amazon.se/"
 ---
 
-## Vad är det för bok?
+# The Simple Path to Wealth – JL Collins
 
-The Simple Path to Wealth är en populär bok inom FIRE-rörelsen.  
-Budskapet är enkelt:
-- håll kostnader låga
-- investera brett
-- låt tiden göra jobbet
+*The Simple Path to Wealth* av JL Collins är en bok som ofta rekommenderas inom långsiktigt sparande.  
+Inte för att den är nyskapande – utan för att den är konsekvent.
 
-Inga snabba genvägar. Inga tricks.
+Boken handlar mindre om produkter och mer om **förhållningssätt**.
 
 ---
 
-## När är boken värd att läsa?
+## Vad boken egentligen handlar om
 
-Boken passar bra om du:
-- är ny inom långsiktigt sparande
-- vill ha ett sammanhängande resonemang
-- uppskattar enkelhet och disciplin
+Trots titeln handlar boken inte främst om:
+- rikedom
+- optimering
+- smarta genvägar
 
-Den fungerar som mental kalibrering.
+Den handlar om:
+- enkelhet
+- disciplin
+- låg friktion
+- lång tidshorisont
+
+Och framför allt:
+> att undvika de misstag som förstör annars rimliga strategier.
 
 ---
 
-## Begränsningar
+## Centrala idéer i boken
 
-- USA-fokus (skatt, konton, pension)
-- Upprepande resonemang
-- Inte anpassad för svenska regler
+Boken återkommer till några grundprinciper:
 
-Tänket är generellt. Detaljerna är inte det.
+- Lev på mindre än du tjänar
+- Spara konsekvent över tid
+- Använd enkla, breda investeringar
+- Undvik onödig komplexitet
+- Låt tiden göra jobbet
+
+Inget av detta är kontroversiellt.  
+Det är just poängen.
+
+---
+
+## Varför den passar EkonomiSmedjans tänk
+
+Boken ligger nära EkonomiSmedjans grundidéer:
+- struktur före optimering
+- beteende före produkter
+- enkelhet före komplexitet
+
+Den betonar att:
+- det svåra inte är att veta vad man ska göra
+- det svåra är att fortsätta göra det
+
+---
+
+## Vad boken inte är
+
+Det här är inte en bok för dig som:
+- vill slå marknaden
+- vill ha avancerade strategier
+- vill ha ständig stimulans
+
+Den erbjuder inga genvägar.  
+Den erbjuder uthållighet.
+
+---
+
+## När boken kan vara värd att läsa
+
+Boken kan vara värdefull om du:
+- känner dig osäker på om enkelt verkligen räcker
+- tenderar att överkomplicera sparandet
+- vill ha ett lugnare förhållningssätt till pengar
+
+Den är mindre relevant om du:
+- redan är helt bekväm med enkelhet
+- söker teknisk fördjupning
 
 ---
 
 ## Sammanfattning
 
-Det här är inte en handbok i svensk privatekonomi.  
-Det är en bok om **förhållningssätt**.
+*The Simple Path to Wealth* är inte en manual.  
+Det är ett resonemang.
 
-Läs den för perspektiv, inte för instruktioner.
+Den påminner om något som lätt glöms bort:
+- att långsiktigt sparande inte behöver vara svårt
+- men att det kräver disciplin
 
-👉 Relaterad kunskap:  
-- [Hur ska man tänka kring sparande och investeringar?](/kunskap/hur-ska-man-tanka-kring-sparande/)
-- [Fonder utan fondjakt](/kunskap/fonder-utan-fondjakt/)
+En bok som inte förändrar allt –  
+men kan hjälpa dig att sluta ändra för mycket.

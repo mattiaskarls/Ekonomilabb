@@ -60,6 +60,40 @@
   color: var(--gold-hover);
 }
 .btn-secondary:active{ transform: translateY(1px); }
+
+  /* Gör att i:et inte klistrar ihop sig */
+  .glossary-term{
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    text-decoration: underline dotted;
+    text-underline-offset: 4px;
+    cursor: help;
+  }
+  .glossary-i{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:1rem;
+    height:1rem;
+    font-size:0.7rem;
+    border-radius:9999px;
+    border:1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.75);
+    user-select:none;
+  }
+
+  /* Gör tooltipen synlig även utan dina CSS-variabler */
+  #glossary-tooltip .rounded-xl{
+    background: #111 !important;
+    color: #eee !important;
+    border-color: rgba(255,255,255,0.18) !important;
+  }
+  #glossary-tooltip .text-\[var\(--text-muted\)\]{
+    color: rgba(255,255,255,0.7) !important;
+  }
+
+
 </style>
 </head>
 
@@ -100,7 +134,7 @@
             </label>
           </div>
           <p class="text-xs text-slate-400">
-            Förenklad modell: statlig skatt läggs ovanpå den vanliga skatten över en schablonbrytpunkt.
+            Förenklad modell: statlig skatt läggs ovanpå den vanliga skatten över en schablonbrytpunkt. Googla din kommunalskatt för att hitta rätt värde.
           </p>
         </div>
 
@@ -115,7 +149,9 @@
                      value="40" />
             </label>
             <label class="block text-sm">
-              <span class="text-slate-200">Bruttolön per månad (kr)</span>
+              <span class="text-slate-200"><span class="glossary-term" data-glossary="bruttolön" tabindex="0">
+  bruttolön<span class="glossary-i" aria-hidden="true">i</span>
+</span> per månad (kr)</span>
               <input id="grossSalary" type="text" data-money="1"
                      class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
                      value="40 000" />
@@ -149,13 +185,15 @@
                      value="500 000" />
             </label>
             <label class="block text-sm">
-              <span class="text-slate-200">Sparkvot av nettolön (%)</span>
+              <span class="text-slate-200">Sparkvot av <span class="glossary-term" data-glossary="nettolön" tabindex="0">nettolön<span class="glossary-i" aria-hidden="true">i</span></span> (%)</span>
               <input id="saveRatePct" type="number"
                      class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
                      value="5" />
             </label>
             <label class="block text-sm">
-              <span class="text-slate-200">Förväntad real avkastning ISK/TP (%)</span>
+              <span class="text-slate-200">Förväntad <span class="glossary-term" data-glossary="årlig real avkastning" tabindex="0">
+  årlig real avkastning<span class="glossary-i" aria-hidden="true">i</span>
+</span> ISK/TP (%)</span>
               <input id="realReturnPct" type="number"
                      class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
                      value="4" />
@@ -253,7 +291,9 @@
                      value="1 000 000" />
             </label>
             <label class="block text-sm">
-              <span class="text-slate-200">AP real årlig avkastning (%)</span>
+              <span class="text-slate-200">AP <span class="glossary-term" data-glossary="årlig real avkastning" tabindex="0">
+  årlig real avkastning<span class="glossary-i" aria-hidden="true">i</span>
+</span> (%)</span>
               <input id="apReturnPct" type="number" step="0.1"
                      class="mt-1 border border-slate-700 bg-slate-950 text-slate-100 rounded px-2.5 py-2 w-full text-sm"
                      value="1.9" />
@@ -1100,5 +1140,19 @@
   render();
 })();
 </script>
+
+<script defer src="/js/glossary.js"></script>
+
+<script>
+  setTimeout(() => {
+    const tip = document.getElementById("glossary-tooltip");
+    console.log("tooltip exists?", !!tip, "display:", tip && getComputedStyle(tip).display);
+  }, 1000);
+</script>
+
+<script>
+  console.log("glossary html loaded");
+</script>
+
 </body>
 </html>

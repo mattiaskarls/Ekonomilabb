@@ -140,6 +140,35 @@
 
     .divider { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 10px; }
     code { color: rgba(229,231,235,0.95); }
+
+      .glossary-term{
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    text-decoration: underline dotted;
+    text-underline-offset: 4px;
+    cursor: help;
+  }
+  .glossary-i{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:1rem;
+    height:1rem;
+    font-size:0.7rem;
+    border-radius:9999px;
+    border:1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.75);
+    user-select:none;
+  }
+  #glossary-tooltip .rounded-xl{
+    background:#111 !important;
+    color:#eee !important;
+    border-color:rgba(255,255,255,0.18) !important;
+  }
+  #glossary-tooltip .text-\[var\(--text-muted\)\]{
+    color:rgba(255,255,255,0.7) !important;
+  }
   </style>
 </head>
 
@@ -737,5 +766,8 @@
       renderCharts();
     })();
   </script>
+
+<script defer src="/js/glossary.js"></script>
+
 </body>
 </html>

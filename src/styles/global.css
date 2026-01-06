@@ -113,3 +113,28 @@ a:hover {
 ::-webkit-scrollbar-thumb {
   background: var(--border);
 }
+
+/* =========================================
+   Glossary (ordlista)
+========================================= */
+.glossary-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+  cursor: help;
+}
+
+.glossary-i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  user-select: none;
+}

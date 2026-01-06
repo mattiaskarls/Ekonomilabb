@@ -1,29 +1,25 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { slugifyTag } from "../../utils/slugify";
 
 export async function getStaticPaths() {
   const resources = await getCollection("resurser");
-  return resources.map((r) => ({
-    params: { slug: r.slug },
-    props: { resource: r },
+  return resources.map((resource) => ({
+    params: { slug: resource.slug },
+    props: { resource },
   }));
 }
 
 const { resource } = Astro.props;
+
+// Render Markdown body
 const { Content } = await resource.render();
 
-// Robust canonical (funkar lokalt + prod)
-const origin = Astro.site?.toString().replace(/\/$/, "") ?? Astro.url.origin;
-const canonical = `${origin}/resurser/${resource.slug}/`;
-
-const tags =
-  (resource.data.tags ?? [])
-    .map((t) => (typeof t === "string" ? t.trim() : ""))
-    .filter((t) => t.length > 0);
-
-const links = resource.data.links ?? [];
+// Canonical URL (fungerar både i dev och prod)
+const canonical =
+  Astro.site
+    ? new URL(`/resurser/${resource.slug}/`, Astro.site).toString()
+    : `/resurser/${resource.slug}/`;
 ---
 
 <BaseLayout
@@ -39,7 +35,7 @@ const links = resource.data.links ?? [];
         name: resource.data.title,
         description: resource.data.excerpt,
         datePublished: resource.data.date,
-        mainEntityOfPage: canonical,
+        url: canonical,
         publisher: {
           "@type": "Organization",
           name: "EkonomiSmedjan",
@@ -55,87 +51,55 @@ const links = resource.data.links ?? [];
         <li>
           <a href="/" class="hover:text-[var(--gold)] transition">Hem</a>
         </li>
-        <li class="opacity-70">/</li>
+        <li aria-hidden="true">/</li>
         <li>
-          <a href="/resurser/" class="hover:text-[var(--gold)] transition">Resurser</a>
+          <a href="/resurser" class="hover:text-[var(--gold)] transition">Resurser</a>
         </li>
-        <li class="opacity-70">/</li>
-        <li class="text-[var(--text)] truncate max-w-[70vw]">
-          {resource.data.title}
-        </li>
+        <li aria-hidden="true">/</li>
+        <li class="text-[var(--text)]">{resource.data.title}</li>
       </ol>
     </nav>
 
-    <!-- Rubrik / intro -->
-    <header class="space-y-2">
-      <h1 class="text-2xl md:text-3xl font-semibold">Resurser</h1>
-      <p class="text-[var(--text-muted)] max-w-2xl">
-        Böcker, tjänster och verktyg som hjälper dig lyckas med att smida din ekonomi.
-      </p>
-    </header>
-
     <!-- Själva resursen -->
     <section class="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6 space-y-6">
-      <div class="flex flex-col md:flex-row gap-6">
-        {resource.data.coverImage ? (
-          <!-- FIXAD BILDRUTA -->
-          <div class="h-28 w-28 flex items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)]">
-            <img
-              src={resource.data.coverImage}
-              alt={`Omslag/logotyp: ${resource.data.title}`}
-              width="112"
-              height="112"
-              class="max-h-full max-w-full object-contain"
-              loading="lazy"
-            />
-          </div>
-        ) : null}
-
-        <div class="min-w-0 flex-1 space-y-3">
-          <h2 class="text-xl md:text-2xl font-semibold">
+      <header class="space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <h1 class="text-2xl md:text-3xl font-semibold">
             {resource.data.title}
-          </h2>
+          </h1>
 
-          {resource.data.excerpt ? (
-            <p class="text-[var(--text)]/90">
-              {resource.data.excerpt}
-            </p>
-          ) : null}
-
-          {tags.length ? (
-            <div class="flex flex-wrap gap-2 pt-1">
-              {tags.map((tag) => (
-                <a
-                  href={`/resurser/tagg/${slugifyTag(tag)}/`}
-                  class="text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition"
-                >
-                  #{tag}
-                </a>
-              ))}
-            </div>
-          ) : null}
+          <span class="inline-block text-xs px-2 py-1 rounded-full border border-[var(--border)] bg-[var(--surface-soft)] text-[var(--text-muted)]">
+            {resource.data.type}
+          </span>
         </div>
-      </div>
 
-      {links.length ? (
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          {links.map((l) => (
-            <a
-              href={l.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-4 py-2 transition"
-            >
-              {l.label} →
-            </a>
-          ))}
-        </div>
+        <p class="text-[var(--text-muted)] max-w-2xl">
+          {resource.data.excerpt}
+        </p>
+      </header>
+
+      <article class="prose prose-neutral dark:prose-invert max-w-none">
+        <Content />
+      </article>
+
+      {resource.data.links?.length ? (
+        <section class="pt-2 border-t border-[var(--border)]">
+          <h2 class="text-lg font-medium mt-6 mb-3">Gå vidare</h2>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            {resource.data.links.map((l) => (
+              <a
+                href={l.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-xl bg-[var(--gold)] hover:bg-[var(--gold-hover)] text-black font-medium px-4 py-2 transition"
+              >
+                {l.label} →
+              </a>
+            ))}
+          </div>
+        </section>
       ) : null}
     </section>
-
-    <!-- Innehåll -->
-<article class="prose prose-invert max-w-3xl">
-  <Content />
-</article>
   </main>
 </BaseLayout>

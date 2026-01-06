@@ -17,7 +17,7 @@ const paths = [
       "Stoppa in dina siffror i kalkylatorn",
     ],
     ctas: [
-      { label: "Börja här →", href: "/kunskap/hur-ska-man-tanka-kring-sparande/" },
+      { label: "Börja här →", href: "/kunskap/tanka-kring-sparande/" },
       { label: "FIRE & pension – kalkylator →", href: "/verktyg/fire-pension/" },
     ],
     badge: "Start",
@@ -33,6 +33,7 @@ const paths = [
       { label: "Verktyg för FIRE →", href: "/verktyg/" },
     ],
     badge: "FIRE",
+    highlight: false,
   },
   {
     title: "Egenföretagare?",
@@ -41,6 +42,7 @@ const paths = [
     bullets: ["Jämför lön, utdelning och pension", "Se effekten för dig privat och ditt bolag", "Pedagogiskt steg-för-steg"],
     ctas: [{ label: "Jag & mitt AB →", href: "/verktyg/jag-och-mitt-ab/" }],
     badge: "AB",
+    highlight: false,
   },
 ] as const;
 
@@ -113,9 +115,9 @@ const allPosts = await getCollection("kunskap");
 type Post = (typeof allPosts)[number];
 
 const K1_SLUGS = [
-  "hur-ska-man-tanka-kring-sparande",
-  "vad-ar-isk-och-nar-passar-det",
-  "risk-avkastning-och-beteende",
+  "tanka-kring-sparande",
+  "isk",
+  "risk-avkastning-beteende",
 ] as const;
 
 const postBySlug = new Map<string, Post>(allPosts.map((p) => [p.slug, p]));
@@ -169,7 +171,7 @@ const btnGhost =
 
     <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
       <a href="/verktyg/fire-pension/" class={btnPrimary}>Räkna på FIRE & pension</a>
-      <a href="/kunskap/hur-ska-man-tanka-kring-sparande/" class={btnSecondary}>Börja här →</a>
+      <a href="/kunskap/tanka-kring-sparande/" class={btnSecondary}>Börja här →</a>
     </div>
   </section>
 

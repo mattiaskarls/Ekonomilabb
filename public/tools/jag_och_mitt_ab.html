@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UT...-8" />
+  <meta charset="utf-8" />
   <title>Jag och mitt AB – Lön vs utdelning</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -101,6 +101,36 @@
       .grid-3 { grid-template-columns: 1fr; }
       .grid-2 { grid-template-columns: 1fr; }
     }
+      .glossary-term{
+    display:inline-flex;
+    align-items:center;
+    gap:0.35rem;
+    text-decoration: underline dotted;
+    text-underline-offset: 4px;
+    cursor: help;
+  }
+  .glossary-i{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:1rem;
+    height:1rem;
+    font-size:0.7rem;
+    border-radius:9999px;
+    border:1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.75);
+    user-select:none;
+  }
+  #glossary-tooltip .rounded-xl{
+    background:#111 !important;
+    color:#eee !important;
+    border-color:rgba(255,255,255,0.18) !important;
+  }
+  #glossary-tooltip .text-\[var\(--text-muted\)\]{
+    color:rgba(255,255,255,0.7) !important;
+  }
+
+  
   </style>
 </head>
 
@@ -551,5 +581,8 @@
 
     recalc();
   </script>
+
+<script defer src="/js/glossary.js"></script>
+
 </body>
 </html>
