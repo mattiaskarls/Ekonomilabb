@@ -1,0 +1,243 @@
+---
+/* Fil: src/components/tools/Kalkylator312.astro
+  Beskrivning: Räknesnurra för de nya 3:12-reglerna (Förslag 2026).
+*/
+---
+
+<section class="w-full max-w-4xl mx-auto space-y-8" id="kalkylator-312">
+  
+  <div class="space-y-4">
+    <h2 class="text-3xl font-bold text-[var(--gold)]">3:12 Kalkylator (Nya reglerna 2026)</h2>
+    <p class="text-[var(--text-muted)] max-w-2xl">
+      Räkna på ditt utdelningsutrymme enligt det nya förslaget. Kalkylatorn jämför automatiskt det nya 
+      <strong>Grundbeloppet</strong> (f.d. schablon) mot det nya <strong>Lönebaserade utrymmet</strong>.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    
+    <div class="surface p-6 rounded-2xl space-y-6">
+      <h3 class="text-xl font-semibold text-[var(--text)] border-b border-[var(--border)] pb-2">Dina värden</h3>
+      
+      <div class="space-y-2">
+        <label for="share" class="block text-sm font-medium text-[var(--text-muted)]">
+          Din ägarandel (%)
+        </label>
+        <div class="relative">
+          <input 
+            type="number" 
+            id="share" 
+            value="100" 
+            min="1" 
+            max="100" 
+            class="block w-full bg-[var(--surface-soft)] border border-[var(--border)] rounded-md px-4 py-3 text-[var(--text)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors"
+          >
+          <span class="absolute right-4 top-3 text-[var(--text-muted)]">%</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="savedSpace" class="block text-sm font-medium text-[var(--text-muted)] flex justify-between">
+          <span>Sparat utdelningsutrymme (K10)</span>
+          <span class="text-xs text-[var(--steel)]">Från föregående år</span>
+        </label>
+        <div class="relative">
+          <input 
+            type="text" 
+            inputmode="numeric" 
+            id="savedSpace" 
+            value="0" 
+            class="currency-input block w-full bg-[var(--surface-soft)] border border-[var(--border)] rounded-md px-4 py-3 text-[var(--text)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors"
+          >
+          <span class="absolute right-4 top-3 text-[var(--text-muted)]">kr</span>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-4 border-t border-[var(--border)]">
+        <div class="space-y-2">
+          <label for="totalSalaries" class="block text-sm font-medium text-[var(--text-muted)]">
+            Totala kontanta bruttolöner i bolaget
+          </label>
+          <p class="text-xs text-[var(--text-muted)] mb-2">Inklusive din egen lön och eventuella anställda.</p>
+          <div class="relative">
+            <input 
+              type="text" 
+              inputmode="numeric" 
+              id="totalSalaries" 
+              value="600 000" 
+              class="currency-input block w-full bg-[var(--surface-soft)] border border-[var(--border)] rounded-md px-4 py-3 text-[var(--text)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors"
+            >
+            <span class="absolute right-4 top-3 text-[var(--text-muted)]">kr</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-[var(--surface-soft)] p-4 rounded-lg border border-[var(--border)] text-sm text-[var(--text-muted)]">
+        <p><strong>Notera:</strong> I det nya förslaget slopas löneuttagskravet (kravet på egen lön), men ett schablonmässigt avdrag på 8 IBB görs innan du får räkna på löneunderlaget.</p>
+      </div>
+
+    </div>
+
+    <div class="space-y-6">
+      
+      <div class="surface p-6 rounded-2xl border-t-4 border-t-[var(--gold)] space-y-6 relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-[var(--gold)] opacity-5 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div>
+          <h3 class="text-sm uppercase tracking-wider text-[var(--text-muted)] font-semibold">Årets Gränsbelopp (2026)</h3>
+          <div class="text-4xl font-bold text-[var(--text)] mt-2 tracking-tight" id="result-year-space">0 kr</div>
+          <div class="text-sm text-[var(--gold)] mt-1 font-medium" id="result-method-text">Baserat på Grundbeloppet</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 py-4 border-y border-[var(--border)]">
+          <div>
+            <div class="text-xs text-[var(--text-muted)]">Sparat utrymme</div>
+            <div class="text-lg font-medium text-[var(--text)]" id="result-saved">0 kr</div>
+          </div>
+          <div>
+            <div class="text-xs text-[var(--text-muted)]">Totalt utdelningsutrymme</div>
+            <div class="text-lg font-medium text-[var(--gold)]" id="result-total">0 kr</div>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-sm font-semibold text-[var(--text)] mb-3">Skatt vid max utdelning (20%)</h4>
+          <div class="flex items-center justify-between p-3 bg-[var(--surface-soft)] rounded-lg border border-[var(--border)]">
+            <span class="text-[var(--text-muted)]">Skatt att betala privat</span>
+            <span class="font-bold text-red-400" id="result-tax">-0 kr</span>
+          </div>
+          <div class="flex items-center justify-between p-3 mt-2 bg-[var(--gold)]/10 rounded-lg border border-[var(--gold)]/20">
+            <span class="text-[var(--gold)] font-medium">Netto i handen</span>
+            <span class="font-bold text-[var(--gold)]" id="result-net">0 kr</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="analysis-box" class="surface-soft p-5 rounded-xl text-sm space-y-2 border-l-2 border-[var(--steel)]">
+        <h4 class="font-bold text-[var(--text)]">Analys</h4>
+        <p class="text-[var(--text-muted)]" id="analysis-text">
+          Laddar analys...
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  // Konstanter för 2026 (Baserat på IBB 2025)
+  const IBB_2025 = 80600; 
+  
+  // Regler
+  const SCHABLON_FACTOR = 4; // 4 IBB
+  const WAGE_BASED_FACTOR = 0.50; // 50% av löneunderlaget
+  const WAGE_DEDUCTION_FACTOR = 8; // 8 IBB avdrag
+
+  const inputs = {
+    share: document.getElementById('share') as HTMLInputElement,
+    savedSpace: document.getElementById('savedSpace') as HTMLInputElement,
+    totalSalaries: document.getElementById('totalSalaries') as HTMLInputElement,
+  };
+
+  const outputs = {
+    yearSpace: document.getElementById('result-year-space'),
+    methodText: document.getElementById('result-method-text'),
+    saved: document.getElementById('result-saved'),
+    total: document.getElementById('result-total'),
+    tax: document.getElementById('result-tax'),
+    net: document.getElementById('result-net'),
+    analysisText: document.getElementById('analysis-text'),
+  };
+
+  const formatSEK = (num: number) => {
+    return new Intl.NumberFormat('sv-SE', { 
+      style: 'currency', 
+      currency: 'SEK', 
+      maximumFractionDigits: 0 
+    }).format(num);
+  };
+
+  const parseVal = (str: string) => {
+    return parseFloat(str.replace(/\s/g, '').replace(',', '.') || '0');
+  };
+
+  const calculate = () => {
+    const sharePercent = parseVal(inputs.share.value) / 100;
+    const totalSalaries = parseVal(inputs.totalSalaries.value);
+    const savedSpace = parseVal(inputs.savedSpace.value);
+
+    // 1. Grundbeloppet (Nya schablonen)
+    const ruleSchablon = (SCHABLON_FACTOR * IBB_2025) * sharePercent;
+
+    // 2. Lönebaserat utrymme (Nya huvudregeln)
+    const deduction = (WAGE_DEDUCTION_FACTOR * IBB_2025) * sharePercent;
+    let ruleWage = (totalSalaries * WAGE_BASED_FACTOR) - deduction;
+    
+    if (ruleWage < 0) ruleWage = 0;
+
+    // Jämförelse
+    const yearSpace = Math.max(ruleSchablon, ruleWage);
+    const usedRule = ruleWage > ruleSchablon ? 'wage' : 'schablon';
+
+    // Totaler
+    const totalSpace = yearSpace + savedSpace;
+    const tax = totalSpace * 0.20;
+    const net = totalSpace - tax;
+
+    // Uppdatera UI
+    if(outputs.yearSpace) outputs.yearSpace.innerText = formatSEK(yearSpace);
+    if(outputs.saved) outputs.saved.innerText = formatSEK(savedSpace);
+    if(outputs.total) outputs.total.innerText = formatSEK(totalSpace);
+    if(outputs.tax) outputs.tax.innerText = formatSEK(tax);
+    if(outputs.net) outputs.net.innerText = formatSEK(net);
+
+    if(outputs.methodText) {
+      if (usedRule === 'wage') {
+        outputs.methodText.innerText = "Baserat på Löneunderlag (Huvudregeln)";
+        outputs.methodText.classList.replace('text-[var(--gold)]', 'text-green-400');
+      } else {
+        outputs.methodText.innerText = "Baserat på Grundbelopp (Schablon)";
+        outputs.methodText.classList.replace('text-green-400', 'text-[var(--gold)]');
+      }
+    }
+
+    if(outputs.analysisText) {
+      // Breakeven: När 0.5 * Lön - 8 IBB = 4 IBB  => Lön = 24 IBB
+      const breakEvenSalary = 24 * IBB_2025 * sharePercent;
+      
+      if (usedRule === 'schablon') {
+        const diff = breakEvenSalary - totalSalaries;
+        outputs.analysisText.innerHTML = `
+          Du använder schablonregeln. För att det lönebaserade utrymmet ska bli mer lönsamt måste bolagets totala löner öka med 
+          <strong class="text-white">${formatSEK(diff)}</strong> (till totalt ${formatSEK(breakEvenSalary)}).
+        `;
+      } else {
+        outputs.analysisText.innerHTML = `
+          Grattis! Ni har tillräckligt höga löner i bolaget (${formatSEK(totalSalaries)}) för att det nya lönebaserade utrymmet ska slå schablonen. 
+          Det ger dig <strong class="text-white">${formatSEK(ruleWage - ruleSchablon)}</strong> extra i lågbeskattat utrymme jämfört med schablonen.
+        `;
+      }
+    }
+  };
+
+  Object.values(inputs).forEach(input => {
+    input.addEventListener('blur', (e) => {
+      const el = e.target as HTMLInputElement;
+      const val = parseVal(el.value);
+      el.value = new Intl.NumberFormat('sv-SE', { useGrouping: true }).format(val);
+      calculate();
+    });
+    input.addEventListener('input', calculate);
+  });
+
+  calculate();
+</script>
+
+<style>
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+  }
+  input[type=number] { -moz-appearance: textfield; }
+</style>

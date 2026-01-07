@@ -1,0 +1,109 @@
+---
+/*
+  Fil: src/pages/verktyg/312-regler-2026.astro
+  Beskrivning: Landningssida för 3:12-kalkylatorn (2026 års förslag).
+*/
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Kalkylator312 from "../../components/tools/Kalkylator312.astro";
+
+// Metadata för SEO och Open Graph
+const title = "3:12 Kalkylator 2026 – Nya regler för utdelning";
+const description = "Räkna ut ditt gränsbelopp enligt de nya föreslagna 3:12-reglerna för 2026. Jämför det nya grundbeloppet (4 IBB) med det lönebaserade utrymmet.";
+---
+
+<BaseLayout title={title} description={description}>
+  
+  <header class="max-w-3xl mx-auto text-center mb-12 space-y-4">
+    <span class="inline-block py-1 px-3 rounded-full bg-[var(--surface-soft)] border border-[var(--border)] text-xs font-medium text-[var(--gold)] uppercase tracking-wider">
+      Verktyg för företagare
+    </span>
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-[var(--text)]">
+      Kalkylator: Nya 3:12-reglerna (2026)
+    </h1>
+    <p class="text-lg text-[var(--text-muted)]">
+      Förslaget till nya regler innebär att förenklingsregeln och huvudregeln slås ihop till en gemensam modell. 
+      Räkna på hur ditt utrymme påverkas baserat på 2025 års inkomstbasbelopp.
+    </p>
+  </header>
+
+  <div class="mb-16">
+    <Kalkylator312 />
+  </div>
+
+  <article class="max-w-3xl mx-auto prose prose-invert prose-lg mb-12">
+    
+    <h3>Så fungerar den nya beräkningsmodellen</h3>
+    <p>
+      Från och med beskattningsåret 2026 föreslås en ny modell där de två tidigare metoderna (förenklingsregeln och huvudregeln) ersätts av en gemensam beräkning. Syftet är att förenkla regelverket för fåmansföretagare.
+    </p>
+    <p>
+      Den nya beräkningen består av tre huvudkomponenter som läggs samman för att fastställa årets gränsbelopp.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6 not-prose my-8">
+      <div class="bg-[var(--surface-soft)] p-6 rounded-xl border border-[var(--border)]">
+        <h4 class="text-[var(--gold)] font-bold mb-2">1. Grundbeloppet (Schablon)</h4>
+        <p class="text-sm text-[var(--text-muted)] leading-relaxed">
+          Ersätter den gamla förenklingsregeln. Beloppet är satt till <strong>4 inkomstbasbelopp (IBB)</strong>. 
+          För en ensam ägare innebär det ett utrymme på ca 322 400 kr (baserat på IBB 2025).
+          Äger du andelar i flera bolag måste detta belopp fördelas mellan dem.
+        </p>
+      </div>
+      
+      <div class="bg-[var(--surface-soft)] p-6 rounded-xl border border-[var(--border)]">
+        <h4 class="text-[var(--gold)] font-bold mb-2">2. Lönebaserat utrymme</h4>
+        <p class="text-sm text-[var(--text-muted)] leading-relaxed">
+          Beräknas som <strong>50% av bolagets totala löner</strong>, men med ett avdrag på <strong>8 IBB</strong> innan kvoteringen görs. 
+          Det tidigare kravet på eget löneuttag (spärren) slopas helt. Detta gynnar bolag med många anställda men kräver högre totala löner för att ge effekt.
+        </p>
+      </div>
+    </div>
+
+    <h3>Lön eller utdelning?</h3>
+    <p>
+      Valet mellan lön och utdelning är, precis som tidigare, en avvägning mellan låg skatt och sociala förmåner.
+    </p>
+    <ul>
+      <li>
+        <strong>Utdelning:</strong> Beskattas med 20% upp till gränsbeloppet. Detta är skattemässigt oftast mest gynnsamt om man enbart ser till nettot i plånboken.
+      </li>
+      <li>
+        <strong>Lön:</strong> Ger förmåner som allmän pension, sjukpenning och föräldrapenning (SGI). För att maximera dessa förmåner bör man 2026 ta ut en lön upp till ca <strong>673 038 kr</strong>.
+      </li>
+    </ul>
+    
+    <blockquote>
+      <p>
+        "En bra tumregel... är att plocka ut lön upp till brytpunkten för statlig skatt (660 400 kr per år 2026). Gör du det hamnar du strax över gränsen för maximal SGI."
+      </p>
+    </blockquote>
+
+    <p>
+      Notera att denna kalkylator baseras på förslaget för nya 3:12-regler. Reglerna är tänkta att träda i kraft 2026, men många företagare behöver planera sina löneuttag redan under 2025.
+    </p>
+
+  </article>
+
+  <div class="max-w-3xl mx-auto mb-16 p-6 rounded-xl bg-[var(--surface-soft)] border border-[var(--border)] flex gap-4">
+    <div class="shrink-0 text-[var(--gold)] pt-1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="text-sm text-[var(--text-muted)] space-y-2">
+      <h4 class="font-bold text-[var(--text)]">Ansvarsfriskrivning</h4>
+      <p>
+        Denna kalkylator är endast avsedd som ett hjälpmedel för uppskattning och utbildning. Resultaten baseras på förslag till nya regler som kan komma att ändras innan de träder i kraft.
+      </p>
+      <p>
+        Ekonomismedjan tar inget ansvar för eventuella felberäkningar, tolkningar eller beslut som tas baserat på dessa siffror. Rådgör alltid med din revisor eller redovisningskonsult för att säkerställa att du gör rätt val för din specifika situation.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-3xl mx-auto pt-8 border-t border-[var(--border)] text-center">
+    <p class="text-[var(--text-muted)] mb-4">Vill du läsa mer om hur aktiebolag fungerar?</p>
+    <a href="/kunskap/" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[var(--gold)] text-[var(--bg)] font-bold hover:bg-[var(--gold-hover)] transition">
+      Gå till Kunskapsbanken
+    </a>
+  </div>
+
+</BaseLayout>
